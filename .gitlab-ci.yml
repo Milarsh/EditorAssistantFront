@@ -1,0 +1,17 @@
+---
+
+include:
+  - project: games/cicd
+    file: /templates/gitlab/Front-All.gitlab-ci.yml
+
+variables:
+  PROJECT_ALIAS: template # При копировании проекта изменить на собственное название проект
+  RELEASE_NAME: ${PROJECT_ALIAS}-web
+  BASE_DOMAIN: games-tech.ru # При копировании проекта изменить на собственное название проект
+  SUBDOMAIN: ${PROJECT_ALIAS}
+  IMAGE_NAME: ${REGISTRY}/${PROJECT_ALIAS}/web
+  IMAGE_TAG: prod-${CI_COMMIT_SHORT_SHA}
+  IMAGE: ${IMAGE_NAME}:${IMAGE_TAG}
+  VIRTUAL_HOST: ${SUBDOMAIN}.${BASE_DOMAIN}
+  ENV: stage
+  CDN: false # Если требуется выгружать артефакты в CDN поставить true
