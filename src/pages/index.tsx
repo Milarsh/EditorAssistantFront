@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { NewsFeed } from '@/widgets/news-feed'
-import { SidebarFilter } from '@/widgets/sidebar'
+import { SidebarFilter } from 'src/widgets/sidebar-filter'
 import { LeftSidePanel } from '@/widgets/left-side-panel'
 
 export const MainPage = () => {

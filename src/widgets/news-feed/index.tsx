@@ -1,16 +1,9 @@
 import { useMemo, useState } from 'react'
 import { tv } from 'tailwind-variants'
+import { TextField } from '@/shared/ui/input'
+import { Tabs } from '@/shared/ui/tabs'
 
 // ---------- Variants ----------
-const tabButton = tv({
-  base: 'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-  variants: {
-    active: {
-      true: 'bg-black text-white',
-      false: 'bg-gray-100 hover:bg-gray-200 text-gray-700',
-    },
-  },
-})
 
 const controlButton = tv({
   base: 'flex items-center gap-2 px-3 py-2 text-sm border rounded-lg transition-colors',
@@ -64,48 +57,6 @@ const mockArticles: Article[] = [
   },
 ]
 
-// ---------- Subcomponents ----------
-const SearchBar = ({
-  value,
-  onChange,
-}: {
-  value: string
-  onChange: (v: string) => void
-}) => (
-  <div className="relative w-full sm:w-72">
-    <input
-      type="text"
-      placeholder="Поиск..."
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-lg border border-gray-300 py-2 pr-3 pl-3 text-sm
-        focus:ring-2 focus:ring-black focus:outline-none"
-    />
-  </div>
-)
-
-const CategoryTabs = ({
-  categories,
-  active,
-  onSelect,
-}: {
-  categories: string[]
-  active: string
-  onSelect: (cat: string) => void
-}) => (
-  <div className="flex flex-wrap gap-2">
-    {categories.map((cat) => (
-      <button
-        key={cat}
-        onClick={() => onSelect(cat)}
-        className={tabButton({ active: active === cat })}
-      >
-        {cat === 'all' ? 'Все' : cat}
-      </button>
-    ))}
-  </div>
-)
-
 const ActionPanel = ({
   onOpenFilter,
   sortAsc,
@@ -118,12 +69,14 @@ const ActionPanel = ({
   <div className="flex flex-wrap justify-between gap-3">
     <div className="flex gap-2">
       <button
+        type="button"
         onClick={onOpenFilter}
         className={controlButton({ active: false })}
       >
         Фильтры
       </button>
       <button
+        type="button"
         onClick={onToggleSort}
         className={controlButton({ active: false })}
       >
@@ -154,7 +107,8 @@ const ArticleCard = ({ article }: { article: Article }) => (
   </div>
 )
 
-// ---------- Main Component ----------
+const categories = ['all', 'Разработка', 'Дизайн', 'Маркетинг', 'Менеджмент']
+
 export const NewsFeed = ({
   handleOpenFilter,
 }: {
@@ -163,8 +117,6 @@ export const NewsFeed = ({
   const [category, setCategory] = useState('all')
   const [search, setSearch] = useState('')
   const [sortAsc, setSortAsc] = useState(true)
-
-  const categories = ['all', 'Разработка', 'Дизайн', 'Маркетинг', 'Менеджмент']
 
   const filtered = useMemo(() => {
     return mockArticles
@@ -178,28 +130,36 @@ export const NewsFeed = ({
   return (
     <div className="flex w-full flex-col gap-6 px-4 py-8">
       <div
-        className="vertical gap-30 sm:flex-row sm:items-center
-          sm:justify-start"
+        className="vertical gap-30 sm:flex-row sm:items-center sm:justify-start"
       >
         <h2 className="text-2xl font-bold">Новости</h2>
-        <SearchBar value={search} onChange={setSearch} />
+        <TextField
+          name="search"
+          placeholder="Поиск..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          // Добавьте класс если надо
+          className="w-full rounded-lg border border-gray-300 py-2 pr-3 pl-3
+            text-sm focus:ring-2 focus:ring-black focus:outline-none sm:w-72"
+        />
       </div>
 
-      {/* 🔹 Таб-фильтры */}
-      <CategoryTabs
-        categories={categories}
-        active={category}
-        onSelect={setCategory}
+      {/* Переиспользуем Tabs для категорий */}
+      <Tabs
+        tabs={categories.map((cat) => ({
+          id: cat,
+          label: cat === 'all' ? 'Все' : cat,
+        }))}
+        activeTab={category}
+        onChange={setCategory}
       />
 
-      {/* 🔹 Панель действий */}
       <ActionPanel
         onOpenFilter={handleOpenFilter}
         sortAsc={sortAsc}
         onToggleSort={() => setSortAsc((s) => !s)}
       />
 
-      {/* 🔹 Список карточек */}
       <div className="flex flex-col gap-4">
         {filtered.length > 0 ? (
           filtered.map((article) => (

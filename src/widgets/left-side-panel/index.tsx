@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import { Tabs } from '@/shared/ui/tabs'
+import { TextareaField } from '@/shared/ui/input/text-area'
+import { TextField } from '@/shared/ui/input'
+import { Button } from '@/shared/ui/button'
 
 const tabs = [
   {
@@ -32,7 +36,6 @@ export const LeftSidePanel = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', form)
     setForm({ name: '', email: '', message: '' })
   }
 
@@ -43,27 +46,14 @@ export const LeftSidePanel = () => {
       className="flex h-screen min-w-90 flex-col justify-between border-r
         border-slate-300 bg-slate-100 p-4"
     >
-      {/* === Заголовок === */}
       <div>
         <h2 className="mb-4 text-xl font-semibold text-slate-700">Панель</h2>
 
-        {/* === Табы === */}
-        <div className="mb-4 flex gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`rounded-md px-3 py-1 text-sm font-medium transition ${
-              activeTab === tab.id
-                  ? 'bg-slate-800 text-white'
-                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-              } `}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
         <ul className="space-y-2">
           {active?.items.map((item) => (
             <li
@@ -76,44 +66,28 @@ export const LeftSidePanel = () => {
         </ul>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-6 flex flex-col gap-3 border-t border-slate-300 pt-4"
-      >
-        <input
+      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3 border-t border-slate-300 pt-4">
+        <TextField
           type="text"
           name="name"
           placeholder="Имя"
           value={form.name}
           onChange={handleChange}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2
-            text-slate-700 focus:ring-2 focus:ring-slate-500 focus:outline-none"
         />
-        <input
+        <TextField
           type="email"
           name="email"
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2
-            text-slate-700 focus:ring-2 focus:ring-slate-500 focus:outline-none"
         />
-        <textarea
+        <TextareaField
           name="message"
           placeholder="Сообщение"
           value={form.message}
           onChange={handleChange}
-          className="h-20 resize-none rounded-md border border-slate-300
-            bg-white px-3 py-2 text-slate-700 focus:ring-2 focus:ring-slate-500
-            focus:outline-none"
         />
-        <button
-          type="submit"
-          className="mt-1 rounded-md bg-slate-800 py-2 text-sm font-medium
-            text-white transition hover:bg-slate-700"
-        >
-          Отправить
-        </button>
+        <Button type="submit">Отправить</Button>
       </form>
     </div>
   )
