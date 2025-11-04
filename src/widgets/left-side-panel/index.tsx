@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { type ChangeEvent, useState } from 'react'
 import { Tabs } from '@/shared/ui/tabs'
 import { TextareaField } from '@/shared/ui/input/text-area'
 import { TextField } from '@/shared/ui/input'
 import { Button } from '@/shared/ui/button'
+import { Typography } from '@/shared/ui/typography'
 
-const tabs = [
+const MOCK_TABS = [
   {
     id: 'projects',
     label: 'Проекты',
@@ -27,7 +28,7 @@ export const LeftSidePanel = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target
 
@@ -39,7 +40,7 @@ export const LeftSidePanel = () => {
     setForm({ name: '', email: '', message: '' })
   }
 
-  const active = tabs.find((t) => t.id === activeTab)
+  const active = MOCK_TABS.find((t) => t.id === activeTab)
 
   return (
     <div
@@ -47,10 +48,10 @@ export const LeftSidePanel = () => {
         border-slate-300 bg-slate-100 p-4"
     >
       <div>
-        <h2 className="mb-4 text-xl font-semibold text-slate-700">Панель</h2>
+        <Typography variant="h2">Панель</Typography>
 
         <Tabs
-          tabs={tabs}
+          tabs={MOCK_TABS}
           activeTab={activeTab}
           onChange={setActiveTab}
         />

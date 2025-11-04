@@ -18,7 +18,8 @@ import { format, resolveConfig } from 'prettier'
 import { generateApi, type GenerateApiParams } from 'swagger-typescript-api'
 
 // Schema endpoint
-const SCHEMA_URL = 'https://example-api.prisma-games.ru/openapi.json'
+// const SCHEMA_URL = 'https://example-api.prisma-games.ru/openapi.json'
+const SCHEMA_URL = resolve(process.cwd(), 'openapi.yml')
 const OUTPUT_DIR = resolve(process.cwd(), './src/shared/api')
 const OUTPUT_FILENAME = 'api.ts'
 const OUTPUT_PATH = join(OUTPUT_DIR, OUTPUT_FILENAME)
@@ -44,7 +45,8 @@ const formatOutputFile = async () => {
 export const generateSwaggerApi = async () => {
   const config: GenerateApiParams = {
     ...baseConfig,
-    url: SCHEMA_URL,
+    input: SCHEMA_URL,
+    // url: SCHEMA_URL,
   }
 
   console.log('🚀 Generating API')
