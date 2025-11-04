@@ -1,28 +1,29 @@
 import { type FC, useState } from 'react'
 
 import { Button } from '@/shared/ui/button'
-import { FilterGroup } from '@/shared/ui/filter-group'
-import { Checkbox, Radio } from '@/shared/ui/input'
+import { RadioGroup, CheckboxGroup } from '@/shared/ui/input'
 import { Sidebar } from '@/shared/ui/sidebar'
+import { BaseForm } from '@/shared/ui/form-base'
 
 interface SidebarFilterProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
 }
 
-export const SidebarFilter: FC<SidebarFilterProps> = ({ isOpen, setIsOpen }) => {
-  const [sort, setSort] = useState('date')
+export const SidebarFilter: FC<SidebarFilterProps> = ({
+  isOpen,
+  setIsOpen,
+}) => {
+  const [source, setSource] = useState('1')
   const [categories, setCategories] = useState<string[]>([])
 
-  const handleCategoryChange = (category: string, isChecked: boolean) => {
-    setCategories((prev) =>
-      isChecked ? [...prev, category] : prev.filter((c) => c !== category)
-    )
-  }
 
   return (
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+      <div
+        className="flex items-center justify-between border-b border-gray-200
+          px-5 py-4"
+      >
         <h2 className="text-lg font-semibold text-gray-900">Фильтры</h2>
         <button
           onClick={() => setIsOpen(false)}
@@ -33,41 +34,38 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({ isOpen, setIsOpen }) => 
       </div>
 
       <div className="flex-1 space-y-6 overflow-y-auto px-5 py-4">
-        <FilterGroup title="Сортировать по">
-          <Radio
-            value="date"
-            label="По дате"
-            checked={sort === 'date'}
-            onChange={(value) => setSort(value)}
-          />
-          <Radio
-            value="popularity"
-            label="По популярности"
-            checked={sort === 'popularity'}
-            onChange={(value) => setSort(value)}
-          />
-        </FilterGroup>
-
-        <FilterGroup title="Категории">
-          <Checkbox
-            label="Маркетинг"
-            value="Маркетинг"
-            checked={categories.includes('Маркетинг')}
-            onChange={(e) => handleCategoryChange(e.target.value, e.target.checked)}
-          />
-          <Checkbox
-            label="Разработка"
-            value="Разработка"
-            checked={categories.includes('Разработка')}
-            onChange={(e) => handleCategoryChange(e.target.value, e.target.checked)}
-          />
-          <Checkbox
-            label="Дизайн"
-            value="Дизайн"
-            checked={categories.includes('Дизайн')}
-            onChange={(e) => handleCategoryChange(e.target.value, e.target.checked)}
-          />
-        </FilterGroup>
+        <BaseForm
+          initialValues={{source, categories}}
+          onSubmit={() => {}}
+          render={() => (
+              <div className='vertical gap-4'>
+                <RadioGroup
+                  title="Источники"
+                  value={source}
+                  onChange={setSource}
+                  options={[
+                    { label: 'Риа Новости', value: '1' },
+                    { label: 'Telegram news', value: '2' },
+                    { label: 'ТАСС', value: '3' },
+                    { label: 'Паблик цитатник', value: '4' },
+                    { label: 'Коммерсантъ', value: '5' },
+                  ]}
+                />
+                <CheckboxGroup
+                  title="По времени"
+                  value={categories}
+                  onChange={setCategories}
+                  options={[
+                    { label: 'Сегодня', value: 'Сегодня' },
+                    { label: 'Через 3 дня', value: 'Через 3 дня' },
+                    { label: 'Через 5 дней', value: 'Через 5 дней' },
+                    { label: 'Через неделю', value: 'Через неделю' },
+                    { label: 'Через 2 недели', value: 'Через 2 неделb' },
+                  ]}
+                />
+              </div>
+          )}
+        />
       </div>
 
       <div className="border-t border-gray-200 p-4">
