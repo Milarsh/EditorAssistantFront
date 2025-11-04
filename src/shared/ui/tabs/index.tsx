@@ -24,7 +24,7 @@ export const Tabs: FC<TabsProps> = ({ tabs, activeTab, onChange }) => {
           className={cn(
             'rounded-md bg-slate-200 px-3 py-1 text-sm font-medium transition',
             {
-              'bg-slate-800 text-white':
+              'bg-btn-primary text-white':
                 activeTab === tab.id,
             },
           )}

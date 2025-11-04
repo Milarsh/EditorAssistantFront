@@ -9,6 +9,7 @@ import { cn } from '@/shared/lib'
 type Variant =
   | 'h1'
   | 'h2'
+  | 'h3'
   | 'button-text'
   | 'body'
   | 'body-bold'
@@ -19,6 +20,7 @@ type Variant =
 const classNamesMap: Record<Variant, string> = {
   h1: 'text-[2rem]/9.5 font-bold',
   h2: 'text-2xl/7 font-bold',
+  h3: 'text-xl/6 font-bold',
   'button-text': 'text-[1.125rem]/5 font-semibold',
   body: 'text-base/5.5 font-normal',
   'body-bold': 'text-base/5.5 font-semibold',
@@ -30,6 +32,7 @@ const classNamesMap: Record<Variant, string> = {
 const componentsMap: Record<Variant, string> = {
   h1: 'h1',
   h2: 'h2',
+  h3: 'h3',
   'button-text': 'span',
   body: 'p',
   'body-bold': 'p',

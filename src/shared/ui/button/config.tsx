@@ -1,13 +1,11 @@
 import { tv as buttonTv } from 'tailwind-variants'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'gradient'
+export type ButtonVariant = 'primary' | 'secondary'
 export type ButtonSize = 's' | 'm'
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: 'bg-content-primary text-primary-alt',
-  secondary: 'bg-primary-green-light text-primary-green',
-  tertiary: 'bg-content-secondary text-primary-alt',
-  gradient: 'bg-gradient-button text-content-primary',
+  primary: 'bg-btn-primary text-white',
+  secondary: 'bg-transparent',
 }
 
 export const buttonSize: Record<ButtonSize, string> = {

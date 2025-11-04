@@ -98,6 +98,7 @@ export const NewsFeed = ({
           placeholder="Поиск..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-100"
         />
       </div>
 

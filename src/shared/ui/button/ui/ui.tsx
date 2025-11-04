@@ -15,30 +15,19 @@ export const Button: FC<ButtonProps> = ({
   className,
   variant = 'primary',
   type = 'button',
-  size = 'm',
+  size = 's',
   ...props
 }) => {
   const buttonStyles = cn(button({ variant, size }), className, {
     'opacity-50': props.disabled,
-    'relative overflow-hidden': variant === 'gradient',
-  })
-
-  const btnTypographyStyles = cn({
-    'text-outline-shadow': variant === 'gradient',
   })
 
   return (
     // eslint-disable-next-line react/button-has-type
     <button className={buttonStyles} type={type} {...props}>
-      <Typography variant="button-text" className={btnTypographyStyles}>
+      <Typography variant="button-text" >
         {children}
       </Typography>
-      {variant === 'gradient' && (
-        <div
-          className="bg-primary-green-light absolute bottom-0 left-0 z-0 h-full
-            w-full translate-y-[70%] rounded-full blur-[14px]"
-        />
-      )}
     </button>
   )
 }
