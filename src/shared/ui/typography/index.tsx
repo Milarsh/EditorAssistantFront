@@ -11,6 +11,7 @@ type Variant =
   | 'h2'
   | 'h3'
   | 'button-text'
+  | 'button-text-small'
   | 'body'
   | 'body-bold'
   | 'footnote'
@@ -22,6 +23,7 @@ const classNamesMap: Record<Variant, string> = {
   h2: 'text-2xl/7 font-bold',
   h3: 'text-xl/6 font-bold',
   'button-text': 'text-[1.125rem]/5 font-semibold',
+  'button-text-small': 'text-sm font-medium',
   body: 'text-base/5.5 font-normal',
   'body-bold': 'text-base/5.5 font-semibold',
   footnote: 'text-sm font-normal',
@@ -34,6 +36,7 @@ const componentsMap: Record<Variant, string> = {
   h2: 'h2',
   h3: 'h3',
   'button-text': 'span',
+  'button-text-small': 'span',
   body: 'p',
   'body-bold': 'p',
   footnote: 'span',

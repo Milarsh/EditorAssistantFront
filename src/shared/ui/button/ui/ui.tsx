@@ -22,10 +22,12 @@ export const Button: FC<ButtonProps> = ({
     'opacity-50': props.disabled,
   })
 
+  const typographyVariant = size === 'xs' ? "button-text-small" : "button-text"
+
   return (
     // eslint-disable-next-line react/button-has-type
     <button className={buttonStyles} type={type} {...props}>
-      <Typography variant="button-text" >
+      <Typography variant={typographyVariant}>
         {children}
       </Typography>
     </button>

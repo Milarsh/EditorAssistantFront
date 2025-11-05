@@ -1,3 +1,4 @@
+import { FileDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { MOCK_ARTICLES } from '@/shared/mock/atricle'
@@ -36,7 +37,8 @@ export const NewsFeed = ({
   return (
     <div className="flex w-full flex-col gap-6 px-4">
       <div
-        className="vertical gap-30 sm:flex-row sm:items-center sm:justify-start"
+        className="vertical gap-4 sm:flex-row sm:items-center sm:justify-start
+          sm:gap-30"
       >
         <Typography variant="h2">Новости</Typography>
         <TextField
@@ -47,15 +49,24 @@ export const NewsFeed = ({
           className="w-full max-w-100"
         />
       </div>
-
-      <Tabs
-        tabs={categories.map((cat) => ({
-          id: cat,
-          label: cat === 'all' ? 'Все' : cat,
-        }))}
-        activeTab={category}
-        onChange={setCategory}
-      />
+      <div className="flex justify-between">
+        <Tabs
+          tabs={categories.map((cat) => ({
+            id: cat,
+            label: cat === 'all' ? 'Все' : cat,
+          }))}
+          activeTab={category}
+          onChange={setCategory}
+        />
+        <a href="/mock-data.xlsx" download>
+          <div
+            className="bg-btn-primary flex items-center gap-2 rounded-md px-2
+              py-1 text-white"
+          >
+            экспорт Excel <FileDown className="size-5" />
+          </div>
+        </a>
+      </div>
 
       <ActionPanel
         onOpenFilter={handleOpenFilter}
