@@ -23,14 +23,16 @@ const MOCK_TABS = [
 ]
 
 export const LeftSidePanel = () => {
-  const [activeTab, setActiveTab] = useState('projects')
+  const [activeTab, setActiveTab] = useState('tasks')
 
   const active = MOCK_TABS.find((t) => t.id === activeTab)
 
   return (
     <div
-      className="flex h-screen min-w-90 flex-col justify-between border-r
+      className="vertical h-full  w-90 justify-between border-r
         border-slate-300 bg-slate-100 p-4"
+      style={{ height: 'calc(100vh - calc(var(--spacing) * 15))' }}
+
     >
       <div>
         <Typography variant="h2" className="mb-2">
