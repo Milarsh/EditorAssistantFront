@@ -24,7 +24,6 @@ body,
 #root {
   overscroll-behavior: none;
   overflow-x: hidden;
-  overflow-y: auto;
 }
 
 button {

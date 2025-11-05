@@ -31,7 +31,7 @@ export const LeftSidePanel = () => {
     <div
       className="vertical h-full  w-90 justify-between border-r
         border-slate-300 bg-slate-100 p-4"
-      style={{ height: 'calc(100vh - calc(var(--spacing) * 15))' }}
+      style={{ height: 'calc(100vh - calc(var(--spacing) * 12))' }}
 
     >
       <div>
@@ -41,9 +41,10 @@ export const LeftSidePanel = () => {
 
         <Tabs tabs={MOCK_TABS} activeTab={activeTab} onChange={setActiveTab} />
         <ul className="space-y-2">
-          {active?.items.map((item) => (
+          {active?.items.map((item, index) => (
             <li key={item} className="bg-transparent px-3 py-2 text-slate-700">
-              {item}
+              {/* TODO: заменить на реальные данные */}
+              {item} ({index + 5})
             </li>
           ))}
         </ul>

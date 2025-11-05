@@ -35,7 +35,7 @@ export const NewsFeed = ({
   }, [category, search, sortAsc])
 
   return (
-    <div className="flex w-full flex-col gap-6 px-4">
+    <div className="vertical w-full gap-6 px-4">
       <div
         className="vertical gap-4 sm:flex-row sm:items-center sm:justify-start
           sm:gap-30"
