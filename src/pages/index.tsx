@@ -13,21 +13,11 @@ export const MainPage = () => {
       <Header />
       <div className="flex overflow-hidden">
         <LeftSidePanel />
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto w-full">
           <NewsFeed handleOpenFilter={() => setIsOpenFilter(true)} />
         </div>
         <SidebarFilter isOpen={isOpenFilter} setIsOpen={setIsOpenFilter} />
       </div>
     </main>
-    // <main className="min-h-screen">
-    //   <Header />
-    //   <div className="flex flex-1">
-    //     <LeftSidePanel />
-    //     <div className="h-full flex-1">
-    //       <NewsFeed handleOpenFilter={() => setIsOpenFilter(true)} />
-    //     </div>
-    //     <SidebarFilter isOpen={isOpenFilter} setIsOpen={setIsOpenFilter} />
-    //   </div>
-    // </main>
   )
 }
