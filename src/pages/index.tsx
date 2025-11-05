@@ -1,15 +1,22 @@
-import { Badge } from '@/shared/ui/badge'
-import { BadgeVariant } from '@/shared/ui/badge/config'
+import { useState } from 'react'
+
+import { Header } from '@/shared/ui/header'
+import { LeftSidePanel } from '@/widgets/left-side-panel'
+import { NewsFeed } from '@/widgets/news-feed'
+import { SidebarFilter } from '@/widgets/sidebar-filter'
 
 export const MainPage = () => {
+  const [isOpenFilter, setIsOpenFilter] = useState(false)
+
   return (
-    <main className="flex-center flex min-h-screen">
-      <div className="vertical flex-center">
-        <h1 className="text-2xl font-bold text-black">Main page</h1>
-        <div className="horizontal gap-x-4">
-          <Badge>kek</Badge>
-          <Badge variant={BadgeVariant.Secondary}>aboba</Badge>
+    <main className="h-screen vertical">
+      <Header />
+      <div className="flex overflow-hidden">
+        <LeftSidePanel />
+        <div className="overflow-y-auto w-full">
+          <NewsFeed handleOpenFilter={() => setIsOpenFilter(true)} />
         </div>
+        <SidebarFilter isOpen={isOpenFilter} setIsOpen={setIsOpenFilter} />
       </div>
     </main>
   )

@@ -1,0 +1,55 @@
+import { useState } from 'react'
+
+import { Tabs } from '@/shared/ui/tabs'
+import { Typography } from '@/shared/ui/typography'
+import { SourceForm } from './source-form'
+
+const MOCK_TABS = [
+  {
+    id: 'projects',
+    label: 'Все',
+    items: ['Исправить баги', 'Добавить фильтр', 'Тестирование API'],
+  },
+  {
+    id: 'tasks',
+    label: 'RSS',
+    items: ['Риа Новости', 'ТАСС', 'Коммерсанть'],
+  },
+  {
+    id: 'notes',
+    label: 'Cоцсети',
+    items: ['Созвон в пятницу', 'Демо для клиента', 'Проверить аналитику'],
+  },
+]
+
+export const LeftSidePanel = () => {
+  const [activeTab, setActiveTab] = useState('tasks')
+
+  const active = MOCK_TABS.find((t) => t.id === activeTab)
+
+  return (
+    <div
+      className="vertical h-full  w-90 justify-between border-r
+        border-slate-300 bg-slate-100 p-4"
+      style={{ height: 'calc(100vh - calc(var(--spacing) * 12))' }}
+
+    >
+      <div>
+        <Typography variant="h2" className="mb-2">
+          Источники
+        </Typography>
+
+        <Tabs tabs={MOCK_TABS} activeTab={activeTab} onChange={setActiveTab} />
+        <ul className="space-y-2">
+          {active?.items.map((item, index) => (
+            <li key={item} className="bg-transparent px-3 py-2 text-slate-700">
+              {/* TODO: заменить на реальные данные */}
+              {item} ({index + 5})
+            </li>
+          ))}
+        </ul>
+      </div>
+      <SourceForm />
+    </div>
+  )
+}
