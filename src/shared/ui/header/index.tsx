@@ -25,7 +25,12 @@ interface Props {
   title?: string
 }
 
-export const Header: FC<Props> = ({ hideUser = false, title }) => {
+const defaultTitle = 'News Agregator'
+
+export const Header: FC<Props> = ({
+  hideUser = false,
+  title = defaultTitle,
+}) => {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const { navigate } = useRouter()

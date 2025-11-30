@@ -10,7 +10,7 @@ export const MainPage = () => {
 
   return (
     <main className="vertical h-screen">
-      <Header title="News Agregator" />
+      <Header />
       <div className="flex overflow-hidden">
         <LeftSidePanel />
         <div className="w-full overflow-y-auto">

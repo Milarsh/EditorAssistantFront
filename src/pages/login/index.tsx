@@ -52,7 +52,9 @@ export const LoginPage = () => {
             />
           </div>
 
-          <Button size="xs">Войти</Button>
+          <Button size="xs" onClick={handleSubmit}>
+            Войти
+          </Button>
         </form>
       </div>
     </div>

@@ -19,11 +19,13 @@ import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index
 import { Route as AuthSettingsSurveyFrequencyRouteImport } from './routes/_auth/settings/survey-frequency'
 import { Route as AuthSettingsNewsClearRouteImport } from './routes/_auth/settings/news-clear'
 import { Route as AuthSettingsMediafilesRouteImport } from './routes/_auth/settings/mediafiles'
-import { Route as AuthManageStopWordsRouteImport } from './routes/_auth/manage/stop-words'
 import { Route as AuthManageSourcesRouteImport } from './routes/_auth/manage/sources'
-import { Route as AuthManageKeyWordsRouteImport } from './routes/_auth/manage/key-words'
 import { Route as AuthManageCategoriesRouteImport } from './routes/_auth/manage/categories'
 import { Route as AuthArticleIdRouteImport } from './routes/_auth/article.$id'
+import { Route as AuthManageStopWordsIndexRouteImport } from './routes/_auth/manage/stop-words/index'
+import { Route as AuthManageKeyWordsIndexRouteImport } from './routes/_auth/manage/key-words/index'
+import { Route as AuthManageStopWordsCategoryIdRouteImport } from './routes/_auth/manage/stop-words/$category-id'
+import { Route as AuthManageKeyWordsCategoryIdRouteImport } from './routes/_auth/manage/key-words/$category-id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -75,19 +77,9 @@ const AuthSettingsMediafilesRoute = AuthSettingsMediafilesRouteImport.update({
   path: '/mediafiles',
   getParentRoute: () => AuthSettingsRoute,
 } as any)
-const AuthManageStopWordsRoute = AuthManageStopWordsRouteImport.update({
-  id: '/manage/stop-words',
-  path: '/manage/stop-words',
-  getParentRoute: () => AuthRoute,
-} as any)
 const AuthManageSourcesRoute = AuthManageSourcesRouteImport.update({
   id: '/manage/sources',
   path: '/manage/sources',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthManageKeyWordsRoute = AuthManageKeyWordsRouteImport.update({
-  id: '/manage/key-words',
-  path: '/manage/key-words',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthManageCategoriesRoute = AuthManageCategoriesRouteImport.update({
@@ -100,6 +92,29 @@ const AuthArticleIdRoute = AuthArticleIdRouteImport.update({
   path: '/article/$id',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthManageStopWordsIndexRoute =
+  AuthManageStopWordsIndexRouteImport.update({
+    id: '/manage/stop-words/',
+    path: '/manage/stop-words/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthManageKeyWordsIndexRoute = AuthManageKeyWordsIndexRouteImport.update({
+  id: '/manage/key-words/',
+  path: '/manage/key-words/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthManageStopWordsCategoryIdRoute =
+  AuthManageStopWordsCategoryIdRouteImport.update({
+    id: '/manage/stop-words/$category-id',
+    path: '/manage/stop-words/$category-id',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthManageKeyWordsCategoryIdRoute =
+  AuthManageKeyWordsCategoryIdRouteImport.update({
+    id: '/manage/key-words/$category-id',
+    path: '/manage/key-words/$category-id',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
@@ -108,14 +123,16 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/article/$id': typeof AuthArticleIdRoute
   '/manage/categories': typeof AuthManageCategoriesRoute
-  '/manage/key-words': typeof AuthManageKeyWordsRoute
   '/manage/sources': typeof AuthManageSourcesRoute
-  '/manage/stop-words': typeof AuthManageStopWordsRoute
   '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings/': typeof AuthSettingsIndexRoute
+  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
+  '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -123,14 +140,16 @@ export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
   '/article/$id': typeof AuthArticleIdRoute
   '/manage/categories': typeof AuthManageCategoriesRoute
-  '/manage/key-words': typeof AuthManageKeyWordsRoute
   '/manage/sources': typeof AuthManageSourcesRoute
-  '/manage/stop-words': typeof AuthManageStopWordsRoute
   '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
+  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
+  '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,14 +160,16 @@ export interface FileRoutesById {
   '/_auth/': typeof AuthIndexRoute
   '/_auth/article/$id': typeof AuthArticleIdRoute
   '/_auth/manage/categories': typeof AuthManageCategoriesRoute
-  '/_auth/manage/key-words': typeof AuthManageKeyWordsRoute
   '/_auth/manage/sources': typeof AuthManageSourcesRoute
-  '/_auth/manage/stop-words': typeof AuthManageStopWordsRoute
   '/_auth/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/_auth/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/_auth/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/_auth/manage/': typeof AuthManageIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
+  '/_auth/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/_auth/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/_auth/manage/key-words/': typeof AuthManageKeyWordsIndexRoute
+  '/_auth/manage/stop-words/': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,14 +180,16 @@ export interface FileRouteTypes {
     | '/'
     | '/article/$id'
     | '/manage/categories'
-    | '/manage/key-words'
     | '/manage/sources'
-    | '/manage/stop-words'
     | '/settings/mediafiles'
     | '/settings/news-clear'
     | '/settings/survey-frequency'
     | '/manage'
     | '/settings/'
+    | '/manage/key-words/$category-id'
+    | '/manage/stop-words/$category-id'
+    | '/manage/key-words'
+    | '/manage/stop-words'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -174,14 +197,16 @@ export interface FileRouteTypes {
     | '/'
     | '/article/$id'
     | '/manage/categories'
-    | '/manage/key-words'
     | '/manage/sources'
-    | '/manage/stop-words'
     | '/settings/mediafiles'
     | '/settings/news-clear'
     | '/settings/survey-frequency'
     | '/manage'
     | '/settings'
+    | '/manage/key-words/$category-id'
+    | '/manage/stop-words/$category-id'
+    | '/manage/key-words'
+    | '/manage/stop-words'
   id:
     | '__root__'
     | '/_auth'
@@ -191,14 +216,16 @@ export interface FileRouteTypes {
     | '/_auth/'
     | '/_auth/article/$id'
     | '/_auth/manage/categories'
-    | '/_auth/manage/key-words'
     | '/_auth/manage/sources'
-    | '/_auth/manage/stop-words'
     | '/_auth/settings/mediafiles'
     | '/_auth/settings/news-clear'
     | '/_auth/settings/survey-frequency'
     | '/_auth/manage/'
     | '/_auth/settings/'
+    | '/_auth/manage/key-words/$category-id'
+    | '/_auth/manage/stop-words/$category-id'
+    | '/_auth/manage/key-words/'
+    | '/_auth/manage/stop-words/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -278,25 +305,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSettingsMediafilesRouteImport
       parentRoute: typeof AuthSettingsRoute
     }
-    '/_auth/manage/stop-words': {
-      id: '/_auth/manage/stop-words'
-      path: '/manage/stop-words'
-      fullPath: '/manage/stop-words'
-      preLoaderRoute: typeof AuthManageStopWordsRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/manage/sources': {
       id: '/_auth/manage/sources'
       path: '/manage/sources'
       fullPath: '/manage/sources'
       preLoaderRoute: typeof AuthManageSourcesRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/manage/key-words': {
-      id: '/_auth/manage/key-words'
-      path: '/manage/key-words'
-      fullPath: '/manage/key-words'
-      preLoaderRoute: typeof AuthManageKeyWordsRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/manage/categories': {
@@ -311,6 +324,34 @@ declare module '@tanstack/react-router' {
       path: '/article/$id'
       fullPath: '/article/$id'
       preLoaderRoute: typeof AuthArticleIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/stop-words/': {
+      id: '/_auth/manage/stop-words/'
+      path: '/manage/stop-words'
+      fullPath: '/manage/stop-words'
+      preLoaderRoute: typeof AuthManageStopWordsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/key-words/': {
+      id: '/_auth/manage/key-words/'
+      path: '/manage/key-words'
+      fullPath: '/manage/key-words'
+      preLoaderRoute: typeof AuthManageKeyWordsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/stop-words/$category-id': {
+      id: '/_auth/manage/stop-words/$category-id'
+      path: '/manage/stop-words/$category-id'
+      fullPath: '/manage/stop-words/$category-id'
+      preLoaderRoute: typeof AuthManageStopWordsCategoryIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/key-words/$category-id': {
+      id: '/_auth/manage/key-words/$category-id'
+      path: '/manage/key-words/$category-id'
+      fullPath: '/manage/key-words/$category-id'
+      preLoaderRoute: typeof AuthManageKeyWordsCategoryIdRouteImport
       parentRoute: typeof AuthRoute
     }
   }
@@ -340,10 +381,12 @@ interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   AuthArticleIdRoute: typeof AuthArticleIdRoute
   AuthManageCategoriesRoute: typeof AuthManageCategoriesRoute
-  AuthManageKeyWordsRoute: typeof AuthManageKeyWordsRoute
   AuthManageSourcesRoute: typeof AuthManageSourcesRoute
-  AuthManageStopWordsRoute: typeof AuthManageStopWordsRoute
   AuthManageIndexRoute: typeof AuthManageIndexRoute
+  AuthManageKeyWordsCategoryIdRoute: typeof AuthManageKeyWordsCategoryIdRoute
+  AuthManageStopWordsCategoryIdRoute: typeof AuthManageStopWordsCategoryIdRoute
+  AuthManageKeyWordsIndexRoute: typeof AuthManageKeyWordsIndexRoute
+  AuthManageStopWordsIndexRoute: typeof AuthManageStopWordsIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -352,10 +395,12 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthArticleIdRoute: AuthArticleIdRoute,
   AuthManageCategoriesRoute: AuthManageCategoriesRoute,
-  AuthManageKeyWordsRoute: AuthManageKeyWordsRoute,
   AuthManageSourcesRoute: AuthManageSourcesRoute,
-  AuthManageStopWordsRoute: AuthManageStopWordsRoute,
   AuthManageIndexRoute: AuthManageIndexRoute,
+  AuthManageKeyWordsCategoryIdRoute: AuthManageKeyWordsCategoryIdRoute,
+  AuthManageStopWordsCategoryIdRoute: AuthManageStopWordsCategoryIdRoute,
+  AuthManageKeyWordsIndexRoute: AuthManageKeyWordsIndexRoute,
+  AuthManageStopWordsIndexRoute: AuthManageStopWordsIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

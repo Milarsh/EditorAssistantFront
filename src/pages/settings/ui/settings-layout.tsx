@@ -4,6 +4,7 @@ import { Link, Outlet, useMatchRoute } from '@tanstack/react-router'
 import type { FileRoutesByTo } from '@/app/router/routeTree.gen'
 import { cn } from '@/shared/lib/cn'
 import { Header } from '@/shared/ui/header'
+import { Typography } from '@/shared/ui/typography'
 
 const settingsLinks: { label: string; to: keyof FileRoutesByTo }[] = [
   { label: 'Очистка новостей', to: '/settings/news-clear' },
@@ -18,13 +19,15 @@ export const SettingsLayout = () => {
   const matchRoute = useMatchRoute()
 
   return (
-    <main className="vertical h-screen">
-      <Header title="News agregator" />
+    <div className="vertical h-screen">
+      <Header />
       <div className="flex h-screen">
         <aside className="w-64 border-r bg-white p-4">
-          <h2 className="mb-4 text-lg font-semibold">Настройки</h2>
+          <Typography variant="h2" className="mb-4">
+            Настройки
+          </Typography>
 
-          <nav className="flex flex-col gap-1">
+          <nav className="vertical gap-1">
             {settingsLinks.map(({ label, to }) => {
               return (
                 <Link
@@ -41,10 +44,10 @@ export const SettingsLayout = () => {
             })}
           </nav>
         </aside>
-        <main className="flex-1">
+        <div className="flex-1">
           <Outlet />
-        </main>
+        </div>
       </div>
-    </main>
+    </div>
   )
 }
