@@ -1,16 +1,15 @@
 import { useRouter } from '@tanstack/react-router'
-import { type FormEvent, useState } from 'react'
+import { type FormEvent } from 'react'
 
 import { useAuthStore } from '@/features/auth/store'
+import { Button } from '@/shared/ui/button'
 
 export const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false)
   const { navigate } = useRouter()
-  const login = useAuthStore((s) => s.actions.login)
+  const { login } = useAuthStore((s) => s.actions)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-
     login()
 
     navigate({ to: '/' })
@@ -25,12 +24,13 @@ export const LoginPage = () => {
 
         <div className="mb-6 flex space-x-6">
           <button
+            type="button"
             className="border-b-2 border-blue-600 pb-1 font-medium
               text-blue-600"
           >
             Вход
           </button>
-          <button className="text-gray-500 hover:text-gray-700">
+          <button type="button" className="text-gray-500 hover:text-gray-700">
             Регистрация
           </button>
         </div>
@@ -45,32 +45,14 @@ export const LoginPage = () => {
 
           <div className="relative">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type="password"
               placeholder="Введите пароль"
               className="w-full rounded-md border border-gray-300 px-3 py-2
                 pr-10 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center
-                text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? (
-                <svg /* icon open */ />
-              ) : (
-                <svg /* icon closed */ />
-              )}
-            </button>
           </div>
 
-          <button
-            type="submit"
-            className="w-full rounded-md bg-blue-600 py-2 font-medium text-white
-              transition hover:bg-blue-700"
-          >
-            Войти
-          </button>
+          <Button size="xs">Войти</Button>
         </form>
       </div>
     </div>

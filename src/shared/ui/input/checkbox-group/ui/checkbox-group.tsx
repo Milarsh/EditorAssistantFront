@@ -30,6 +30,7 @@ export const CheckboxGroup: FC<CheckboxGroupProps> = ({
   const handleChange = (val: string, checked: boolean) => {
     onChange(checked ? [...value, val] : value.filter((v) => v !== val))
   }
+
   return (
     <div className={cn('vertical gap-2', className)}>
       {title && <Typography variant="footnote-bold">{title}</Typography>}

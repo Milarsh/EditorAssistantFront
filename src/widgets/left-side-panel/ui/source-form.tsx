@@ -7,14 +7,11 @@ import { Typography } from '@/shared/ui/typography'
 const initialValues: SourceCreate = {
   name: '',
   rss_url: '',
-  enabled: false
+  enabled: false,
 }
 
 export const SourceForm = () => {
-
-  const handleSubmit = (values: SourceCreate) => {
-    console.log(values)
-  }
+  const handleSubmit = () => {}
 
   return (
     <BaseForm<SourceCreate>
@@ -36,7 +33,9 @@ export const SourceForm = () => {
             value={values.name}
             onChange={handleChange}
           />
-          <Button variant="primary" type="submit">Отправить</Button>
+          <Button variant="primary" type="submit">
+            Отправить
+          </Button>
         </>
       )}
     />

@@ -8,16 +8,22 @@ export const TextField: FC<InputHTMLAttributes<HTMLInputElement>> = ({
   name,
   ...props
 }) => {
+  const styleClass = cn(
+    `rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700
+ focus:ring-2 focus:outline-none`,
+    {
+      'cursor-not-allowed bg-slate-100 text-slate-500 opacity-75 select-none':
+        readOnly,
+    },
+    className,
+  )
+
   return (
     <input
       type="text"
       name={name}
-      disabled={readOnly}
-      className={cn(
-        `rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700
-        focus:ring-2 focus:ring-slate-500 focus:outline-none`,
-        className,
-      )}
+      readOnly={readOnly}
+      className={styleClass}
       {...props}
     />
   )

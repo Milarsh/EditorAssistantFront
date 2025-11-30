@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
+
 import { SourceForm } from './source-form'
 
 const MOCK_TABS = [
@@ -29,10 +30,9 @@ export const LeftSidePanel = () => {
 
   return (
     <div
-      className="vertical h-full  w-90 justify-between border-r
-        border-slate-300 bg-slate-100 p-4"
+      className="vertical h-full w-90 justify-between border-r border-slate-300
+        bg-slate-100 p-4"
       style={{ height: 'calc(100vh - calc(var(--spacing) * 12))' }}
-
     >
       <div>
         <Typography variant="h2" className="mb-2">

@@ -2,11 +2,11 @@ import { useParams, useRouter } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
 import { MOCK_ARTICLES } from '@/shared/mock/atricle'
-import { MOCK_SOURCES } from '@/shared/mock/source.ts'
+import { MOCK_SOURCES } from '@/shared/mock/source'
 import { Typography } from '@/shared/ui/typography'
 
 export const ArticlePage = () => {
-  const { id } = useParams({ from: '/article/$id' })
+  const { id } = useParams({ from: '/_auth/article/$id' })
   const { history } = useRouter()
   const article = MOCK_ARTICLES.find(
     (articleItem) => String(articleItem.id) === id,

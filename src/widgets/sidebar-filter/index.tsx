@@ -1,9 +1,9 @@
 import { type FC, useState } from 'react'
 
 import { Button } from '@/shared/ui/button'
-import { RadioGroup, CheckboxGroup } from '@/shared/ui/input'
-import { Sidebar } from '@/shared/ui/sidebar'
 import { BaseForm } from '@/shared/ui/form-base'
+import { CheckboxGroup, RadioGroup } from '@/shared/ui/input'
+import { Sidebar } from '@/shared/ui/sidebar'
 
 interface SidebarFilterProps {
   isOpen: boolean
@@ -17,7 +17,6 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
   const [source, setSource] = useState('1')
   const [categories, setCategories] = useState<string[]>([])
 
-
   return (
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}>
       <div
@@ -26,6 +25,7 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
       >
         <h2 className="text-lg font-semibold text-gray-900">Фильтры</h2>
         <button
+          type="button"
           onClick={() => setIsOpen(false)}
           className="text-xl leading-none text-gray-500 hover:text-gray-700"
         >
@@ -35,35 +35,35 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
 
       <div className="flex-1 space-y-6 overflow-y-auto px-5 py-4">
         <BaseForm
-          initialValues={{source, categories}}
+          initialValues={{ source, categories }}
           onSubmit={() => {}}
           render={() => (
-              <div className='vertical gap-4'>
-                <RadioGroup
-                  title="Источники"
-                  value={source}
-                  onChange={setSource}
-                  options={[
-                    { label: 'Риа Новости', value: '1' },
-                    { label: 'Telegram news', value: '2' },
-                    { label: 'ТАСС', value: '3' },
-                    { label: 'Паблик цитатник', value: '4' },
-                    { label: 'Коммерсантъ', value: '5' },
-                  ]}
-                />
-                <CheckboxGroup
-                  title="По времени"
-                  value={categories}
-                  onChange={setCategories}
-                  options={[
-                    { label: 'Сегодня', value: 'Сегодня' },
-                    { label: 'Через 3 дня', value: 'Через 3 дня' },
-                    { label: 'Через 5 дней', value: 'Через 5 дней' },
-                    { label: 'Через неделю', value: 'Через неделю' },
-                    { label: 'Через 2 недели', value: 'Через 2 неделb' },
-                  ]}
-                />
-              </div>
+            <div className="vertical gap-4">
+              <RadioGroup
+                title="Источники"
+                value={source}
+                onChange={setSource}
+                options={[
+                  { label: 'Риа Новости', value: '1' },
+                  { label: 'Telegram news', value: '2' },
+                  { label: 'ТАСС', value: '3' },
+                  { label: 'Паблик цитатник', value: '4' },
+                  { label: 'Коммерсантъ', value: '5' },
+                ]}
+              />
+              <CheckboxGroup
+                title="По времени"
+                value={categories}
+                onChange={setCategories}
+                options={[
+                  { label: 'Сегодня', value: 'Сегодня' },
+                  { label: 'Через 3 дня', value: 'Через 3 дня' },
+                  { label: 'Через 5 дней', value: 'Через 5 дней' },
+                  { label: 'Через неделю', value: 'Через неделю' },
+                  { label: 'Через 2 недели', value: 'Через 2 неделb' },
+                ]}
+              />
+            </div>
           )}
         />
       </div>

@@ -9,11 +9,11 @@ export const MainPage = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false)
 
   return (
-    <main className="h-screen vertical">
-      <Header />
+    <main className="vertical h-screen">
+      <Header title="News Agregator" />
       <div className="flex overflow-hidden">
         <LeftSidePanel />
-        <div className="overflow-y-auto w-full">
+        <div className="w-full overflow-y-auto">
           <NewsFeed handleOpenFilter={() => setIsOpenFilter(true)} />
         </div>
         <SidebarFilter isOpen={isOpenFilter} setIsOpen={setIsOpenFilter} />

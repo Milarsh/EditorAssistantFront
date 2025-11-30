@@ -1,8 +1,9 @@
-import { FileDown } from 'lucide-react'
+import { FileDown, RefreshCw } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { MOCK_ARTICLES } from '@/shared/mock/atricle'
 import { ArticleCard } from '@/shared/ui/article-card'
+import { Button } from '@/shared/ui/button'
 import { TextField } from '@/shared/ui/input'
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
@@ -48,6 +49,10 @@ export const NewsFeed = ({
           onChange={(e) => setSearch(e.target.value)}
           className="w-full max-w-100"
         />
+        <Button size="xs" onClick={() => window.location.reload()}>
+          Обновить
+          <RefreshCw className="ml-2 inline-block" />
+        </Button>
       </div>
       <div className="flex justify-between">
         <Tabs

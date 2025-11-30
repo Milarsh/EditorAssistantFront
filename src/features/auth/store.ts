@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface AuthStore {
+interface AuthState {
   isAuth: boolean
   actions: {
     login: () => void
@@ -9,7 +9,7 @@ interface AuthStore {
   }
 }
 
-export const useAuthStore = create<AuthStore>()(
+export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       isAuth: false,
@@ -19,7 +19,11 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'auth-store', // localStorage key
+      name: 'auth-store',
+
+      partialize: (state) => ({
+        isAuth: state.isAuth,
+      }),
     },
   ),
 )

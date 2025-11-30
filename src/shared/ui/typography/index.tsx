@@ -1,9 +1,5 @@
-import type {
-  ElementType,
-  FC,
-  PropsWithChildren,
-  RefObject,
-} from 'react'
+import type { ElementType, FC, PropsWithChildren, RefObject } from 'react'
+
 import { cn } from '@/shared/lib'
 
 type Variant =

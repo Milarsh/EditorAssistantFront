@@ -14,9 +14,9 @@ let hasError = false
 const checkFolderNames = (directory, ignoreList = []) => {
   const files = fs.readdirSync(directory)
 
-  const filteredFiles = files.filter(
-    (fileItem) => !ignoreList.includes(fileItem),
-  )
+  const filteredFiles = files.filter((fileItem) => {
+    return !ignoreList.includes(fileItem)
+  })
 
   for (const file of filteredFiles) {
     const filePath = path.join(directory, file)
@@ -54,6 +54,7 @@ const foldersToIgnore = [
   '.vite',
   'dist',
   '.tanstack',
+  'routes',
 ]
 
 // Start the check from the current working directory (root of your project)
