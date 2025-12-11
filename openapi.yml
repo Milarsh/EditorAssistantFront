@@ -4,18 +4,21 @@ info:
   version: 1.0.0
   description: Позволяет получать новости и их источники в формате JSON, проверять состояние сервиса.
 servers:
-- url: http://localhost:8000
-  description: Локальный сервер
+  - url: http://localhost:8000
+    description: Локальный сервер
 tags:
-- name: Health
-- name: Sources
-- name: Articles
-- name: Media
+  - name: Health
+  - name: Sources
+  - name: Articles
+  - name: Media
+  - name: TelegramAuth
+  - name: Authorization
+  - name: Settings
 paths:
   /healthz:
     get:
       tags:
-      - Health
+        - Health
       summary: Проверка состояния сервиса
       responses:
         '200':
@@ -28,7 +31,7 @@ paths:
   /api/sources:
     get:
       tags:
-      - Sources
+        - Sources
       summary: Список источников
       responses:
         '200':
@@ -40,18 +43,19 @@ paths:
               examples:
                 ok:
                   value:
-                  - id: 1
-                    name: Example
-                    rss_url: https://example.com/rss.xml
-                    enabled: true
-                    created_at: '2025-10-10T09:20:17Z'
+                    - id: 1
+                      name: Example
+                      type: rss
+                      rss_url: https://example.com/rss.xml
+                      enabled: true
+                      created_at: '2025-10-10T09:20:17Z'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
           $ref: '#/components/responses/InternalError'
     post:
       tags:
-      - Sources
+        - Sources
       summary: Добавить источник
       requestBody:
         required: true
@@ -83,10 +87,10 @@ paths:
   /api/sources/{id}:
     delete:
       tags:
-      - Sources
+        - Sources
       summary: Удалить источник
       parameters:
-      - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
           description: Удалено
@@ -110,13 +114,16 @@ paths:
   /api/articles:
     get:
       tags:
-      - Articles
-      summary: Список новостей
+        - Articles
+      summary: Список статей
       parameters:
-      - $ref: '#/components/parameters/SourceId'
-      - $ref: '#/components/parameters/Q'
-      - $ref: '#/components/parameters/Limit'
-      - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/SourceId'   # если у вас уже есть такой параметр
+        - $ref: '#/components/parameters/Q'          # если у вас уже есть поиск q
+        - $ref: '#/components/parameters/DateFrom'   # ← новее
+        - $ref: '#/components/parameters/DateTo'     # ← новее
+        - $ref: '#/components/parameters/Order'      # ← новее
       responses:
         '200':
           description: Успешно
@@ -125,31 +132,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/ArticlesList'
               examples:
-                ok:
+                example:
                   value:
-                    total: 1
-                    limit: 5
+                    total: 2
+                    limit: 20
                     offset: 0
                     items:
-                    - id: 1
-                      source_id: 2
-                      title: Test news
-                      link: https://example.com/news/1
-                      description: Full text
-                      guid: guid-1
-                      published_at: '2025-10-10T10:05:51Z'
-                      fetched_at: '2025-10-10T09:20:17Z'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '500':
-          $ref: '#/components/responses/InternalError'
+                      - id: 101
+                        source_id: 2
+                        title: "Новость"
+                        link: "https://example.com/1"
+                        description: "Текст"
+                        guid: "guid-1"
+                        published_at: "2025-10-28T10:05:50Z"
+                        fetched_at: "2025-10-28T10:06:00Z"
+                        parent_article_id: null
+                      - id: 102
+                        source_id: 2
+                        title: "https://t.me/channel/42"
+                        link: "https://t.me/channel/42"
+                        description: null
+                        guid: "tg:123456:42:1"
+                        published_at: "2025-10-28T10:05:51Z"
+                        fetched_at: "2025-10-28T10:06:10Z"
+                        parent_article_id: 101
   /api/articles/{id}:
     get:
       tags:
-      - Articles
+        - Articles
       summary: Получить новость по id
       parameters:
-      - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
           description: Найдено
@@ -166,7 +179,7 @@ paths:
   /api/articles/{id}/media:
     get:
       tags:
-      - Articles
+        - Articles
       summary: Медиа-данные статьи (локальные файлы и данные о видео)
       description: |
         Возвращает список медиа (assets) для статьи.  
@@ -184,10 +197,97 @@ paths:
                 $ref: '#/components/schemas/ArticleAssetsResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/articles/{id}/children:
+    get:
+      tags:
+        - Articles
+      summary: Дочерние статьи (фото, видео)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleChildrenResponse'
+              examples:
+                ok:
+                  value:
+                    id: 123
+                    total: 2
+                    limit: 20
+                    offset: 0
+                    items:
+                      - id: 124
+                        source_id: 2
+                        title: https://t.me/channel/42
+                        link: https://t.me/channel/42
+                        description: null
+                        guid: tg:123456:42:1
+                        published_at: '2025-10-10T10:05:51Z'
+                        fetched_at: '2025-10-10T10:06:10Z'
+                        parent_article_id: 123
+                      - id: 125
+                        source_id: 2
+                        title: https://t.me/channel/42
+                        link: https://t.me/channel/42
+                        description: null
+                        guid: tg:123456:42:2
+                        published_at: '2025-10-10T10:05:52Z'
+                        fetched_at: '2025-10-10T10:06:11Z'
+                        parent_article_id: 123
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/articles/{id}/parent:
+    get:
+      tags:
+        - Articles
+      summary: Родительская статья
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleParentResponse'
+              examples:
+                with_parent:
+                  value:
+                    id: 124
+                    parent:
+                      id: 123
+                      source_id: 2
+                      title: "Основной пост с текстом"
+                      link: https://t.me/channel/42
+                      description: "Текст поста"
+                      guid: tg:123456:42
+                      published_at: '2025-10-10T10:05:50Z'
+                      fetched_at: '2025-10-10T10:06:00Z'
+                      parent_article_id: null
+                no_parent:
+                  value:
+                    id: 123
+                    parent: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
   /media/{path}:
     get:
       tags:
-      - Media
+        - Media
       summary: Выдача локальных медиафайлов
       parameters:
         - in: path
@@ -204,12 +304,332 @@ paths:
                 type: string
                 format: binary
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '404':
-            $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/NotFound'
+
+  /api/tg/auth/status:
+    get:
+      tags: [ TelegramAuth ]
+      summary: Получить текущий статус авторизации в Telegram
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/qr:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Начать/перегенерировать QR-логин
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                force:
+                  type: boolean
+                  description: "Создать новый QR, даже если старый ещё не истёк"
+                  default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/2fa:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Завершить авторизацию — отправить 2FA-пароль
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ password ]
+              properties:
+                password:
+                  type: string
+                  example: "mysupersecret"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '400':
+          description: Неверный пароль или некорректное тело запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/logout:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Выйти из Telegram-аккаунта и сбросить сессию
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/auth/register:
+    post:
+      operationId: auth_register
+      summary: Регистрация пользователя и первичная отправка кода подтверждения
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterRequest' }
+      responses:
+        "201":
+          description: Код сгенерирован, пользователь создан в статусе inactive
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterPendingResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "409": { description: Email или login заняты, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок на жизнь кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/resend:
+    post:
+      operationId: auth_register_resend
+      summary: Переотправка кода подтверждения e-mail
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterResendRequest' }
+      responses:
+        "200":
+          description: Код переотправлен / уже подтверждён
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterResendResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/confirm:
+    post:
+      operationId: auth_register_confirm
+      summary: Подтверждение e-mail кодом
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterConfirmRequest' }
+      responses:
+        "200":
+          description: Подтверждён / уже подтверждён
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterConfirmResponse' }
+        "400": { description: Неверный/просроченный код или нет активного кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит попыток ввода кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/status:
+    get:
+      operationId: auth_register_status
+      summary: Статус подтверждения регистрации
+      tags: [ Authorization ]
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema: { type: string, format: email }
+      responses:
+        "200":
+          description: Текущий статус регистрации
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterStatusResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/login:
+    post:
+      operationId: auth_login
+      summary: Вход по login/email и паролю (серверные сессии)
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthLoginRequest' }
+      responses:
+        "200":
+          description: Успешный вход, возвращён bearer-токен
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthLoginResponse' }
+        "400": { description: Ошибка валидации/отсутствуют поля, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "401": { description: Неверные учётные данные, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "403": { description: Email не подтверждён, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/logout:
+    post:
+      operationId: auth_logout
+      summary: Выход (ревокация текущей сессии)
+      tags: [ Authorization ]
+      security: [ { bearerAuth: [ ] } ]
+      responses:
+        "200":
+          description: Сессия отозвана или была отозвана ранее
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LogoutResponse' }
+        "401": { description: Неавторизован/невалидная сессия, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/whoami:
+    get:
+      operationId: auth_whoami
+      summary: Текущий пользователь по bearer-токену
+      tags: [ Authorization ]
+      security: [ { bearerAuth: [ ] } ]
+      responses:
+        "200":
+          description: Профиль авторизованного пользователя
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WhoAmIResponse' }
+        "401": { description: Неавторизован/истёкшая/отозванная сессия, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "409": { description: Конфликт single-session (mismatch), content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/password/send-code:
+    post:
+      operationId: auth_password_send_code
+      summary: Отправка/переотправка кода на сброс пароля
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordSendCodeRequest' }
+      responses:
+        "200":
+          description: Код отправлен
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PasswordSendCodeResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/password/reset:
+    post:
+      operationId: auth_password_reset
+      summary: Подтверждение кода и установка нового пароля
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordResetRequest' }
+      responses:
+        "200":
+          description: Пароль изменён (активные сессии отозваны)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PasswordResetResponse' }
+        "400": { description: Неверный/просроченный код или нет активного кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит попыток ввода кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/settings:
+    get:
+      tags:
+        - Settings
+      summary: Список настроек
+      parameters:
+        - $ref: '#/components/parameters/SettingsCodes'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsList'
+              examples:
+                ok:
+                  value:
+                    - id: 1
+                      code: tg.enabled
+                      value: "1"
+                    - id: 2
+                      code: parser.interval
+                      value: "60"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Settings
+      summary: Создать или обновить настройку
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingUpdate'
+            examples:
+              sample:
+                value:
+                  code: tg.enabled
+                  value: "1"
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque token
   parameters:
     Id:
       name: id
@@ -251,32 +671,84 @@ components:
         type: integer
         minimum: 0
         default: 0
+    DateFrom:
+      name: date_from
+      in: query
+      required: false
+      description: >
+        Фильтр по дате публикации (поле `published_at`) с этой даты/времени включительно.
+        Поддерживаются форматы RFC 3339: `YYYY-MM-DDTHH:MM:SSZ|±HH:MM` и дата без времени `YYYY-MM-DD`.
+        Если передана только дата, интерпретируется как начало суток 00:00:00 в UTC.
+      schema:
+        type: string
+      examples:
+        date:
+          value: "2025-10-28"
+        datetime_z:
+          value: "2025-10-28T08:00:00Z"
+        datetime_offset:
+          value: "2025-10-28T11:00:00+03:00"
+    DateTo:
+      name: date_to
+      in: query
+      required: false
+      description: >
+        Верхняя граница фильтра по `published_at` включительно.
+        При дате без времени `YYYY-MM-DD` берётся конец суток 23:59:59.999999 (UTC).
+      schema:
+        type: string
+      examples:
+        date:
+          value: "2025-10-28"
+        datetime_z:
+          value: "2025-10-28T14:00:00Z"
+    Order:
+      name: order
+      in: query
+      required: false
+      description: >
+        Направление сортировки по `published_at`, затем по `id`.
+        По умолчанию убывание (`desc`).
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+    SettingsCodes:
+      name: codes
+      in: query
+      required: false
+      description: >
+        Список кодов настроек через запятую. Если не указан —
+        возвращаются все настройки.
+      schema:
+        type: string
+        example: "tg.enabled,parser.interval"
   schemas:
     Error:
       type: object
       required:
-      - error
+        - error
       properties:
         error:
           type: object
           required:
-          - code
-          - message
-          - request_id
+            - code
+            - message
+            - request_id
           properties:
             code:
               type: string
               description: Машинно-читабельный код ошибки
               enum:
-              - bad_request
-              - not_found
-              - conflict
-              - too_many_requests
-              - method_not_allowed
-              - not_implemented
-              - internal_error
-              - source_error
-              - parser_error
+                - bad_request
+                - not_found
+                - conflict
+                - too_many_requests
+                - method_not_allowed
+                - not_implemented
+                - internal_error
+                - source_error
+                - parser_error
               example: bad_request
             message:
               type: string
@@ -290,8 +762,8 @@ components:
     SourceCreate:
       type: object
       required:
-      - name
-      - rss_url
+        - name
+        - rss_url
       properties:
         name:
           type: string
@@ -306,15 +778,18 @@ components:
     Source:
       type: object
       required:
-      - id
-      - name
-      - rss_url
-      - enabled
-      - created_at
+        - id
+        - name
+        - type
+        - rss_url
+        - enabled
+        - created_at
       properties:
         id:
           type: integer
         name:
+          type: string
+        type:
           type: string
         rss_url:
           type: string
@@ -331,12 +806,13 @@ components:
     Article:
       type: object
       required:
-      - id
-      - source_id
-      - title
-      - link
-      - guid
-      - fetched_at
+        - id
+        - source_id
+        - title
+        - link
+        - guid
+        - fetched_at
+        - parent_article_id
       properties:
         id:
           type: integer
@@ -359,13 +835,16 @@ components:
         fetched_at:
           type: string
           description: UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        parent_article_id:
+          type: integer
+          description: ID родительской статьи (TG)
     ArticlesList:
       type: object
       required:
-      - total
-      - limit
-      - offset
-      - items
+        - total
+        - limit
+        - offset
+        - items
       properties:
         total:
           type: integer
@@ -389,6 +868,36 @@ components:
               - $ref: '#/components/schemas/AssetImage'
               - $ref: '#/components/schemas/AssetFile'
               - $ref: '#/components/schemas/AssetVideo'
+    ArticleChildrenResponse:
+      type: object
+      required: [id, total, limit, offset, items]
+      properties:
+        id:
+          type: integer
+          description: ID родительской статьи
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+    ArticleParentResponse:
+      type: object
+      required: [id, parent]
+      properties:
+        id:
+          type: integer
+          description: ID запрошенной статьи
+        parent:
+          allOf:
+            - $ref: '#/components/schemas/Article'
+          nullable: true
+          description: Родительская статья (null, если нет)
+
     AssetImage:
       type: object
       required: [type, file_url, mime, name]
@@ -442,6 +951,207 @@ components:
           nullable: true
           description: URL постера (обычно локальный `/media/...`), если сохранён
           example: /media/vk/-40316705/54155576/video_poster.jpg
+    TgAuthUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123456789
+        first_name:
+          type: string
+          nullable: true
+          example: Ivan
+        last_name:
+          type: string
+          nullable: true
+          example: Petrov
+        username:
+          type: string
+          nullable: true
+          example: ivanpetrov
+        phone:
+          type: string
+          nullable: true
+          example: "+79990000000"
+    TgAuthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ unauthorized, pending, password_required, authorized, expired, error ]
+          example: pending
+        qr_url:
+          type: string
+          nullable: true
+          description: "Ссылка tg://login?token=..., из которой фронт строит QR"
+          example: "tg://login?token=AAEAAABb..."
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: "RFC3339 время истечения QR-токена (UTC)"
+          example: "2025-10-27T12:00:00Z"
+        error:
+          type: string
+          nullable: true
+          example: bad_password
+        user:
+          $ref: '#/components/schemas/TgAuthUser'
+    AuthRegisterRequest:
+      type: object
+      required: [ email, login, password, password_confirm ]
+      properties:
+        email: { type: string, format: email, example: user@example.com }
+        login: { type: string, example: user123 }
+        password: { type: string, format: password, minLength: 8 }
+        password_confirm: { type: string, format: password }
+    AuthRegisterPendingResponse:
+      type: object
+      required: [ status, email, login, code_ttl_sec, send_count ]
+      properties:
+        status: { type: string, enum: [ pending ] }
+        email: { type: string, format: email }
+        login: { type: string }
+        code_ttl_sec: { type: integer, example: 900 }
+        send_count: { type: integer, example: 1 }
+
+    AuthRegisterConfirmRequest:
+      type: object
+      required: [ email, code ]
+      properties:
+        email: { type: string, format: email }
+        code: { type: string, example: "123456" }
+    AuthRegisterConfirmResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ confirmed, already_confirmed ] }
+
+    AuthRegisterResendRequest:
+      type: object
+      required: [ email ]
+      properties:
+        email: { type: string, format: email }
+    AuthRegisterResendResponse:
+      type: object
+      required: [ status, send_count, code_ttl_sec ]
+      properties:
+        status: { type: string, enum: [ resent, already_confirmed ] }
+        send_count: { type: integer }
+        code_ttl_sec: { type: integer }
+
+    AuthRegisterStatusResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status:
+          type: string
+          enum: [ pending, confirmed ]
+        code:
+          nullable: true
+          type: object
+          properties:
+            send_count: { type: integer }
+            input_count: { type: integer }
+            ttl_sec: { type: integer }
+
+    AuthLoginRequest:
+      type: object
+      required: [ password ]
+      properties:
+        login: { type: string, description: "Либо login, либо email" }
+        email: { type: string, format: email, description: "Либо email, либо login" }
+        password: { type: string, format: password }
+        remember: { type: boolean, default: false }
+    AuthLoginResponse:
+      type: object
+      required: [ access_token, token_type, expires_at ]
+      properties:
+        access_token: { type: string, description: "Opaque bearer token" }
+        token_type: { type: string, example: bearer }
+        expires_at: { type: string, format: date-time, example: 2025-10-30T09:00:00Z }
+
+    WhoAmIResponse:
+      type: object
+      required: [ id, email, login, is_active ]
+      properties:
+        id: { type: integer }
+        email: { type: string, format: email }
+        login: { type: string }
+        is_active: { type: boolean }
+        email_confirmed_at: { type: string, format: date-time, nullable: true }
+        last_login_at: { type: string, format: date-time, nullable: true }
+        last_login_ip: { type: string, nullable: true }
+
+    LogoutResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ revoked, already_revoked ] }
+
+    PasswordSendCodeRequest:
+      type: object
+      required: [ email ]
+      properties:
+        email: { type: string, format: email }
+    PasswordSendCodeResponse:
+      type: object
+      required: [ status, code_ttl_sec ]
+      properties:
+        status: { type: string, enum: [ sent ] }
+        code_ttl_sec: { type: integer }
+
+    PasswordResetRequest:
+      type: object
+      required: [ email, code, new_password, new_password_confirm ]
+      properties:
+        email: { type: string, format: email }
+        code: { type: string, example: "123456" }
+        new_password: { type: string, format: password, minLength: 8 }
+        new_password_confirm: { type: string, format: password }
+    PasswordResetResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ password_changed ] }
+
+    Setting:
+      type: object
+      required:
+        - id
+        - code
+        - value
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Код настройки (уникальный)
+          example: tg.enabled
+        value:
+          type: string
+          description: Строковое значение настройки
+          example: "1"
+
+    SettingsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Setting'
+
+    SettingUpdate:
+      type: object
+      required:
+        - code
+        - value
+      properties:
+        code:
+          type: string
+          minLength: 1
+          example: tg.enabled
+        value:
+          type: string
+          example: "1"
+
   responses:
     BadRequest:
       description: Неверные данные

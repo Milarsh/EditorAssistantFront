@@ -1,7 +1,8 @@
 import { FileDown, RefreshCw } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
-import { MOCK_ARTICLES } from '@/shared/mock/atricle'
+import { useArticlesList } from '@/entities/articles/lib/use-articles-list'
+import { ArticlesListParamsOrderEnum } from '@/shared/api'
 import { ArticleCard } from '@/shared/ui/article-card'
 import { Button } from '@/shared/ui/button'
 import { TextField } from '@/shared/ui/input'
@@ -20,20 +21,12 @@ export const NewsFeed = ({
   const [search, setSearch] = useState('')
   const [sortAsc, setSortAsc] = useState(true)
 
-  const filtered = useMemo(() => {
-    return MOCK_ARTICLES.filter(
-      (a) =>
-        category === 'all' ||
-        a.description?.includes(category) ||
-        a.title.includes(category),
-    )
-      .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()))
-      .sort((a, b) =>
-        sortAsc
-          ? (a.published_at ?? '').localeCompare(b.published_at ?? '')
-          : (b.published_at ?? '').localeCompare(a.published_at ?? ''),
-      )
-  }, [category, search, sortAsc])
+  const { data } = useArticlesList({
+    order: sortAsc
+      ? ArticlesListParamsOrderEnum.Asc
+      : ArticlesListParamsOrderEnum.Desc,
+  })
+  const articles = data?.items || []
 
   return (
     <div className="vertical w-full gap-6 px-4">
@@ -80,8 +73,8 @@ export const NewsFeed = ({
       />
 
       <div className="flex flex-col gap-4">
-        {filtered.length > 0 ? (
-          filtered.map((article) => (
+        {articles.length > 0 ? (
+          articles.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))
         ) : (

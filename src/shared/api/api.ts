@@ -40,6 +40,7 @@ export interface SourceCreate {
 export interface Source {
   id: number
   name: string
+  type: string
   /** @format uri */
   rss_url: string
   enabled: boolean
@@ -61,6 +62,8 @@ export interface Article {
   published_at?: string | null
   /** UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]" */
   fetched_at: string
+  /** ID родительской статьи (TG) */
+  parent_article_id: number
 }
 
 export interface ArticlesList {
@@ -74,6 +77,22 @@ export interface ArticleAssetsResponse {
   /** @example 327 */
   id: number
   assets: (AssetImage | AssetFile | AssetVideo)[]
+}
+
+export interface ArticleChildrenResponse {
+  /** ID родительской статьи */
+  id: number
+  total: number
+  limit: number
+  offset: number
+  items: Article[]
+}
+
+export interface ArticleParentResponse {
+  /** ID запрошенной статьи */
+  id: number
+  /** Родительская статья (null, если нет) */
+  parent: Article | null
 }
 
 export interface AssetImage {
@@ -118,6 +137,194 @@ export interface AssetVideo {
   poster?: string | null
 }
 
+export interface TgAuthUser {
+  /** @example 123456789 */
+  id?: number
+  /** @example "Ivan" */
+  first_name?: string | null
+  /** @example "Petrov" */
+  last_name?: string | null
+  /** @example "ivanpetrov" */
+  username?: string | null
+  /** @example "+79990000000" */
+  phone?: string | null
+}
+
+export interface TgAuthStatus {
+  /** @example "pending" */
+  status?: TgAuthStatusStatusEnum
+  /**
+   * Ссылка tg://login?token=..., из которой фронт строит QR
+   * @example "tg://login?token=AAEAAABb..."
+   */
+  qr_url?: string | null
+  /**
+   * RFC3339 время истечения QR-токена (UTC)
+   * @format date-time
+   * @example "2025-10-27T12:00:00Z"
+   */
+  expires_at?: string | null
+  /** @example "bad_password" */
+  error?: string | null
+  user?: TgAuthUser
+}
+
+export interface AuthRegisterRequest {
+  /**
+   * @format email
+   * @example "user@example.com"
+   */
+  email: string
+  /** @example "user123" */
+  login: string
+  /**
+   * @format password
+   * @minLength 8
+   */
+  password: string
+  /** @format password */
+  password_confirm: string
+}
+
+export interface AuthRegisterPendingResponse {
+  status: AuthRegisterPendingResponseStatusEnum
+  /** @format email */
+  email: string
+  login: string
+  /** @example 900 */
+  code_ttl_sec: number
+  /** @example 1 */
+  send_count: number
+}
+
+export interface AuthRegisterConfirmRequest {
+  /** @format email */
+  email: string
+  /** @example "123456" */
+  code: string
+}
+
+export interface AuthRegisterConfirmResponse {
+  status: AuthRegisterConfirmResponseStatusEnum
+}
+
+export interface AuthRegisterResendRequest {
+  /** @format email */
+  email: string
+}
+
+export interface AuthRegisterResendResponse {
+  status: AuthRegisterResendResponseStatusEnum
+  send_count: number
+  code_ttl_sec: number
+}
+
+export interface AuthRegisterStatusResponse {
+  status: AuthRegisterStatusResponseStatusEnum
+  code?: {
+    send_count?: number
+    input_count?: number
+    ttl_sec?: number
+  } | null
+}
+
+export interface AuthLoginRequest {
+  /** Либо login, либо email */
+  login?: string
+  /**
+   * Либо email, либо login
+   * @format email
+   */
+  email?: string
+  /** @format password */
+  password: string
+  /** @default false */
+  remember?: boolean
+}
+
+export interface AuthLoginResponse {
+  /** Opaque bearer token */
+  access_token: string
+  /** @example "bearer" */
+  token_type: string
+  /**
+   * @format date-time
+   * @example "2025-10-30T09:00:00Z"
+   */
+  expires_at: string
+}
+
+export interface WhoAmIResponse {
+  id: number
+  /** @format email */
+  email: string
+  login: string
+  is_active: boolean
+  /** @format date-time */
+  email_confirmed_at?: string | null
+  /** @format date-time */
+  last_login_at?: string | null
+  last_login_ip?: string | null
+}
+
+export interface LogoutResponse {
+  status: LogoutResponseStatusEnum
+}
+
+export interface PasswordSendCodeRequest {
+  /** @format email */
+  email: string
+}
+
+export interface PasswordSendCodeResponse {
+  status: PasswordSendCodeResponseStatusEnum
+  code_ttl_sec: number
+}
+
+export interface PasswordResetRequest {
+  /** @format email */
+  email: string
+  /** @example "123456" */
+  code: string
+  /**
+   * @format password
+   * @minLength 8
+   */
+  new_password: string
+  /** @format password */
+  new_password_confirm: string
+}
+
+export interface PasswordResetResponse {
+  status: PasswordResetResponseStatusEnum
+}
+
+export interface Setting {
+  id: number
+  /**
+   * Код настройки (уникальный)
+   * @example "tg.enabled"
+   */
+  code: string
+  /**
+   * Строковое значение настройки
+   * @example "1"
+   */
+  value: string
+}
+
+export type SettingsList = Setting[]
+
+export interface SettingUpdate {
+  /**
+   * @minLength 1
+   * @example "tg.enabled"
+   */
+  code: string
+  /** @example "1" */
+  value: string
+}
+
 /**
  * Машинно-читабельный код ошибки
  * @example "bad_request"
@@ -146,6 +353,57 @@ export enum AssetVideoTypeEnum {
   Video = 'video',
 }
 
+/** @example "pending" */
+export enum TgAuthStatusStatusEnum {
+  Unauthorized = 'unauthorized',
+  Pending = 'pending',
+  PasswordRequired = 'password_required',
+  Authorized = 'authorized',
+  Expired = 'expired',
+  Error = 'error',
+}
+
+export enum AuthRegisterPendingResponseStatusEnum {
+  Pending = 'pending',
+}
+
+export enum AuthRegisterConfirmResponseStatusEnum {
+  Confirmed = 'confirmed',
+  AlreadyConfirmed = 'already_confirmed',
+}
+
+export enum AuthRegisterResendResponseStatusEnum {
+  Resent = 'resent',
+  AlreadyConfirmed = 'already_confirmed',
+}
+
+export enum AuthRegisterStatusResponseStatusEnum {
+  Pending = 'pending',
+  Confirmed = 'confirmed',
+}
+
+export enum LogoutResponseStatusEnum {
+  Revoked = 'revoked',
+  AlreadyRevoked = 'already_revoked',
+}
+
+export enum PasswordSendCodeResponseStatusEnum {
+  Sent = 'sent',
+}
+
+export enum PasswordResetResponseStatusEnum {
+  PasswordChanged = 'password_changed',
+}
+
+/**
+ * Направление сортировки по `published_at`, затем по `id`. По умолчанию убывание (`desc`).
+ * @default "desc"
+ */
+export enum ArticlesListParamsOrderEnum {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -157,8 +415,10 @@ import axios from 'axios'
 
 export type QueryParamsType = Record<string | number, any>
 
-export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
+export interface FullRequestParams extends Omit<
+  AxiosRequestConfig,
+  'data' | 'params' | 'url' | 'responseType'
+> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean
   /** request path */
@@ -178,8 +438,10 @@ export type RequestParams = Omit<
   'body' | 'method' | 'query' | 'path'
 >
 
-export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
+export interface ApiConfig<SecurityDataType = unknown> extends Omit<
+  AxiosRequestConfig,
+  'data' | 'cancelToken'
+> {
   securityWorker?: (
     securityData: SecurityDataType | null,
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void
@@ -411,21 +673,11 @@ export class Api<
      *
      * @tags Articles
      * @name ArticlesList
-     * @summary Список новостей
+     * @summary Список статей
      * @request GET:/api/articles
      */
     articlesList: (
       query?: {
-        /**
-         * Фильтр по источнику
-         * @min 1
-         */
-        source_id?: number
-        /**
-         * Поиск по заголовку/описанию (ILIKE)
-         * @maxLength 200
-         */
-        q?: string
         /**
          * @min 1
          * @max 100
@@ -437,10 +689,29 @@ export class Api<
          * @default 0
          */
         offset?: number
+        /**
+         * Фильтр по источнику
+         * @min 1
+         */
+        source_id?: number
+        /**
+         * Поиск по заголовку/описанию (ILIKE)
+         * @maxLength 200
+         */
+        q?: string
+        /** Фильтр по дате публикации (поле `published_at`) с этой даты/времени включительно. Поддерживаются форматы RFC 3339: `YYYY-MM-DDTHH:MM:SSZ|±HH:MM` и дата без времени `YYYY-MM-DD`. Если передана только дата, интерпретируется как начало суток 00:00:00 в UTC. */
+        date_from?: string
+        /** Верхняя граница фильтра по `published_at` включительно. При дате без времени `YYYY-MM-DD` берётся конец суток 23:59:59.999999 (UTC). */
+        date_to?: string
+        /**
+         * Направление сортировки по `published_at`, затем по `id`. По умолчанию убывание (`desc`).
+         * @default "desc"
+         */
+        order?: ArticlesListParamsOrderEnum
       },
       params: RequestParams = {},
     ) =>
-      this.request<ArticlesList, Error>({
+      this.request<ArticlesList, any>({
         path: `/api/articles`,
         method: 'GET',
         query: query,
@@ -476,6 +747,361 @@ export class Api<
       this.request<ArticleAssetsResponse, Error>({
         path: `/api/articles/${id}/media`,
         method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
+     * @name ArticlesChildrenList
+     * @summary Дочерние статьи (фото, видео)
+     * @request GET:/api/articles/{id}/children
+     */
+    articlesChildrenList: (
+      id: number,
+      query?: {
+        /**
+         * @min 1
+         * @max 100
+         * @default 20
+         */
+        limit?: number
+        /**
+         * @min 0
+         * @default 0
+         */
+        offset?: number
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ArticleChildrenResponse, Error>({
+        path: `/api/articles/${id}/children`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
+     * @name ArticlesParentList
+     * @summary Родительская статья
+     * @request GET:/api/articles/{id}/parent
+     */
+    articlesParentList: (id: number, params: RequestParams = {}) =>
+      this.request<ArticleParentResponse, Error>({
+        path: `/api/articles/${id}/parent`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TelegramAuth
+     * @name TgAuthStatusList
+     * @summary Получить текущий статус авторизации в Telegram
+     * @request GET:/api/tg/auth/status
+     */
+    tgAuthStatusList: (params: RequestParams = {}) =>
+      this.request<TgAuthStatus, Error>({
+        path: `/api/tg/auth/status`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TelegramAuth
+     * @name TgAuthQrCreate
+     * @summary Начать/перегенерировать QR-логин
+     * @request POST:/api/tg/auth/qr
+     */
+    tgAuthQrCreate: (
+      data?: {
+        /**
+         * Создать новый QR, даже если старый ещё не истёк
+         * @default false
+         */
+        force?: boolean
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TgAuthStatus, Error>({
+        path: `/api/tg/auth/qr`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TelegramAuth
+     * @name TgAuth2FaCreate
+     * @summary Завершить авторизацию — отправить 2FA-пароль
+     * @request POST:/api/tg/auth/2fa
+     */
+    tgAuth2FaCreate: (
+      data: {
+        /** @example "mysupersecret" */
+        password: string
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TgAuthStatus, Error>({
+        path: `/api/tg/auth/2fa`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TelegramAuth
+     * @name TgAuthLogoutCreate
+     * @summary Выйти из Telegram-аккаунта и сбросить сессию
+     * @request POST:/api/tg/auth/logout
+     */
+    tgAuthLogoutCreate: (params: RequestParams = {}) =>
+      this.request<TgAuthStatus, Error>({
+        path: `/api/tg/auth/logout`,
+        method: 'POST',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthRegister
+     * @summary Регистрация пользователя и первичная отправка кода подтверждения
+     * @request POST:/api/auth/register
+     */
+    authRegister: (data: AuthRegisterRequest, params: RequestParams = {}) =>
+      this.request<AuthRegisterPendingResponse, Error>({
+        path: `/api/auth/register`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthRegisterResend
+     * @summary Переотправка кода подтверждения e-mail
+     * @request POST:/api/auth/register/resend
+     */
+    authRegisterResend: (
+      data: AuthRegisterResendRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<AuthRegisterResendResponse, Error>({
+        path: `/api/auth/register/resend`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthRegisterConfirm
+     * @summary Подтверждение e-mail кодом
+     * @request POST:/api/auth/register/confirm
+     */
+    authRegisterConfirm: (
+      data: AuthRegisterConfirmRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<AuthRegisterConfirmResponse, Error>({
+        path: `/api/auth/register/confirm`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthRegisterStatus
+     * @summary Статус подтверждения регистрации
+     * @request GET:/api/auth/register/status
+     */
+    authRegisterStatus: (
+      query: {
+        /** @format email */
+        email: string
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<AuthRegisterStatusResponse, Error>({
+        path: `/api/auth/register/status`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthLogin
+     * @summary Вход по login/email и паролю (серверные сессии)
+     * @request POST:/api/auth/login
+     */
+    authLogin: (data: AuthLoginRequest, params: RequestParams = {}) =>
+      this.request<AuthLoginResponse, Error>({
+        path: `/api/auth/login`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthLogout
+     * @summary Выход (ревокация текущей сессии)
+     * @request POST:/api/auth/logout
+     * @secure
+     */
+    authLogout: (params: RequestParams = {}) =>
+      this.request<LogoutResponse, Error>({
+        path: `/api/auth/logout`,
+        method: 'POST',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthWhoami
+     * @summary Текущий пользователь по bearer-токену
+     * @request GET:/api/auth/whoami
+     * @secure
+     */
+    authWhoami: (params: RequestParams = {}) =>
+      this.request<WhoAmIResponse, Error>({
+        path: `/api/auth/whoami`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthPasswordSendCode
+     * @summary Отправка/переотправка кода на сброс пароля
+     * @request POST:/api/auth/password/send-code
+     */
+    authPasswordSendCode: (
+      data: PasswordSendCodeRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<PasswordSendCodeResponse, Error>({
+        path: `/api/auth/password/send-code`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authorization
+     * @name AuthPasswordReset
+     * @summary Подтверждение кода и установка нового пароля
+     * @request POST:/api/auth/password/reset
+     */
+    authPasswordReset: (
+      data: PasswordResetRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<PasswordResetResponse, Error>({
+        path: `/api/auth/password/reset`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Settings
+     * @name SettingsList
+     * @summary Список настроек
+     * @request GET:/api/settings
+     */
+    settingsList: (
+      query?: {
+        /**
+         * Список кодов настроек через запятую. Если не указан — возвращаются все настройки.
+         * @example "tg.enabled,parser.interval"
+         */
+        codes?: string
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SettingsList, Error>({
+        path: `/api/settings`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Settings
+     * @name SettingsCreate
+     * @summary Создать или обновить настройку
+     * @request POST:/api/settings
+     */
+    settingsCreate: (data: SettingUpdate, params: RequestParams = {}) =>
+      this.request<Setting, Error>({
+        path: `/api/settings`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
