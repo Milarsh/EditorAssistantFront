@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 
 import type { ArticlesListParams } from '../model'
-import { articlesListQueryKeys } from './article-query-leys'
+import { articlesQueryKeys } from './article-query-keys.ts'
 
 export const useArticlesList = (params?: ArticlesListParams) =>
   useQuery({
-    ...articlesListQueryKeys.list(params),
+    ...articlesQueryKeys.list(params),
   })

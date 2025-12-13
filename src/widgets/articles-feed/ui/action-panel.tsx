@@ -10,7 +10,6 @@ const controlButton = tv({
   },
 })
 
-
 export const ActionPanel = ({
   onOpenFilter,
   sortAsc,

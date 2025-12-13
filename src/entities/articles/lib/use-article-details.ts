@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 
 import type { RequestParams } from '@/shared/api'
 
-import { articlesListQueryKeys } from './article-query-leys'
+import { articlesQueryKeys } from './article-query-keys.ts'
 
 export const useArticleDetails = (id: number, params?: RequestParams) =>
   useQuery({
-    ...articlesListQueryKeys.details(id, params),
+    ...articlesQueryKeys.details(id, params),
   })

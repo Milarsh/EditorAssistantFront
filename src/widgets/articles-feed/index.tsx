@@ -1,14 +1,13 @@
 import { FileDown, RefreshCw } from 'lucide-react'
-import { useState } from 'react'
 
+import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
 import { useArticlesList } from '@/entities/articles/lib/use-articles-list'
-import { ArticlesListParamsOrderEnum } from '@/shared/api'
 import { ArticleCard } from '@/shared/ui/article-card'
 import { Button } from '@/shared/ui/button'
 import { TextField } from '@/shared/ui/input'
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
-import { ActionPanel } from '@/widgets/news-feed/ui/action-panel'
+import { ActionPanel } from '@/widgets/articles-feed/ui/action-panel'
 
 const categories = ['all', 'Разработка', 'Дизайн', 'Маркетинг', 'Менеджмент']
 
@@ -17,15 +16,10 @@ export const NewsFeed = ({
 }: {
   handleOpenFilter: () => void
 }) => {
-  const [category, setCategory] = useState('all')
-  const [search, setSearch] = useState('')
-  const [sortAsc, setSortAsc] = useState(true)
+  const { category, search, order, setCategory, setSearch, toggleOrder } =
+    useArticlesFeedStore()
 
-  const { data } = useArticlesList({
-    order: sortAsc
-      ? ArticlesListParamsOrderEnum.Asc
-      : ArticlesListParamsOrderEnum.Desc,
-  })
+  const { data } = useArticlesList({ order })
   const articles = data?.items || []
 
   return (
@@ -68,8 +62,8 @@ export const NewsFeed = ({
 
       <ActionPanel
         onOpenFilter={handleOpenFilter}
-        sortAsc={sortAsc}
-        onToggleSort={() => setSortAsc((s) => !s)}
+        sortAsc={false}
+        onToggleSort={toggleOrder}
       />
 
       <div className="flex flex-col gap-4">

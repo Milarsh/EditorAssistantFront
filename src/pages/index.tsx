@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
 import { Header } from '@/shared/ui/header'
-import { LeftSidePanel } from '@/widgets/left-side-panel'
-import { NewsFeed } from '@/widgets/news-feed'
+import { NewsFeed } from '@/widgets/articles-feed'
 import { SidebarFilter } from '@/widgets/sidebar-filter'
+import { SourcesPanel } from '@/widgets/sources-panel'
 
 export const MainPage = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false)
@@ -12,7 +12,7 @@ export const MainPage = () => {
     <main className="vertical h-screen">
       <Header />
       <div className="flex overflow-hidden">
-        <LeftSidePanel />
+        <SourcesPanel />
         <div className="w-full overflow-y-auto">
           <NewsFeed handleOpenFilter={() => setIsOpenFilter(true)} />
         </div>

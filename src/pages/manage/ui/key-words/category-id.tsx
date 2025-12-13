@@ -1,18 +1,17 @@
 import { useRouter } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
-import { List, type ListItemProps } from '@/pages/manage'
 import { Typography } from '@/shared/ui/typography'
 
 import { ManagerWrapper } from '../manager-wrapper'
-
-const MOCK_SOURCES: ListItemProps[] = [
-  { name: 'Риа Новости', newsCount: 1 },
-  { name: 'Тасс', newsCount: 10 },
-  { name: 'Комерсантъ', newsCount: 10 },
-  { name: 'Telegram News', newsCount: 10 },
-  { name: 'Паблик цитатник', newsCount: 10 },
-]
+//
+// const MOCK_SOURCES: SourceListItemProps[] = [
+//   { name: 'Риа Новости', newsCount: 1 },
+//   { name: 'Тасс', newsCount: 10 },
+//   { name: 'Комерсантъ', newsCount: 10 },
+//   { name: 'Telegram News', newsCount: 10 },
+//   { name: 'Паблик цитатник', newsCount: 10 },
+// ]
 
 export const CategoryIdHeader = ({ title }: { title: string }) => {
   const { history } = useRouter()
@@ -46,7 +45,7 @@ export const KeyWordsCategoryId = () => {
       handleAdd={undefined}
     >
       <div className="w-full bg-[#F8FAFC] p-5">
-        <List listData={MOCK_SOURCES} />
+        {/* <List listData={MOCK_SOURCES} /> */}
       </div>
     </ManagerWrapper>
   )

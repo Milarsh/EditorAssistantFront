@@ -5,9 +5,9 @@ import { httpClient } from '@/shared/api/http-client'
 
 import type { ArticlesListParams } from '../model'
 
-export const articlesListQueryKeys = createQueryKeys('article', {
+export const articlesQueryKeys = createQueryKeys('article', {
   list: (params?: ArticlesListParams) => ({
-    queryKey: ['articles', 'list', params],
+    queryKey: ['articles', params],
     queryFn: () => httpClient.api.articlesList(params).then((res) => res.data),
   }),
   details: (id: number, params?: RequestParams) => ({
