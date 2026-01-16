@@ -13,7 +13,7 @@ import { useSourceCreate } from '../../lib/use-source-create.ts'
 const initialValues: SourceCreate = {
   name: '',
   rss_url: '',
-  enabled: false,
+  enabled: true,
 }
 
 export const SourceCreateForm = () => {
