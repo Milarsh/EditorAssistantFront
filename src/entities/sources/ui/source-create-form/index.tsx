@@ -13,7 +13,6 @@ import { useSourceCreate } from '../../lib/use-source-create.ts'
 const initialValues: SourceCreate = {
   name: '',
   rss_url: '',
-  enabled: false,
 }
 
 export const SourceCreateForm = () => {
@@ -23,7 +22,7 @@ export const SourceCreateForm = () => {
     <BaseForm<SourceCreate>
       initialValues={initialValues}
       onSubmit={mutate}
-      className="mt-6 flex flex-col gap-3 border-t border-slate-300 pt-4"
+      className="vertical mt-6 gap-3 border-t border-slate-300 pt-4"
       render={({ values, handleChange }) => (
         <>
           <Typography variant="h3">Добавить источник</Typography>

@@ -62,16 +62,16 @@ const ProfileForm = () => {
           </div>
 
           <div className="space-y-4">
-            <div>
-              <Typography variant="body">Полное имя</Typography>
-              <TextField
-                name="name"
-                value={values.name}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                className="w-full"
-              />
-            </div>
+            {/* <div> */}
+            {/*  <Typography variant="body">Полное имя</Typography> */}
+            {/*  <TextField */}
+            {/*    name="name" */}
+            {/*    value={values.name} */}
+            {/*    onChange={handleChange} */}
+            {/*    readOnly={!isEditing} */}
+            {/*    className="w-full" */}
+            {/*  /> */}
+            {/* </div> */}
 
             <div>
               <Typography variant="body">Email</Typography>

@@ -14,7 +14,7 @@ const rootElement = document.getElementById('app')
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10000,
+      staleTime: 1500,
     },
   },
 })
