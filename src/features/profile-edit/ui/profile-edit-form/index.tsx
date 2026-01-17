@@ -12,7 +12,7 @@ type ProfileFormProps = {
   }
 }
 
-export const ProfileForm = ({ initValues }: ProfileFormProps) => {
+export const ProfileEditForm = ({ initValues }: ProfileFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (

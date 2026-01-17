@@ -39,7 +39,7 @@ export const HeaderMenu: FC = () => {
   useClickOutside<HTMLDivElement>(menuRef, () => setOpen(false))
 
   return (
-    <div className="relative">
+    <div className="flex-center relative">
       <button type="button" onClick={() => setOpen((o) => !o)}>
         <Menu />
       </button>

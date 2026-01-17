@@ -1,4 +1,4 @@
-import { ProfileCard } from '@/features/edit-profile/ui'
+import { ProfileCard } from '@/features/profile-edit/ui'
 import { Header } from '@/shared/ui/header'
 
 export const ProfilePage = () => {

@@ -3,9 +3,9 @@ import { useRouter } from '@tanstack/react-router'
 import { useUserInfo } from '@/entities/user/lib'
 import { useAuthStore } from '@/features/auth/store'
 import { Button } from '@/shared/ui/button'
-import { Spinner } from '@/shared/ui/spinner'
+import { Typography } from '@/shared/ui/typography'
 
-import { ProfileForm } from './profile-form'
+import { ProfileEditForm } from './profile-edit-form'
 
 const ProfileCardTop = () => {
   const { navigate } = useRouter()
@@ -20,8 +20,8 @@ const ProfileCardTop = () => {
   return (
     <div className="mb-8 flex items-center justify-between">
       <div>
-        <h2 className="text-lg font-semibold text-gray-800">{user?.login}</h2>
-        <p className="text-sm text-gray-500">{user?.email}</p>
+        <Typography variant="h2">{user?.login}</Typography>
+        <Typography variant="body">{user?.email}</Typography>
       </div>
       <Button size="xs" onClick={handleLogout}>
         Выйти из аккаунта
@@ -34,7 +34,7 @@ export const ProfileCard = () => {
   const { data: user } = useUserInfo()
 
   if (!user) {
-    return <Spinner className="size-10" />
+    return <div className="size-10">Загрузка</div>
   }
 
   return (
@@ -44,7 +44,7 @@ export const ProfileCard = () => {
           shadow-sm"
       >
         <ProfileCardTop />
-        <ProfileForm
+        <ProfileEditForm
           initValues={{
             login: user.login || '',
             email: user.email || '',
