@@ -16,4 +16,15 @@ export const setupInterceptors = (httpClient: Api<unknown>) => {
     },
     (error) => Promise.reject(error),
   )
+  httpClient.instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        useAuthStore.getState().actions.logout?.()
+        window.location.href = '/login'
+      }
+
+      return Promise.reject(error)
+    },
+  )
 }

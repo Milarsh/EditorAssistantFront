@@ -26,7 +26,7 @@ export const Header: FC<Props> = ({
       </div>
 
       {!hideUser && (
-        <Link to="/personal">
+        <Link to="/profile">
           <Typography variant="body">{user?.login}</Typography>
         </Link>
       )}

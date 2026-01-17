@@ -13,7 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
-import { Route as AuthPersonalRouteImport } from './routes/_auth/personal'
+import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index'
 import { Route as AuthSettingsSurveyFrequencyRouteImport } from './routes/_auth/settings/survey-frequency'
@@ -46,9 +46,9 @@ const AuthSettingsRoute = AuthSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthPersonalRoute = AuthPersonalRouteImport.update({
-  id: '/personal',
-  path: '/personal',
+const AuthProfileRoute = AuthProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthSettingsIndexRoute = AuthSettingsIndexRouteImport.update({
@@ -118,7 +118,7 @@ const AuthManageKeyWordsCategoryIdRoute =
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/personal': typeof AuthPersonalRoute
+  '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRouteWithChildren
   '/': typeof AuthIndexRoute
   '/article/$id': typeof AuthArticleIdRoute
@@ -136,7 +136,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/personal': typeof AuthPersonalRoute
+  '/profile': typeof AuthProfileRoute
   '/': typeof AuthIndexRoute
   '/article/$id': typeof AuthArticleIdRoute
   '/manage/categories': typeof AuthManageCategoriesRoute
@@ -155,7 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/personal': typeof AuthPersonalRoute
+  '/_auth/profile': typeof AuthProfileRoute
   '/_auth/settings': typeof AuthSettingsRouteWithChildren
   '/_auth/': typeof AuthIndexRoute
   '/_auth/article/$id': typeof AuthArticleIdRoute
@@ -175,7 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/login'
-    | '/personal'
+    | '/profile'
     | '/settings'
     | '/'
     | '/article/$id'
@@ -193,7 +193,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/personal'
+    | '/profile'
     | '/'
     | '/article/$id'
     | '/manage/categories'
@@ -211,7 +211,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/login'
-    | '/_auth/personal'
+    | '/_auth/profile'
     | '/_auth/settings'
     | '/_auth/'
     | '/_auth/article/$id'
@@ -263,11 +263,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSettingsRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/personal': {
-      id: '/_auth/personal'
-      path: '/personal'
-      fullPath: '/personal'
-      preLoaderRoute: typeof AuthPersonalRouteImport
+    '/_auth/profile': {
+      id: '/_auth/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthProfileRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/settings/': {
@@ -376,7 +376,7 @@ const AuthSettingsRouteWithChildren = AuthSettingsRoute._addFileChildren(
 )
 
 interface AuthRouteChildren {
-  AuthPersonalRoute: typeof AuthPersonalRoute
+  AuthProfileRoute: typeof AuthProfileRoute
   AuthSettingsRoute: typeof AuthSettingsRouteWithChildren
   AuthIndexRoute: typeof AuthIndexRoute
   AuthArticleIdRoute: typeof AuthArticleIdRoute
@@ -390,7 +390,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthPersonalRoute: AuthPersonalRoute,
+  AuthProfileRoute: AuthProfileRoute,
   AuthSettingsRoute: AuthSettingsRouteWithChildren,
   AuthIndexRoute: AuthIndexRoute,
   AuthArticleIdRoute: AuthArticleIdRoute,
