@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
 import { Button } from '@/shared/ui/button'
-import { BaseForm } from '@/shared/ui/form-base'
-import { TextField } from '@/shared/ui/input'
+import { BaseForm } from '@/shared/ui/form/ui/form-base'
 import { Typography } from '@/shared/ui/typography'
 
 type ProfileFormProps = {
@@ -21,7 +20,7 @@ export const ProfileEditForm = ({ initValues }: ProfileFormProps) => {
       onSubmit={() => {
         setIsEditing(false)
       }}
-      render={({ values, handleChange }) => (
+      render={() => (
         <div className="border-t border-gray-200 pt-6">
           <div className="mb-4 flex items-center justify-between">
             <Typography variant="h3">Личная информация</Typography>
@@ -36,30 +35,30 @@ export const ProfileEditForm = ({ initValues }: ProfileFormProps) => {
             </Button>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <Typography variant="body">Email</Typography>
-              <TextField
-                type="email"
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                className="w-full"
-              />
-            </div>
+          {/* <div className="space-y-4"> */}
+          {/*  <div> */}
+          {/*    <Typography variant="body">Email</Typography> */}
+          {/*    <TextField */}
+          {/*      type="email" */}
+          {/*      name="email" */}
+          {/*      value={values.email} */}
+          {/*      onChange={handleChange} */}
+          {/*      readOnly={!isEditing} */}
+          {/*      className="w-full" */}
+          {/*    /> */}
+          {/*  </div> */}
 
-            <div>
-              <Typography variant="body">Логин</Typography>
-              <TextField
-                name="login"
-                value={values.login}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                className="w-full"
-              />
-            </div>
-          </div>
+          {/*  <div> */}
+          {/*    <Typography variant="body">Логин</Typography> */}
+          {/*    <TextField */}
+          {/*      name="login" */}
+          {/*      value={values.login} */}
+          {/*      onChange={handleChange} */}
+          {/*      readOnly={!isEditing} */}
+          {/*      className="w-full" */}
+          {/*    /> */}
+          {/*  </div> */}
+          {/* </div> */}
         </div>
       )}
     />

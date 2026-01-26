@@ -1,14 +1,14 @@
 import { type FC, useState } from 'react'
 
-import { useRegister } from '@/features/auth/lib/use-register'
 import type {
   AuthRegisterConfirmRequest,
   AuthRegisterRequest,
 } from '@/shared/api'
-import { BaseForm } from '@/shared/ui/form-base'
+import { FormWrapper } from '@/shared/ui/form/ui'
 
-import { useConfirmEmail } from '../../../lib/use-confirm-email'
-import { renderConfirmForm, renderRegisterForm } from './lib/render'
+import { confirmFormFieldsConfig, registerFormFieldsConfig } from '../../config'
+import { useConfirmEmail } from '../lib/use-confirm-email'
+import { useRegister } from '../lib/use-register'
 
 const registerInitialValues: AuthRegisterRequest = {
   email: '',
@@ -16,6 +16,11 @@ const registerInitialValues: AuthRegisterRequest = {
   password: '',
   password_confirm: '',
 }
+
+const getConfirmInitValues = (email: string) => ({
+  code: '',
+  email,
+})
 
 interface RegisterFormProps {
   onRegisterSuccess?: () => void
@@ -25,8 +30,10 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const [step, setStep] = useState<'register' | 'confirm'>('register')
   const [confirmEmail, setConfirmEmail] = useState('')
 
-  const { mutateAsync: register } = useRegister()
-  const { mutateAsync: confirm } = useConfirmEmail()
+  const { mutateAsync: register, normalizedError: registerNormalizedError } =
+    useRegister()
+  const { mutateAsync: confirm, normalizedError: confirmNormalizedError } =
+    useConfirmEmail()
 
   const handleRegister = async (data: AuthRegisterRequest) => {
     await register(data)
@@ -47,25 +54,21 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
 
   if (step === 'confirm') {
     return (
-      <BaseForm<AuthRegisterConfirmRequest>
-        key="confirm"
-        initialValues={{
-          code: '',
-          email: confirmEmail,
-        }}
+      <FormWrapper<AuthRegisterConfirmRequest>
+        formError={confirmNormalizedError}
+        fields={confirmFormFieldsConfig}
+        initialValue={getConfirmInitValues(confirmEmail)}
         onSubmit={handleConfirm}
-        className="vertical gap-4"
-        render={renderConfirmForm}
       />
     )
   }
 
   return (
-    <BaseForm<AuthRegisterRequest>
-      initialValues={registerInitialValues}
+    <FormWrapper<AuthRegisterRequest>
+      formError={registerNormalizedError}
+      fields={registerFormFieldsConfig}
+      initialValue={registerInitialValues}
       onSubmit={handleRegister}
-      className="vertical gap-4"
-      render={renderRegisterForm}
     />
   )
 }

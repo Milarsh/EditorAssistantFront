@@ -13,6 +13,7 @@ type Variant =
   | 'footnote'
   | 'footnote-bold'
   | 'caption'
+  | 'error'
 
 const classNamesMap: Record<Variant, string> = {
   h1: 'text-[2rem]/9.5 font-bold',
@@ -25,6 +26,7 @@ const classNamesMap: Record<Variant, string> = {
   footnote: 'text-sm font-normal',
   'footnote-bold': 'text-sm font-semibold',
   caption: 'text-xs font-normal',
+  error: 'text-xs font-normal text-red-500',
 }
 
 const componentsMap: Record<Variant, string> = {
@@ -38,6 +40,7 @@ const componentsMap: Record<Variant, string> = {
   footnote: 'span',
   'footnote-bold': 'span',
   caption: 'span',
+  error: 'span',
 }
 
 interface TypographyProps {

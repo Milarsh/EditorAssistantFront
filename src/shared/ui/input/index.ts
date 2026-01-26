@@ -1,3 +1,6 @@
 export * from './checkbox-group'
 export * from './radio-group'
+export * from './select'
+export * from './text-area'
 export * from './text-field'
+export * from './toggle'

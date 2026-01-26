@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/features/auth/store'
 
-import type { Api } from './api'
+import type { Api } from '../api'
 
 export const setupInterceptors = (httpClient: Api<unknown>) => {
   httpClient.instance.interceptors.request.use(
@@ -19,7 +19,9 @@ export const setupInterceptors = (httpClient: Api<unknown>) => {
   httpClient.instance.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401) {
+      const method = error.config?.method
+
+      if (error.response?.status === 401 && method === 'get') {
         useAuthStore.getState().actions.logout?.()
         window.location.href = '/login'
       }

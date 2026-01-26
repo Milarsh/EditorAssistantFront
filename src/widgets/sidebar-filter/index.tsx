@@ -1,21 +1,65 @@
-import { type FC, useState } from 'react'
+import { type FC } from 'react'
 
 import { Button } from '@/shared/ui/button'
-import { BaseForm } from '@/shared/ui/form-base'
-import { CheckboxGroup, RadioGroup } from '@/shared/ui/input'
+// import type { FormFieldConfig } from '@/shared/ui/form/ui'
+import { FormWrapper } from '@/shared/ui/form/ui'
 import { Sidebar } from '@/shared/ui/sidebar'
+
+// const sidebarFilterFieldsConfig: FormFieldConfig<unknown>[] = [
+//   {
+//     type: 'radio',
+//     name: 'source',
+//     props: {
+//       title: 'Источники',
+//       options: [
+//         { label: 'Риа Новости', value: '1' },
+//         { label: 'Telegram news', value: '2' },
+//         { label: 'ТАСС', value: '3' },
+//         { label: 'Паблик цитатник', value: '4' },
+//         { label: 'Коммерсантъ', value: '5' },
+//       ],
+//       value: '',
+//     },
+//   },
+//   {
+//     type: 'checkbox',
+//     name: 'categories',
+//     props: {
+//       title: 'По времени',
+//       options: [
+//         { label: 'Сегодня', value: 'Сегодня' },
+//         { label: 'Через 3 дня', value: 'Через 3 дня' },
+//         { label: 'Через 5 дней', value: 'Через 5 дней' },
+//         { label: 'Через неделю', value: 'Через неделю' },
+//         { label: 'Через 2 недели', value: 'Через 2 недели' },
+//       ],
+//       value: [''],
+//     },
+//   },
+// ]
 
 interface SidebarFilterProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
 }
 
+type FilterValues = {
+  source: string
+  categories: string[]
+}
+
+const initialValues: FilterValues = {
+  source: '1',
+  categories: [],
+}
+
 export const SidebarFilter: FC<SidebarFilterProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const [source, setSource] = useState('1')
-  const [categories, setCategories] = useState<string[]>([])
+  const handleSubmit = () => {
+    setIsOpen(false)
+  }
 
   return (
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -33,43 +77,17 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
         </button>
       </div>
 
-      <div className="flex-1 space-y-6 overflow-y-auto px-5 py-4">
-        <BaseForm
-          initialValues={{ source, categories }}
-          onSubmit={() => {}}
-          render={() => (
-            <div className="vertical gap-4">
-              <RadioGroup
-                title="Источники"
-                value={source}
-                onChange={setSource}
-                options={[
-                  { label: 'Риа Новости', value: '1' },
-                  { label: 'Telegram news', value: '2' },
-                  { label: 'ТАСС', value: '3' },
-                  { label: 'Паблик цитатник', value: '4' },
-                  { label: 'Коммерсантъ', value: '5' },
-                ]}
-              />
-              <CheckboxGroup
-                title="По времени"
-                value={categories}
-                onChange={setCategories}
-                options={[
-                  { label: 'Сегодня', value: 'Сегодня' },
-                  { label: 'Через 3 дня', value: 'Через 3 дня' },
-                  { label: 'Через 5 дней', value: 'Через 5 дней' },
-                  { label: 'Через неделю', value: 'Через неделю' },
-                  { label: 'Через 2 недели', value: 'Через 2 неделb' },
-                ]}
-              />
+      <div className="flex-1 overflow-y-auto px-5 py-4">
+        <FormWrapper<FilterValues>
+          fields={[]}
+          initialValue={initialValues}
+          onSubmit={handleSubmit}
+          customSubmitComponent={
+            <div className="border-t border-gray-200 p-4">
+              <Button type="submit">Применить фильтры</Button>
             </div>
-          )}
+          }
         />
-      </div>
-
-      <div className="border-t border-gray-200 p-4">
-        <Button onClick={() => setIsOpen(false)}>Применить фильтры</Button>
       </div>
     </Sidebar>
   )

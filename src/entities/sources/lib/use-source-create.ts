@@ -1,15 +1,16 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { articlesQueryKeys } from '@/entities/articles/lib/article-query-keys'
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
-import { httpClient, type SourceCreate } from '@/shared/api'
+import { httpClient, type Source, type SourceCreate } from '@/shared/api'
+import { useAppMutation } from '@/shared/api/lib'
 
 import { sourcesQueryKeys } from './sources-query-keys'
 
 export const useSourceCreate = () => {
   const queryClient = useQueryClient()
 
-  const { mutate, isPending } = useMutation({
+  return useAppMutation<Source, SourceCreate>({
     mutationFn: (values: SourceCreate) => httpClient.api.sourcesCreate(values),
 
     onSuccess: () => {
@@ -23,6 +24,4 @@ export const useSourceCreate = () => {
       })
     },
   })
-
-  return { mutate, isPending }
 }

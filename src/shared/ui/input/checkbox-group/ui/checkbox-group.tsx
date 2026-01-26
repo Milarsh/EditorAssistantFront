@@ -15,7 +15,7 @@ interface CheckboxGroupProps {
   value: string[]
   options: Option[]
   title?: string
-  onChange: (selected: string[]) => void
+  onChange?: (selected: string[]) => void
   className?: string
 }
 
@@ -28,7 +28,7 @@ export const CheckboxGroup: FC<CheckboxGroupProps> = ({
   className,
 }) => {
   const handleChange = (val: string, checked: boolean) => {
-    onChange(checked ? [...value, val] : value.filter((v) => v !== val))
+    onChange?.(checked ? [...value, val] : value.filter((v) => v !== val))
   }
 
   return (

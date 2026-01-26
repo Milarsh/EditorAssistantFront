@@ -15,7 +15,7 @@ interface RadioGroupProps {
   value: string
   title?: string
   options: Option[]
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   containerClass?: string
   buttonsClass?: string
 }
@@ -37,7 +37,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           <Radio
             key={opt.value}
             checked={value === opt.value}
-            onChange={() => onChange(opt.value)}
+            onChange={() => onChange?.(opt.value)}
             {...opt}
           />
         ))}

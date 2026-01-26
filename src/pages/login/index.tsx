@@ -1,18 +1,18 @@
 import { useState } from 'react'
 
-import { LoginForm } from '@/features/auth/ui/login-form'
-import { RegisterForm } from '@/features/auth/ui/register-form/ui'
+import { LoginForm, RegisterForm, ResetPasswordForm } from '@/features/auth/ui'
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
 
-type TabId = 'login' | 'register'
+type ViewsId = 'login' | 'register' | 'password_reset'
+
 const TABS = [
   { id: 'login', label: 'Вход' },
   { id: 'register', label: 'Регистрация' },
 ]
 
 export const LoginPage = () => {
-  const [activeTab, setActiveTab] = useState<TabId>('login')
+  const [activeView, setActiveView] = useState<ViewsId>('login')
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#EEF1F8]">
@@ -23,12 +23,19 @@ export const LoginPage = () => {
 
         <Tabs
           tabs={TABS}
-          activeTab={activeTab}
-          onChange={(id) => setActiveTab(id as TabId)}
+          activeTab={activeView}
+          onChange={(id) => setActiveView(id as ViewsId)}
         />
-        {activeTab === 'login' && <LoginForm />}
-        {activeTab === 'register' && (
-          <RegisterForm onRegisterSuccess={() => setActiveTab('login')} />
+        {activeView === 'login' && (
+          <LoginForm
+            onForgetPasswordClick={() => setActiveView('password_reset')}
+          />
+        )}
+        {activeView === 'password_reset' && (
+          <ResetPasswordForm onResetSuccess={() => setActiveView('login')} />
+        )}
+        {activeView === 'register' && (
+          <RegisterForm onRegisterSuccess={() => setActiveView('login')} />
         )}
       </div>
     </div>
