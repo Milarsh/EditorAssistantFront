@@ -21,7 +21,7 @@ export interface BaseFormProps<T extends object> {
   customSubmitComponent?: ReactNode
 }
 
-export const BaseForm = <T extends object>({
+export const FormRoot = <T extends object>({
   initialValues,
   onSubmit,
   render,

@@ -12,7 +12,7 @@ import { TextareaField } from '@/shared/ui/input/text-area'
 import { Typography } from '@/shared/ui/typography'
 
 import { renderField } from '../config'
-import { BaseForm } from './form-base'
+import { FormRoot } from './form-root'
 
 export const fieldRegistry = {
   text: TextField,
@@ -47,7 +47,7 @@ interface FormWrapperProps<T> {
   customSubmitComponent?: ReactNode
 }
 
-export const FormWrapper = <T extends Record<string, any>>({
+export const FormBuilder = <T extends Record<string, any>>({
   fields,
   initialValue,
   onSubmit,
@@ -56,7 +56,7 @@ export const FormWrapper = <T extends Record<string, any>>({
   customSubmitComponent,
 }: FormWrapperProps<T>) => {
   return (
-    <BaseForm<T>
+    <FormRoot<T>
       className="vertical gap-2"
       initialValues={initialValue}
       onSubmit={onSubmit}

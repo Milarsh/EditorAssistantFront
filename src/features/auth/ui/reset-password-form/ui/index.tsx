@@ -6,7 +6,7 @@ import {
   type PasswordResetRequest,
   type PasswordSendCodeRequest,
 } from '@/shared/api'
-import { FormWrapper } from '@/shared/ui/form/ui'
+import { FormBuilder } from '@/shared/ui/form'
 
 import {
   passwordSendCodeFormFieldsConfig,
@@ -62,7 +62,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({
 
   if (step === 'set_new_password') {
     return (
-      <FormWrapper<PasswordResetRequest>
+      <FormBuilder<PasswordResetRequest>
         formError={resetPasswordNormalizedError}
         fields={resetPasswordFormFieldsConfig}
         initialValue={getPasswordResetInitValues(confirmEmail)}
@@ -72,7 +72,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({
   }
 
   return (
-    <FormWrapper<PasswordSendCodeRequest>
+    <FormBuilder<PasswordSendCodeRequest>
       formError={sendEmailNormalizedError}
       fields={passwordSendCodeFormFieldsConfig}
       initialValue={passwordSendCodeInitValues}

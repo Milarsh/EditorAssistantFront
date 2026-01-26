@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { FormRoot } from 'src/shared/ui/form/ui/form-root'
 
 import { Button } from '@/shared/ui/button'
-import { BaseForm } from '@/shared/ui/form/ui/form-base'
 import { Typography } from '@/shared/ui/typography'
 
 type ProfileFormProps = {
@@ -15,7 +15,7 @@ export const ProfileEditForm = ({ initValues }: ProfileFormProps) => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
-    <BaseForm
+    <FormRoot
       initialValues={initValues}
       onSubmit={() => {
         setIsEditing(false)

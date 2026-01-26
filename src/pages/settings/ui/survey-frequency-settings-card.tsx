@@ -1,4 +1,4 @@
-// import { BaseForm } from '@/shared/ui/form-base'
+// import { BaseForm } from '@/shared/ui/form-root'
 
 import { SettingsCardWrapper } from './settings-card-wrapper'
 

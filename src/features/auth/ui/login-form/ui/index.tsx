@@ -3,7 +3,7 @@ import { useRouter } from '@tanstack/react-router'
 import { isEmail } from '@/features/auth/lib/utils'
 import type { AuthLoginRequest } from '@/shared/api'
 import { Button } from '@/shared/ui/button'
-import { FormWrapper } from '@/shared/ui/form/ui'
+import { FormBuilder } from '@/shared/ui/form'
 import { Typography } from '@/shared/ui/typography'
 
 import { loginFormFieldsConfig } from '../../config'
@@ -49,7 +49,7 @@ export const LoginForm = ({
   }
 
   return (
-    <FormWrapper<AuthLoginRequest>
+    <FormBuilder<AuthLoginRequest>
       formError={normalizedError}
       fields={loginFormFieldsConfig}
       initialValue={loginInitialValues}

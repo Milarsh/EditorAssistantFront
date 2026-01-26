@@ -4,7 +4,7 @@ import type {
   AuthRegisterConfirmRequest,
   AuthRegisterRequest,
 } from '@/shared/api'
-import { FormWrapper } from '@/shared/ui/form/ui'
+import { FormBuilder } from '@/shared/ui/form'
 
 import { confirmFormFieldsConfig, registerFormFieldsConfig } from '../../config'
 import { useConfirmEmail } from '../lib/use-confirm-email'
@@ -54,7 +54,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
 
   if (step === 'confirm') {
     return (
-      <FormWrapper<AuthRegisterConfirmRequest>
+      <FormBuilder<AuthRegisterConfirmRequest>
         formError={confirmNormalizedError}
         fields={confirmFormFieldsConfig}
         initialValue={getConfirmInitValues(confirmEmail)}
@@ -64,7 +64,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   }
 
   return (
-    <FormWrapper<AuthRegisterRequest>
+    <FormBuilder<AuthRegisterRequest>
       formError={registerNormalizedError}
       fields={registerFormFieldsConfig}
       initialValue={registerInitialValues}

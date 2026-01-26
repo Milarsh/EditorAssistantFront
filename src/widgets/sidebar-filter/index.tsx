@@ -2,7 +2,7 @@ import { type FC } from 'react'
 
 import { Button } from '@/shared/ui/button'
 // import type { FormFieldConfig } from '@/shared/ui/form/ui'
-import { FormWrapper } from '@/shared/ui/form/ui'
+import { FormBuilder } from '@/shared/ui/form'
 import { Sidebar } from '@/shared/ui/sidebar'
 
 // const sidebarFilterFieldsConfig: FormFieldConfig<unknown>[] = [
@@ -78,7 +78,7 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-4">
-        <FormWrapper<FilterValues>
+        <FormBuilder<FilterValues>
           fields={[]}
           initialValue={initialValues}
           onSubmit={handleSubmit}

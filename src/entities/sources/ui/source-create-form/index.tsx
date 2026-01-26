@@ -1,6 +1,6 @@
 import type { SourceCreate } from '@/shared/api'
+import { FormBuilder } from '@/shared/ui/form'
 import type { FormFieldConfig } from '@/shared/ui/form/ui'
-import { FormWrapper } from '@/shared/ui/form/ui'
 
 import { useSourceCreate } from '../../lib/use-source-create'
 
@@ -30,7 +30,7 @@ export const SourceCreateForm = () => {
   const { mutateAsync, normalizedError } = useSourceCreate()
 
   return (
-    <FormWrapper<SourceCreate>
+    <FormBuilder<SourceCreate>
       fields={sourceCreateFieldsConfig}
       initialValue={initialValues}
       onSubmit={mutateAsync}
