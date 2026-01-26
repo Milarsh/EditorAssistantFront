@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { FormRoot } from 'src/shared/ui/form/ui/form-root'
 
 import { Button } from '@/shared/ui/button'
+import { FormRoot } from '@/shared/ui/form/ui/form-root'
 import { Typography } from '@/shared/ui/typography'
 
 type ProfileFormProps = {
