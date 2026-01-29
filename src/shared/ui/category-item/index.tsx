@@ -7,7 +7,7 @@ import { useStopCategoryDelete } from '@/entities/stop-words-categories'
 import type { StopCategory, StopWordsList } from '@/shared/api'
 import { Typography } from '@/shared/ui/typography'
 
-const stopWordsToString = (words: StopWordsList): string => {
+const wordsArrayToString = (words: StopWordsList): string => {
   return words.map((w) => w.value).join(', ')
 }
 
@@ -34,7 +34,7 @@ export const CategoryItem = ({ category }: { category: StopCategory }) => {
         </Typography>
 
         <Typography variant="body" className="line-clamp-3 break-words">
-          {stopWordsToString(categoryStopWords)}
+          {wordsArrayToString(categoryStopWords)}
         </Typography>
       </div>
 

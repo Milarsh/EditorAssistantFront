@@ -39,7 +39,7 @@ const CreateStopWordForm = ({ categoryId }: CategoryIdProps) => {
   )
 }
 
-const Top = ({ categoryId }: CategoryIdProps) => {
+const CategoryIdHeader = ({ categoryId }: CategoryIdProps) => {
   const { category } = useStopCategorySingle(Number(categoryId))
   const { history } = useRouter()
 
@@ -58,27 +58,20 @@ const Top = ({ categoryId }: CategoryIdProps) => {
   )
 }
 
-const StopWordListRenderer = ({ categoryId }: CategoryIdProps) => {
-  const stopWordsByCategory = useStopWordsByCategory(Number(categoryId))
-
+const WordListItem = ({ stopWord }: { stopWord: StopWord }) => {
   const { mutateAsync: deleteStopWord } = useStopWordDelete()
 
   return (
-    <List<StopWord>
-      items={stopWordsByCategory}
-      renderItem={(stopWord) => (
-        <div
-          className="flex items-start justify-between rounded-md border
-            border-gray-200 bg-white p-4"
-        >
-          {stopWord.value}
-          <Trash2
-            className="cursor-pointer"
-            onClick={() => deleteStopWord(stopWord.id)}
-          />
-        </div>
-      )}
-    />
+    <div
+      className="flex items-start justify-between rounded-md border
+        border-gray-200 bg-white p-4"
+    >
+      {stopWord.value}
+      <Trash2
+        className="cursor-pointer"
+        onClick={() => deleteStopWord(stopWord.id)}
+      />
+    </div>
   )
 }
 
@@ -92,7 +85,7 @@ export const StopWordsCategoryId = () => {
 
   return (
     <ManagerWrapper
-      topSlot={<Top categoryId={categoryId} />}
+      topSlot={<CategoryIdHeader categoryId={categoryId} />}
       formComponent={<CreateStopWordForm categoryId={categoryId} />}
       statisticsConfig={{
         title: 'Статистика',
@@ -106,7 +99,10 @@ export const StopWordsCategoryId = () => {
     >
       <div className="w-full pr-4">
         {stopCategories?.length > 0 && (
-          <StopWordListRenderer categoryId={categoryId} />
+          <List<StopWord>
+            items={stopWordsByCategory}
+            renderItem={(stopWord) => <WordListItem stopWord={stopWord} />}
+          />
         )}
       </div>
     </ManagerWrapper>
