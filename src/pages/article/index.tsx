@@ -7,10 +7,10 @@ import { Typography } from '@/shared/ui/typography'
 export const ArticlePage = () => {
   const { id } = useParams({ from: '/_auth/article/$id' })
   const { history } = useRouter()
-  const { data: article } = useArticleDetails(Number(id))
+  const { data: article, isPending } = useArticleDetails(Number(id))
 
-  if (!article) {
-    return <Typography variant="h2">Статья не найдена</Typography>
+  if (!article || isPending) {
+    return <Typography variant="h2">Загрузка</Typography>
   }
 
   const handleGoBack = () => history.back()

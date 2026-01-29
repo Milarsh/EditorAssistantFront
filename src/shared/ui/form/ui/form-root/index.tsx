@@ -13,12 +13,13 @@ type RenderFn<T> = (params: {
 
 export interface BaseFormProps<T extends object> {
   initialValues: T
-  onSubmit: (values: T) => void
+  onSubmit: (values: T) => Promise<void> | void
   render: RenderFn<T>
   className?: string
   fieldsError?: ErrorApiPayload | null
   submitText?: string
   customSubmitComponent?: ReactNode
+  formTitle?: ReactNode
 }
 
 export const FormRoot = <T extends object>({
@@ -29,6 +30,7 @@ export const FormRoot = <T extends object>({
   fieldsError = null,
   submitText = 'Отправить',
   customSubmitComponent,
+  formTitle,
 }: BaseFormProps<T>) => {
   const [values, setValues] = useState<T>(initialValues)
 
@@ -39,13 +41,16 @@ export const FormRoot = <T extends object>({
     }))
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    onSubmit(values)
+    await onSubmit(values)
+
+    setValues(initialValues)
   }
 
   return (
     <form onSubmit={handleSubmit} className={className}>
+      {formTitle}
       {render({ values, handleChange, error: fieldsError })}
       {fieldsError?.message && (
         <Typography variant="error" className="text-center">

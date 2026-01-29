@@ -15,4 +15,9 @@ export const articlesQueryKeys = createQueryKeys('article', {
     queryFn: () =>
       httpClient.api.articlesDetail(id, params).then((res) => res.data),
   }),
+  media: (id: number, params?: RequestParams) => ({
+    queryKey: [`media`, id],
+    queryFn: () =>
+      httpClient.api.articlesMediaList(id, params).then((res) => res.data),
+  }),
 })

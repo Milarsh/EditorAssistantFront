@@ -39,10 +39,10 @@ export const KeyWordsCategoryId = () => {
   return (
     <ManagerWrapper
       topSlot={<CategoryIdHeader title="Общие слова про Москву" />}
-      categories={[]}
-      newCategory=""
-      setNewCategory={() => {}}
-      handleAdd={undefined}
+      statisticsConfig={{
+        title: 'Статистика',
+        items: [],
+      }}
     >
       <div className="w-full bg-[#F8FAFC] p-5">
         {/* <List listData={MOCK_SOURCES} /> */}

@@ -325,6 +325,143 @@ export interface SettingUpdate {
   value: string
 }
 
+export interface ArticleStopWordsResponse {
+  /** ID статьи */
+  id: number
+  items: StopWord[]
+}
+
+export interface ArticleKeyWordsResponse {
+  /** ID статьи */
+  id: number
+  items: KeyWord[]
+}
+
+export interface StopCategory {
+  id: number
+  /** Символьный код (slug), генерируется автоматически */
+  code: string
+  /** Название категории */
+  title: string
+}
+
+export type StopCategoriesList = StopCategory[]
+
+export interface StopCategoryUpsertRequest {
+  /**
+   * Если передан — будет выполнено обновление записи
+   * @min 1
+   */
+  id?: number
+  /**
+   * Название категории
+   * @minLength 1
+   */
+  title: string
+}
+
+export interface Rubric {
+  id: number
+  /** Символьный код (slug), генерируется автоматически */
+  code: string
+  /** Название рубрики */
+  title: string
+}
+
+export type RubricsList = Rubric[]
+
+export interface RubricUpsertRequest {
+  /**
+   * Если передан — будет выполнено обновление записи
+   * @min 1
+   */
+  id?: number
+  /**
+   * Название рубрики
+   * @minLength 1
+   */
+  title: string
+}
+
+export interface StopWord {
+  id: number
+  /** Символьный код слова, генерируется из value */
+  code: string
+  /** Текст стоп-слова */
+  value: string
+  /** ID категории стоп-слова */
+  category_id: number
+}
+
+export type StopWordsList = StopWord[]
+
+export interface StopWordUpsertRequest {
+  /**
+   * Если передан — будет выполнено обновление записи
+   * @min 1
+   */
+  id?: number
+  /**
+   * Текст стоп-слова
+   * @minLength 1
+   */
+  value: string
+  /**
+   * ID категории, к которой относится стоп-слово
+   * @min 1
+   */
+  category_id: number
+}
+
+export interface KeyWord {
+  id: number
+  /** Символьный код слова, генерируется из value */
+  code: string
+  /** Текст ключевого слова */
+  value: string
+  /** ID рубрики, к которой относится ключевое слово */
+  rubric_id: number
+}
+
+export type KeyWordsList = KeyWord[]
+
+export interface KeyWordUpsertRequest {
+  /**
+   * Если передан — будет выполнено обновление записи
+   * @min 1
+   */
+  id?: number
+  /**
+   * Текст ключевого слова
+   * @minLength 1
+   */
+  value: string
+  /**
+   * ID рубрики
+   * @min 1
+   */
+  rubric_id: number
+}
+
+export interface ArticleStat {
+  /** ID новости (статьи) */
+  entity_id: number
+  /**
+   * Количество уникальных стоп-слов, найденных в статье
+   * @min 0
+   */
+  stop_words_count: number
+  /**
+   * Количество уникальных ключевых слов, найденных в статье
+   * @min 0
+   */
+  key_words_count: number
+  /** Рубрика с наибольшим количеством ключевых слов */
+  rubric_id?: number | null
+  /** Категория с наибольшим количеством стоп-слов */
+  stop_category_id?: number | null
+}
+
 /**
  * Машинно-читабельный код ошибки
  * @example "bad_request"
@@ -708,6 +845,11 @@ export class Api<
          * @default "desc"
          */
         order?: ArticlesListParamsOrderEnum
+        /**
+         * Фильтрует статьи по rubric id из статистики статьи (ArticleStat.rubric_id).
+         * @min 1
+         */
+        rubric_id?: number
       },
       params: RequestParams = {},
     ) =>
@@ -1102,6 +1244,292 @@ export class Api<
         method: 'POST',
         body: data,
         type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags StopWords
+     * @name StopCategoriesList
+     * @summary Список категорий стоп-слов
+     * @request GET:/api/stop-categories
+     */
+    stopCategoriesList: (params: RequestParams = {}) =>
+      this.request<StopCategoriesList, Error>({
+        path: `/api/stop-categories`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description Если передан `id` — обновляет существующую категорию. Если `id` не передан — создаёт новую категорию. Символьный код `code` генерируется автоматически из `title`.
+     *
+     * @tags StopWords
+     * @name StopCategoriesCreate
+     * @summary Создать или обновить категорию стоп-слов
+     * @request POST:/api/stop-categories
+     */
+    stopCategoriesCreate: (
+      data: StopCategoryUpsertRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<StopCategory, Error>({
+        path: `/api/stop-categories`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags StopWords
+     * @name StopCategoriesDelete
+     * @summary Удалить категорию стоп-слов
+     * @request DELETE:/api/stop-categories/{id}
+     */
+    stopCategoriesDelete: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "deleted" */
+          status?: string
+          /** @example 1 */
+          id?: number
+        },
+        Error
+      >({
+        path: `/api/stop-categories/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags KeyWords
+     * @name RubricsList
+     * @summary Список рубрик
+     * @request GET:/api/rubrics
+     */
+    rubricsList: (params: RequestParams = {}) =>
+      this.request<RubricsList, Error>({
+        path: `/api/rubrics`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description Если передан `id` — обновляет существующую рубрику. Если `id` не передан — создаёт новую рубрику. Символьный код `code` генерируется автоматически из `title`.
+     *
+     * @tags KeyWords
+     * @name RubricsCreate
+     * @summary Создать или обновить рубрику
+     * @request POST:/api/rubrics
+     */
+    rubricsCreate: (data: RubricUpsertRequest, params: RequestParams = {}) =>
+      this.request<Rubric, Error>({
+        path: `/api/rubrics`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags KeyWords
+     * @name RubricsDelete
+     * @summary Удалить рубрику
+     * @request DELETE:/api/rubrics/{id}
+     */
+    rubricsDelete: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "deleted" */
+          status?: string
+          /** @example 1 */
+          id?: number
+        },
+        Error
+      >({
+        path: `/api/rubrics/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags StopWords
+     * @name StopWordsList
+     * @summary Список стоп-слов
+     * @request GET:/api/stop-words
+     */
+    stopWordsList: (params: RequestParams = {}) =>
+      this.request<StopWordsList, Error>({
+        path: `/api/stop-words`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description Если передан `id` — обновляет существующее стоп-слово. Если `id` не передан — создаёт новое. Символьный код `code` генерируется автоматически из `value`.
+     *
+     * @tags StopWords
+     * @name StopWordsCreate
+     * @summary Создать или обновить стоп-слово
+     * @request POST:/api/stop-words
+     */
+    stopWordsCreate: (
+      data: StopWordUpsertRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<StopWord, Error>({
+        path: `/api/stop-words`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags StopWords
+     * @name StopWordsDelete
+     * @summary Удалить стоп-слово
+     * @request DELETE:/api/stop-words/{id}
+     */
+    stopWordsDelete: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "deleted" */
+          status?: string
+          /** @example 1 */
+          id?: number
+        },
+        Error
+      >({
+        path: `/api/stop-words/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags KeyWords
+     * @name KeyWordsList
+     * @summary Список ключевых слов
+     * @request GET:/api/key-words
+     */
+    keyWordsList: (params: RequestParams = {}) =>
+      this.request<KeyWordsList, Error>({
+        path: `/api/key-words`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description Если передан `id` — обновляет существующее ключевое слово. Если `id` не передан — создаёт новое. Символьный код `code` генерируется автоматически из `value`.
+     *
+     * @tags KeyWords
+     * @name KeyWordsCreate
+     * @summary Создать или обновить ключевое слово
+     * @request POST:/api/key-words
+     */
+    keyWordsCreate: (data: KeyWordUpsertRequest, params: RequestParams = {}) =>
+      this.request<KeyWord, Error>({
+        path: `/api/key-words`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags KeyWords
+     * @name KeyWordsDelete
+     * @summary Удалить ключевое слово
+     * @request DELETE:/api/key-words/{id}
+     */
+    keyWordsDelete: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "deleted" */
+          status?: string
+          /** @example 1 */
+          id?: number
+        },
+        Error
+      >({
+        path: `/api/key-words/${id}`,
+        method: 'DELETE',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
+     * @name ArticlesStatsList
+     * @summary Статистика по стоп- и ключевым словам для статьи
+     * @request GET:/api/articles/{id}/stats
+     */
+    articlesStatsList: (id: number, params: RequestParams = {}) =>
+      this.request<ArticleStat, Error>({
+        path: `/api/articles/${id}/stats`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags StopWords
+     * @name ArticlesStopWordsList
+     * @summary Стоп-слова, найденные в статье
+     * @request GET:/api/articles/{id}/stop-words
+     */
+    articlesStopWordsList: (id: number, params: RequestParams = {}) =>
+      this.request<ArticleStopWordsResponse, Error>({
+        path: `/api/articles/${id}/stop-words`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags KeyWords
+     * @name ArticlesKeyWordsList
+     * @summary Ключевые слова, найденные в статье
+     * @request GET:/api/articles/{id}/key-words
+     */
+    articlesKeyWordsList: (id: number, params: RequestParams = {}) =>
+      this.request<ArticleKeyWordsResponse, Error>({
+        path: `/api/articles/${id}/key-words`,
+        method: 'GET',
         format: 'json',
         ...params,
       }),

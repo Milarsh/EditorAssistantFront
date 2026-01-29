@@ -45,6 +45,7 @@ interface FormWrapperProps<T> {
   formError?: ErrorApiPayload | null
   submitText?: string
   customSubmitComponent?: ReactNode
+  formTitle?: ReactNode
 }
 
 export const FormBuilder = <T extends Record<string, any>>({
@@ -54,9 +55,11 @@ export const FormBuilder = <T extends Record<string, any>>({
   formError,
   submitText,
   customSubmitComponent,
+  formTitle,
 }: FormWrapperProps<T>) => {
   return (
     <FormRoot<T>
+      formTitle={formTitle}
       className="vertical gap-2"
       initialValues={initialValue}
       onSubmit={onSubmit}

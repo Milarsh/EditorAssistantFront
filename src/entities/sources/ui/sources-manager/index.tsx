@@ -7,7 +7,6 @@ import { SourceListItem } from './sources-list-item'
 
 export const SourcesManager = () => {
   const { data: sources = [] } = useSourcesList()
-  // const { data: articles } = useArticlesList()
   const { mutate } = useSourceDelete()
 
   return (
