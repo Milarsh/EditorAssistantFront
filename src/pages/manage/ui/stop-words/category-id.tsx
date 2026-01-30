@@ -58,7 +58,7 @@ const CategoryIdHeader = ({ categoryId }: CategoryIdProps) => {
   )
 }
 
-const WordListItem = ({ stopWord }: { stopWord: StopWord }) => {
+const WordsListItem = ({ stopWord }: { stopWord: StopWord }) => {
   const { mutateAsync: deleteStopWord } = useStopWordDelete()
 
   return (
@@ -101,7 +101,7 @@ export const StopWordsCategoryId = () => {
         {stopCategories?.length > 0 && (
           <List<StopWord>
             items={stopWordsByCategory}
-            renderItem={(stopWord) => <WordListItem stopWord={stopWord} />}
+            renderItem={(stopWord) => <WordsListItem stopWord={stopWord} />}
           />
         )}
       </div>

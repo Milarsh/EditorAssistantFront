@@ -325,6 +325,25 @@ export interface SettingUpdate {
   value: string
 }
 
+export interface SettingCodesResponse {
+  codes: string[]
+}
+
+export interface SettingOptions {
+  code: string
+  type: SettingOptionsTypeEnum
+  default: number | boolean | string
+  options?: (number | boolean | string)[]
+  allow_custom?: boolean
+  min?: number
+  max?: number
+  zero_is_unlimited?: boolean
+}
+
+export interface SettingOptionsList {
+  items: SettingOptions[]
+}
+
 export interface ArticleStopWordsResponse {
   /** ID статьи */
   id: number
@@ -530,6 +549,12 @@ export enum PasswordSendCodeResponseStatusEnum {
 
 export enum PasswordResetResponseStatusEnum {
   PasswordChanged = 'password_changed',
+}
+
+export enum SettingOptionsTypeEnum {
+  Int = 'int',
+  Bool = 'bool',
+  String = 'string',
 }
 
 /**
@@ -1205,18 +1230,18 @@ export class Api<
       }),
 
     /**
-     * No description
+     * @description Возвращает значения динамических общих настроек сервиса. Если `codes` не указан — возвращаются все известные коды.
      *
      * @tags Settings
      * @name SettingsList
-     * @summary Список настроек
+     * @summary Список текущих значений настроек
      * @request GET:/api/settings
      */
     settingsList: (
       query?: {
         /**
          * Список кодов настроек через запятую. Если не указан — возвращаются все настройки.
-         * @example "tg.enabled,parser.interval"
+         * @example "poll_interval,media_keep"
          */
         codes?: string
       },
@@ -1231,11 +1256,11 @@ export class Api<
       }),
 
     /**
-     * No description
+     * @description Обновляет значение существующей настройки по `code`. Создание новых настроек через этот роут запрещено.
      *
      * @tags Settings
      * @name SettingsCreate
-     * @summary Создать или обновить настройку
+     * @summary Обновить значение настройки
      * @request POST:/api/settings
      */
     settingsCreate: (data: SettingUpdate, params: RequestParams = {}) =>
@@ -1244,6 +1269,48 @@ export class Api<
         method: 'POST',
         body: data,
         type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Settings
+     * @name SettingsCodesList
+     * @summary Список актуальных кодов настроек
+     * @request GET:/api/settings/codes
+     */
+    settingsCodesList: (params: RequestParams = {}) =>
+      this.request<SettingCodesResponse, Error>({
+        path: `/api/settings/codes`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description Если передан `code`, возвращает метаданные одной настройки. Если `code` не указан, возвращает список по всем актуальным кодам.
+     *
+     * @tags Settings
+     * @name SettingsOptionsList
+     * @summary Варианты выбора для настроек
+     * @request GET:/api/settings/options
+     */
+    settingsOptionsList: (
+      query?: {
+        /**
+         * Код настройки для получения вариантов выбора.
+         * @example "poll_interval"
+         */
+        code?: string
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SettingOptions | SettingOptionsList, Error>({
+        path: `/api/settings/options`,
+        method: 'GET',
+        query: query,
         format: 'json',
         ...params,
       }),
