@@ -33,20 +33,6 @@ export const Radio: FC<OptionProps> = ({
         />
         {label}
       </label>
-
-      {/* {withTextField && ( */}
-      {/*  <div className="flex items-center gap-2"> */}
-      {/*    <input */}
-      {/*      type="number" */}
-      {/*      placeholder="0" */}
-      {/*      value={} */}
-      {/*      onChange={(e) => onChange?.(e.target.value)} */}
-      {/*      className="max-w-12 rounded-md border border-gray-300 px-2 text-sm */}
-      {/*        focus:ring-2 focus:outline-none" */}
-      {/*    /> */}
-      {/*    <span className="text-gray-700">МБ</span> */}
-      {/*  </div> */}
-      {/* )} */}
     </div>
   )
 }
