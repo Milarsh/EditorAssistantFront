@@ -32,6 +32,7 @@ export type FieldPropsByType<T extends keyof FieldRegistry> = ComponentProps<
 
 export type FormFieldConfig<T> = {
   [K in keyof FieldRegistry]: {
+    title?: ReactNode
     type: K
     name: Extract<keyof T, string>
     props: FieldPropsByType<K>
@@ -69,12 +70,15 @@ export const FormBuilder = <T extends Record<string, any>>({
       render={({ handleChange, values, error }) =>
         fields.map((field) => (
           <div key={field.name}>
-            {renderField<T>(field, values, handleChange)}
-            {error?.details?.[field.name] && (
-              <Typography variant="error">
-                {error?.details?.[field.name]}
-              </Typography>
-            )}
+            <div className="vertical gap-2">
+              {field?.title}
+              {renderField<T>(field, values, handleChange)}
+              {error?.details?.[field.name] && (
+                <Typography variant="error">
+                  {error?.details?.[field.name]}
+                </Typography>
+              )}
+            </div>
           </div>
         ))
       }

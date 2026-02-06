@@ -9,7 +9,6 @@ import { Radio } from './radio'
 interface Option {
   label: string
   value: string
-  withTextField?: boolean
 }
 
 interface RadioGroupProps {
