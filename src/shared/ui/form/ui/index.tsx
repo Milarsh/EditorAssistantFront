@@ -38,7 +38,7 @@ export type FormFieldConfig<T> = {
   }
 }[keyof FieldRegistry]
 
-interface FormWrapperProps<T> {
+interface FormBuilderProps<T> {
   fields: FormFieldConfig<T>[]
   initialValue: T
   onSubmit: (data: T) => void
@@ -56,7 +56,7 @@ export const FormBuilder = <T extends Record<string, any>>({
   submitText,
   customSubmitComponent,
   formTitle,
-}: FormWrapperProps<T>) => {
+}: FormBuilderProps<T>) => {
   return (
     <FormRoot<T>
       formTitle={formTitle}

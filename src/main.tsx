@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import { Toaster } from 'react-hot-toast'
 
 import { router } from '@/app/router'
 
@@ -27,6 +28,12 @@ if (rootElement && !rootElement.innerHTML) {
       <StrictMode>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+            }}
+          />
         </QueryClientProvider>
       </StrictMode>,
     )
