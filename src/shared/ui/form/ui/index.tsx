@@ -25,10 +25,12 @@ export const fieldRegistry = {
 }
 
 type FieldRegistry = typeof fieldRegistry
+type ControlledFieldProps<T> = Omit<T, 'value'> & {
+  value?: T extends { value: infer V } ? V : never
+}
 
-export type FieldPropsByType<T extends keyof FieldRegistry> = ComponentProps<
-  FieldRegistry[T]
->
+export type FieldPropsByType<T extends keyof FieldRegistry> =
+  ControlledFieldProps<ComponentProps<FieldRegistry[T]>>
 
 export type FormFieldConfig<T> = {
   [K in keyof FieldRegistry]: {

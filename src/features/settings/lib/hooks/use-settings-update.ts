@@ -12,9 +12,9 @@ export const useSettingsUpdate = () => {
     mutationFn: (values: SettingUpdate) =>
       httpClient.api.settingsCreate(values),
 
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       queryClient.invalidateQueries({
-        queryKey: settingsQueryKeys.list().queryKey,
+        queryKey: settingsQueryKeys.list({ codes: data.code }).queryKey,
       })
     },
   })
