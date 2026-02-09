@@ -6,9 +6,6 @@ interface OptionProps {
   checked: boolean
   onChange: (value: string) => void
   className?: string
-  withTextField?: boolean
-  textFieldValue?: string
-  onTextFieldChange?: (v: string) => void
 }
 
 export const Radio: FC<OptionProps> = ({
@@ -16,9 +13,6 @@ export const Radio: FC<OptionProps> = ({
   value,
   checked,
   onChange,
-  withTextField = false,
-  textFieldValue,
-  onTextFieldChange,
   ...props
 }) => {
   const id = useId()
@@ -39,20 +33,6 @@ export const Radio: FC<OptionProps> = ({
         />
         {label}
       </label>
-
-      {checked && withTextField && (
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            placeholder="0"
-            value={textFieldValue ?? ''}
-            onChange={(e) => onTextFieldChange?.(e.target.value)}
-            className="max-w-12 rounded-md border border-gray-300 px-2 text-sm
-              focus:ring-2 focus:outline-none"
-          />
-          <span className="text-gray-700">МБ</span>
-        </div>
-      )}
     </div>
   )
 }

@@ -356,6 +356,28 @@ export interface ArticleKeyWordsResponse {
   items: KeyWord[]
 }
 
+export interface ArticleCleanupRequest {
+  /** Дата (RFC3339 или YYYY-MM-DD). Удаляются новости до даты включительно. */
+  date_to: string
+  /**
+   * Если true, удаление не выполняется, возвращается только статистика.
+   * @default false
+   */
+  dry_run?: boolean
+}
+
+export interface ArticleCleanupResponse {
+  /**
+   * Нормализованная дата отсечения.
+   * @format date-time
+   */
+  date_to: string
+  dry_run: boolean
+  total: number
+  deleted: number
+  remaining: number
+}
+
 export interface StopCategory {
   id: number
   /** Символьный код (slug), генерируется автоматически */
@@ -890,6 +912,21 @@ export class Api<
      * No description
      *
      * @tags Articles
+     * @name ArticlesExportList
+     * @summary Экспорт статистики статей в Excel
+     * @request GET:/api/articles/export
+     */
+    articlesExportList: (params: RequestParams = {}) =>
+      this.request<File, any>({
+        path: `/api/articles/export`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
      * @name ArticlesDetail
      * @summary Получить новость по id
      * @request GET:/api/articles/{id}
@@ -914,6 +951,27 @@ export class Api<
       this.request<ArticleAssetsResponse, Error>({
         path: `/api/articles/${id}/media`,
         method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
+     * @name ArticlesCleanupCreate
+     * @summary Очистка новостей до даты
+     * @request POST:/api/articles/cleanup
+     */
+    articlesCleanupCreate: (
+      data: ArticleCleanupRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<ArticleCleanupResponse, Error>({
+        path: `/api/articles/cleanup`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
         format: 'json',
         ...params,
       }),
