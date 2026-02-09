@@ -6,10 +6,6 @@ import { Typography } from '@/shared/ui/typography'
 
 import { SettingsCardWrapper } from './settings-card-wrapper'
 
-interface SettingUpdateForm extends SettingUpdate {
-  customValue?: string
-}
-
 export const PollIntervalSettings = () => {
   const { data: setting, isLoading } = useSettingsOptionSingle(
     SETTINGS_CODES.POLL_INTERVAL,
@@ -29,7 +25,7 @@ export const PollIntervalSettings = () => {
 
   return (
     <SettingsCardWrapper title="Периодичность опроса источников">
-      <FormBuilder<SettingUpdateForm>
+      <FormBuilder<SettingUpdate>
         formError={normalizedError}
         fields={[
           {

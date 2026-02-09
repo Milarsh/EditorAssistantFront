@@ -8,6 +8,7 @@ import {
   TextField,
   ToggleSwitch,
 } from '@/shared/ui/input'
+import { DatePicker } from '@/shared/ui/input/date-picker'
 import { TextareaField } from '@/shared/ui/input/text-area'
 import { Typography } from '@/shared/ui/typography'
 
@@ -22,6 +23,7 @@ export const fieldRegistry = {
   toggle: ToggleSwitch,
   radio: RadioGroup,
   checkbox: CheckboxGroup,
+  date: DatePicker,
 }
 
 type FieldRegistry = typeof fieldRegistry
@@ -38,6 +40,7 @@ export type FormFieldConfig<T> = {
     type: K
     name: Extract<keyof T, string>
     props: FieldPropsByType<K>
+    onValueChange?: (value: string) => void | Promise<void>
   }
 }[keyof FieldRegistry]
 

@@ -1,6 +1,7 @@
 import type { FormFieldConfig } from '@/shared/ui/form/ui'
 import {
   CheckboxGroup,
+  DatePicker,
   RadioGroup,
   SelectField,
   TextareaField,
@@ -72,6 +73,18 @@ export const renderField = <T extends Record<string, any>>(
           {...field.props}
           value={values[field.name]}
           onChange={(newValues) => handleChange(field.name, newValues)}
+        />
+      )
+    case 'date':
+      return (
+        <DatePicker
+          key={field.name}
+          {...field.props}
+          value={values[field.name]}
+          onChange={(value) => {
+            field?.onValueChange?.(value)
+            handleChange(field.name, value)
+          }}
         />
       )
 
