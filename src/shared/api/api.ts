@@ -917,9 +917,10 @@ export class Api<
      * @request GET:/api/articles/export
      */
     articlesExportList: (params: RequestParams = {}) =>
-      this.request<File, any>({
+      this.request<Blob, any>({
         path: `/api/articles/export`,
         method: 'GET',
+        responseType: 'blob',
         ...params,
       }),
 
