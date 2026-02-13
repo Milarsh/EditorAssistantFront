@@ -2,6 +2,7 @@ import { FileDown, RefreshCw } from 'lucide-react'
 
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
 import { useArticlesList } from '@/entities/articles/lib/use-articles-list'
+import { httpClient } from '@/shared/api'
 import { ArticleCard } from '@/shared/ui/article-card'
 import { Button } from '@/shared/ui/button'
 import { TextField } from '@/shared/ui/input'
@@ -10,6 +11,29 @@ import { Typography } from '@/shared/ui/typography'
 import { ActionPanel } from '@/widgets/articles-feed/ui/action-panel'
 
 const categories = ['all', 'Разработка', 'Дизайн', 'Маркетинг', 'Менеджмент']
+
+const handleExportExcel = async () => {
+  try {
+    const response = await httpClient.api.articlesExportList()
+
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement('a')
+
+    a.href = url
+    a.download = 'articles.xlsx'
+    a.click()
+
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    // eslint-disable-next-line
+    console.error(error)
+  }
+}
 
 export const NewsFeed = ({
   handleOpenFilter,
@@ -50,14 +74,14 @@ export const NewsFeed = ({
           activeTab={category}
           onChange={setCategory}
         />
-        <a href="/mock-data.xlsx" download>
-          <div
-            className="bg-btn-primary flex items-center gap-2 rounded-md px-2
-              py-1 text-white"
-          >
-            экспорт Excel <FileDown className="size-5" />
-          </div>
-        </a>
+        <button
+          type="button"
+          onClick={handleExportExcel}
+          className="bg-btn-primary flex items-center gap-2 rounded-md px-2 py-1
+            text-white"
+        >
+          экспорт Excel <FileDown className="size-5" />
+        </button>
       </div>
 
       <ActionPanel
