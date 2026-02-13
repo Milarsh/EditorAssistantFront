@@ -14,11 +14,14 @@ const categories = ['all', 'Разработка', 'Дизайн', 'Маркет
 
 const handleExportExcel = async () => {
   try {
-    const response = await httpClient.api.articlesExportList()
+    const response = await httpClient.api.articlesExportList({ format: 'blob' })
 
-    const blob = new Blob([response.data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
+    const blob =
+      response.data instanceof Blob
+        ? response.data
+        : new Blob([response.data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          })
 
     const url = URL.createObjectURL(blob)
 
