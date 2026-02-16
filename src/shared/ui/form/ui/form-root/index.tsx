@@ -47,11 +47,11 @@ export const FormRoot = <T extends object>({
       [name]: value,
     }))
   }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     await onSubmit(values)
     toast.success(successMessage)
-    setValues(initialValues)
   }
 
   return (

@@ -1,4 +1,4 @@
-import { type FC, type ReactNode, useRef } from 'react'
+import { type FC, type ReactNode, useRef, useState } from 'react'
 
 import { cn } from '@/shared/lib'
 import { TextField } from '@/shared/ui/input'
@@ -35,7 +35,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const isCustom = !options.some((o) => o.value === value)
+  const [isCustom, setIsCustom] = useState(false)
 
   return (
     <div className={cn('vertical gap-2', containerClass)}>
@@ -45,8 +45,11 @@ export const RadioGroup: FC<RadioGroupProps> = ({
         {options.map((opt) => (
           <Radio
             key={opt.value}
-            checked={value === opt.value}
-            onChange={() => onChange?.(opt.value)}
+            checked={!isCustom && value === opt.value}
+            onChange={() => {
+              setIsCustom(false)
+              onChange?.(opt.value)
+            }}
             {...opt}
           />
         ))}
@@ -56,18 +59,23 @@ export const RadioGroup: FC<RadioGroupProps> = ({
               value="custom"
               checked={isCustom}
               onChange={() => {
-                onChange?.('custom')
-                inputRef?.current?.focus()
+                setIsCustom(true)
+                onChange?.('')
+                inputRef.current?.focus()
               }}
               label={textField.title}
             />
             <TextField
               value={isCustom ? value : ''}
-              className="h-7 w-15"
               ref={inputRef}
-              onFocus={() => onChange?.('')}
+              className="h-7 w-15"
+              onFocus={() => {
+                onChange?.('')
+                setIsCustom(true)
+              }}
               onChange={(e) => onChange?.(e.target.value)}
             />
+
             {textField?.afterInputSlot}
           </div>
         )}

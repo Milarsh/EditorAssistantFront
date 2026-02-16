@@ -26,6 +26,7 @@ body,
   overflow-x: hidden;
 }
 
-button {
+button,
+input {
   cursor: pointer;
 }

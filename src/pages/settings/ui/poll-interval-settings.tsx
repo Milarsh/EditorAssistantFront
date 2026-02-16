@@ -1,14 +1,14 @@
-import { useSettingsOptionSingle, useSettingsUpdate } from '@/features/settings'
+import {
+  useCurrentSettings,
+  useSettingsOptionSingle,
+  useSettingsUpdate,
+} from '@/features/settings'
 import { SETTINGS_CODES } from '@/pages/settings/model'
 import type { SettingUpdate } from '@/shared/api'
 import { FormBuilder } from '@/shared/ui/form'
 import { Typography } from '@/shared/ui/typography'
 
 import { SettingsCardWrapper } from './settings-card-wrapper'
-
-interface SettingUpdateForm extends SettingUpdate {
-  customValue?: string
-}
 
 export const PollIntervalSettings = () => {
   const { data: setting, isLoading } = useSettingsOptionSingle(
@@ -17,7 +17,14 @@ export const PollIntervalSettings = () => {
 
   const { mutateAsync: updateSettings, normalizedError } = useSettingsUpdate()
 
-  if (isLoading || !setting) {
+  const {
+    data: currentPollIntervalSettings,
+    isPending: isCurrentPollIntervalPending,
+  } = useCurrentSettings({
+    codes: SETTINGS_CODES.POLL_INTERVAL,
+  })
+
+  if (isLoading || !setting || isCurrentPollIntervalPending) {
     return null
   }
 
@@ -29,7 +36,7 @@ export const PollIntervalSettings = () => {
 
   return (
     <SettingsCardWrapper title="Периодичность опроса источников">
-      <FormBuilder<SettingUpdateForm>
+      <FormBuilder<SettingUpdate>
         formError={normalizedError}
         fields={[
           {
@@ -37,7 +44,6 @@ export const PollIntervalSettings = () => {
             name: 'value',
             props: {
               options,
-              value: String(setting.default),
               textField: {
                 title: 'Настроить вручную',
                 afterInputSlot: <Typography variant="footnote">мин</Typography>,
@@ -47,7 +53,7 @@ export const PollIntervalSettings = () => {
         ]}
         initialValue={{
           code: SETTINGS_CODES.POLL_INTERVAL,
-          value: String(setting.default),
+          value: currentPollIntervalSettings?.[0].value || '',
         }}
         onSubmit={(data) => updateSettings(data)}
         submitText="Сохранить изменения"

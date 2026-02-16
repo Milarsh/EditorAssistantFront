@@ -1,4 +1,5 @@
 export * from './checkbox-group'
+export * from './date-picker'
 export * from './radio-group'
 export * from './select'
 export * from './text-area'

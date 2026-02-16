@@ -55,9 +55,9 @@ export const MediaSettingsCard = () => {
   const { mutateAsync: updateSettings, normalizedError } = useSettingsUpdate()
 
   if (
-    !mediaMaxSizeSettingsOptions &&
-    isPending &&
-    isCurrentMaxSizePending &&
+    !mediaMaxSizeSettingsOptions ||
+    isPending ||
+    isCurrentMaxSizePending ||
     !currentMaxSizeSettings
   ) {
     return null

@@ -1,15 +1,23 @@
 import { useState } from 'react'
 
+import { useArticlesCleanup } from '@/entities/articles/lib/use-articles-cleanup'
+import type {
+  ArticleCleanupRequest,
+  ArticleCleanupResponse,
+} from '@/shared/api'
 import { Button } from '@/shared/ui/button'
+import { FormBuilder } from '@/shared/ui/form'
 import { Typography } from '@/shared/ui/typography'
 
 import { SettingsCardWrapper } from './settings-card-wrapper'
 
-const StatisticList = () => {
-  const total = 1247
-  const toDelete = 893
-  const remaining = total - toDelete
+type StatisticListProps = {
+  total: string | number
+  remaining: string | number
+  deleted: string | number
+}
 
+const StatisticList = ({ total, remaining, deleted }: StatisticListProps) => {
   return (
     <div className="mb-6 text-gray-700">
       <Typography variant="h3" className="mb-2 font-medium">
@@ -17,16 +25,13 @@ const StatisticList = () => {
       </Typography>
       <ul className="space-y-1">
         <li>
-          • Всего новостей:{' '}
-          <span className="font-semibold">{total.toLocaleString()}</span>
+          • Всего новостей: <span className="font-semibold">{total}</span>
         </li>
         <li>
-          • Будет удалено:{' '}
-          <span className="font-semibold">{toDelete.toLocaleString()}</span>
+          • Будет удалено: <span className="font-semibold">{deleted}</span>
         </li>
         <li>
-          • Останется:{' '}
-          <span className="font-semibold">{remaining.toLocaleString()}</span>
+          • Останется: <span className="font-semibold">{remaining}</span>
         </li>
       </ul>
     </div>
@@ -34,29 +39,47 @@ const StatisticList = () => {
 }
 
 export const NewsClearSettingsCard = () => {
-  const [date, setDate] = useState('')
+  const { mutateAsync, normalizedError } = useArticlesCleanup()
+  const [statistics, setStatistics] = useState<ArticleCleanupResponse | null>(
+    null,
+  )
 
-  const handleDelete = () => {}
+  const onValueChange = async (value: string) => {
+    const { data } = await mutateAsync({ date_to: value, dry_run: true })
+
+    setStatistics(data)
+  }
 
   return (
     <SettingsCardWrapper title="Очистка новостей">
-      <p className="mb-4 text-gray-700">
-        Удалить все новости до указанной даты:
-      </p>
-
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="mb-6 rounded-md border border-gray-300 px-2 focus:ring-2
-          focus:ring-blue-400 focus:outline-none"
+      <FormBuilder<ArticleCleanupRequest>
+        formError={normalizedError}
+        formTitle="Удалить все новости до указанной даты:"
+        fields={[
+          {
+            type: 'date',
+            name: 'date_to',
+            onValueChange,
+            props: {},
+          },
+        ]}
+        initialValue={{
+          dry_run: false,
+          date_to: '',
+        }}
+        onSubmit={(data) => mutateAsync(data)}
+        submitText="Удалить"
+        customSubmitComponent={
+          <div className="vertical">
+            <StatisticList
+              total={statistics?.total ?? '-'}
+              remaining={statistics?.remaining ?? '-'}
+              deleted={statistics?.deleted ?? '-'}
+            />
+            <Button type="submit">Удалить</Button>
+          </div>
+        }
       />
-
-      <StatisticList />
-
-      <Button onClick={handleDelete} size="xs" className="mt-4">
-        Удалить
-      </Button>
     </SettingsCardWrapper>
   )
 }
