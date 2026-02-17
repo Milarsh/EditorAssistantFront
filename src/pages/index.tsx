@@ -1,4 +1,4 @@
-import { NewsFeed } from '@/features/articles-feed'
+import { ArticlesFeed } from '@/features/articles-feed'
 import { Header } from '@/shared/ui/header'
 import { SourcesPanel } from '@/widgets/sources-panel'
 
@@ -9,7 +9,7 @@ export const MainPage = () => {
       <div className="flex overflow-hidden">
         <SourcesPanel />
         <div className="w-full overflow-y-auto">
-          <NewsFeed />
+          <ArticlesFeed />
         </div>
       </div>
     </main>

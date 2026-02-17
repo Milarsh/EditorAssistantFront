@@ -28,8 +28,3 @@ export const useArticlesList = (filters: ArticlesListParams) => {
     },
   })
 }
-
-// export const useArticlesList = (params?: ArticlesListParams) =>
-//   useQuery({
-//     ...articlesQueryKeys.list(params),
-//   })
