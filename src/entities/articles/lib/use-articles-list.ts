@@ -1,9 +1,35 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
+
+import { httpClient } from '@/shared/api'
 
 import type { ArticlesListParams } from '../model'
-import { articlesQueryKeys } from './article-query-keys.ts'
 
-export const useArticlesList = (params?: ArticlesListParams) =>
-  useQuery({
-    ...articlesQueryKeys.list(params),
+export const useArticlesList = (filters: ArticlesListParams) => {
+  return useInfiniteQuery({
+    queryKey: ['articles', filters],
+
+    initialPageParam: 0,
+
+    queryFn: ({ pageParam }) =>
+      httpClient.api.articlesList({
+        ...filters,
+        offset: pageParam,
+        limit: filters.limit ?? 10,
+      }),
+
+    getNextPageParam: (lastPage, allPages) => {
+      const limit = filters.limit ?? 10
+
+      if (lastPage.data.items.length < limit) {
+        return undefined
+      }
+
+      return allPages.length * limit
+    },
   })
+}
+
+// export const useArticlesList = (params?: ArticlesListParams) =>
+//   useQuery({
+//     ...articlesQueryKeys.list(params),
+//   })

@@ -1,5 +1,5 @@
-import { useSourceDelete } from '@/entities/sources/lib/use-source-delete'
-import { useSourcesList } from '@/entities/sources/lib/use-sources-list'
+import { useSourceDelete } from '@/entities/source/lib/use-source-delete'
+import { useSourcesList } from '@/entities/source/lib/use-sources-list'
 import { Header } from '@/shared/ui/header'
 import { List } from '@/shared/ui/list'
 

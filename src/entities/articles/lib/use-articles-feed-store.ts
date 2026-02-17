@@ -1,38 +1,42 @@
 // entities/articles/model/articles-feed.use-articles-feed-store.ts
 import { create } from 'zustand'
 
+import type { ArticlesListParams } from '@/entities/articles/model'
 import { ArticlesListParamsOrderEnum } from '@/shared/api'
 
 type ArticlesFeedState = {
-  category: string
-  search: string
-  order: ArticlesListParamsOrderEnum
+  filters: ArticlesListParams
+}
 
-  setCategory: (v: string) => void
-  setSearch: (v: string) => void
-  toggleOrder: () => void
+type ArticlesFeedActions = {
+  setFilters: (patch: Partial<ArticlesListParams>) => void
   reset: () => void
 }
 
-export const useArticlesFeedStore = create<ArticlesFeedState>((set) => ({
-  category: 'all',
-  search: '',
-  order: ArticlesListParamsOrderEnum.Asc,
+type ArticlesFeedStore = ArticlesFeedState & ArticlesFeedActions
 
-  setCategory: (category) => set({ category }),
-  setSearch: (search) => set({ search }),
-  toggleOrder: () =>
-    set((s) => ({
-      order:
-        s.order === ArticlesListParamsOrderEnum.Asc
-          ? ArticlesListParamsOrderEnum.Desc
-          : ArticlesListParamsOrderEnum.Asc,
+const initialState: ArticlesListParams = {
+  limit: 20,
+  offset: 0,
+  source_id: undefined,
+  q: '',
+  date_from: undefined,
+  date_to: undefined,
+  order: ArticlesListParamsOrderEnum.Asc,
+}
+
+export const useArticlesFeedStore = create<ArticlesFeedStore>((set) => ({
+  filters: initialState,
+  setFilters: (patch) =>
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        ...patch,
+      },
     })),
 
   reset: () =>
     set({
-      category: 'all',
-      search: '',
-      order: ArticlesListParamsOrderEnum.Asc,
+      filters: initialState,
     }),
 }))

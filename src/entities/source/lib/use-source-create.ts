@@ -17,7 +17,7 @@ export const useSourceCreate = () => {
       queryClient.invalidateQueries({
         queryKey: sourcesQueryKeys.list().queryKey,
       })
-      const { order } = useArticlesFeedStore.getState()
+      const { order } = useArticlesFeedStore.getState().filters
 
       queryClient.invalidateQueries({
         queryKey: articlesQueryKeys.list({ order }).queryKey,

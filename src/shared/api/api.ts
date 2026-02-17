@@ -800,7 +800,7 @@ export class Api<
      * @tags Sources
      * @name SourcesList
      * @summary Список источников
-     * @request GET:/api/sources
+     * @request GET:/api/source
      */
     sourcesList: (params: RequestParams = {}) =>
       this.request<SourcesList, Error>({
@@ -816,7 +816,7 @@ export class Api<
      * @tags Sources
      * @name SourcesCreate
      * @summary Добавить источник
-     * @request POST:/api/sources
+     * @request POST:/api/source
      */
     sourcesCreate: (data: SourceCreate, params: RequestParams = {}) =>
       this.request<Source, Error>({
@@ -834,7 +834,7 @@ export class Api<
      * @tags Sources
      * @name SourcesDelete
      * @summary Удалить источник
-     * @request DELETE:/api/sources/{id}
+     * @request DELETE:/api/source/{id}
      */
     sourcesDelete: (id: number, params: RequestParams = {}) =>
       this.request<

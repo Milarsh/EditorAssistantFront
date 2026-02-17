@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { useSourcesList } from '@/entities/sources/lib/use-sources-list'
-import { SourceCreateForm } from '@/entities/sources/ui/source-create-form'
+import { useSourcesList } from '@/entities/source/lib/use-sources-list'
+import { SourceCreateForm } from '@/entities/source/ui/source-create-form'
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
 

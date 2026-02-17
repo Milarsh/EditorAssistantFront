@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { articlesQueryKeys } from '@/entities/articles/lib/article-query-keys'
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
-import { sourcesQueryKeys } from '@/entities/sources/lib/sources-query-keys'
+import { sourcesQueryKeys } from '@/entities/source/lib/sources-query-keys'
 import { userQueryKeys } from '@/entities/user/lib'
 import { useAuthStore } from '@/features/auth/store'
 import {
@@ -22,7 +22,7 @@ export const useLogin = () => {
         queryKey: sourcesQueryKeys.list().queryKey,
       })
 
-      const { order } = useArticlesFeedStore.getState()
+      const { order } = useArticlesFeedStore.getState().filters
 
       queryClient.invalidateQueries({
         queryKey: articlesQueryKeys.list({ order }).queryKey,

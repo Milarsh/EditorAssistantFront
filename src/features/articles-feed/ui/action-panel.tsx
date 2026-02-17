@@ -15,9 +15,9 @@ export const ActionPanel = ({
   sortAsc,
   onToggleSort,
 }: {
-  onOpenFilter: () => void
-  sortAsc: boolean
-  onToggleSort: () => void
+  onOpenFilter?: () => void
+  sortAsc?: boolean
+  onToggleSort?: () => void
 }) => (
   <div className="flex flex-wrap justify-between gap-3">
     <div className="flex gap-2">
@@ -33,7 +33,7 @@ export const ActionPanel = ({
         onClick={onToggleSort}
         className={controlButton({ active: false })}
       >
-        {sortAsc ? 'Сначала старые' : 'Сначала новые'}
+        {!sortAsc ? 'Сначала старые' : 'Сначала новые'}
       </button>
     </div>
   </div>
