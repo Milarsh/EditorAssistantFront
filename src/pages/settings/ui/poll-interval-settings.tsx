@@ -38,6 +38,7 @@ export const PollIntervalSettings = () => {
     <SettingsCardWrapper title="Периодичность опроса источников">
       <FormBuilder<SettingUpdate>
         formError={normalizedError}
+        resetAfterSubmit={false}
         fields={[
           {
             type: 'radio',
