@@ -1,6 +1,7 @@
 import { type FC } from 'react'
 
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
+import { useRubricsList } from '@/entities/rubric/lib/use-rubrics-list'
 import { useSourcesList } from '@/entities/source/lib/use-sources-list'
 import { Button } from '@/shared/ui/button'
 import { FormBuilder } from '@/shared/ui/form'
@@ -14,6 +15,7 @@ interface SidebarFilterProps {
 type FilterValues = {
   source_id?: number
   date_range?: string
+  rubric_id?: number
 }
 
 const initialValues: FilterValues = {
@@ -70,10 +72,6 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
 }) => {
   const { setFilters } = useArticlesFeedStore()
 
-  // const handleSubmit = (data:FilterValues) => {
-  // setFilters(data)
-  // setIsOpen(false)
-  // }
   const handleSubmit = (data: FilterValues) => {
     const dateFilters = buildDateInterval(data.date_range)
 
@@ -85,11 +83,8 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
     setIsOpen(false)
   }
 
-  const { data: sources } = useSourcesList()
-
-  if (!sources) {
-    return null
-  }
+  const { data: sources = [] } = useSourcesList()
+  const { data: rubrics = [] } = useRubricsList()
 
   return (
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -127,6 +122,17 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
               title: 'По времени',
               props: {
                 options: dateOptions,
+              },
+            },
+            {
+              type: 'radio',
+              name: 'rubric_id',
+              title: 'Источник',
+              props: {
+                options: rubrics.map((rubric) => ({
+                  value: String(rubric.id),
+                  label: rubric.title,
+                })),
               },
             },
           ]}
