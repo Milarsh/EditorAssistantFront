@@ -20,7 +20,9 @@ const ForgetPassword = ({
       className="mb-2 flex items-end"
       onClick={onForgetPasswordClick}
     >
-      <Typography variant="footnote-bold">забыли пароль?</Typography>
+      <Typography variant="footnote-bold" className="text-neutral-500">
+        забыли пароль?
+      </Typography>
     </button>
   )
 }
@@ -57,7 +59,9 @@ export const LoginForm = ({
       customSubmitComponent={
         <div className="vertical w-full">
           <ForgetPassword onForgetPasswordClick={onForgetPasswordClick} />
-          <Button type="submit">Войти</Button>
+          <Button type="submit" className="bg-blue-500">
+            Войти
+          </Button>
         </div>
       }
     />

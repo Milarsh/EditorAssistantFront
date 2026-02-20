@@ -69,6 +69,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       fields={registerFormFieldsConfig}
       initialValue={registerInitialValues}
       onSubmit={handleRegister}
+      submitText="Регистрация"
     />
   )
 }
