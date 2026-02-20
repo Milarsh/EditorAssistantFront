@@ -1,4 +1,4 @@
-import { FileDown, RefreshCw } from 'lucide-react'
+import { FileUp, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
@@ -21,24 +21,33 @@ export const ArticlesFeed = () => {
     <>
       <div className="vertical w-full gap-6 px-4">
         <div
-          className="vertical gap-4 sm:flex-row sm:items-center sm:justify-start
-            sm:gap-30"
+          className="vertical gap-4 sm:flex-row sm:items-center
+            sm:justify-between sm:gap-30"
         >
-          <Typography variant="h2">Новости</Typography>
-          <ArticlesSearch />
-          <Button size="xs" onClick={() => window.location.reload()}>
+          <div className="flex flex-row items-center gap-4">
+            <Typography variant="h2" className="w-48">
+              Лента новостей
+            </Typography>
+            <ArticlesSearch />
+          </div>
+
+          <Button
+            size="xs"
+            onClick={() => window.location.reload()}
+            className="bg-blue-500"
+          >
             Обновить
             <RefreshCw className="ml-2 inline-block" />
           </Button>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end border-y border-gray-300 p-2">
           <button
             type="button"
             onClick={handleExportExcel}
-            className="bg-btn-primary flex items-center gap-2 rounded-md px-2
-              py-1 text-white"
+            className="flex items-center gap-2 rounded-md bg-blue-500 px-2
+              text-sm text-white"
           >
-            экспорт Excel <FileDown className="size-5" />
+            экспорт Excel <FileUp size={16} />
           </button>
         </div>
 

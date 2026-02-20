@@ -1,3 +1,4 @@
+import { WifiHigh } from 'lucide-react'
 import { useState } from 'react'
 
 import { useSourcesList } from '@/entities/source/lib/use-sources-list'
@@ -32,8 +33,8 @@ export const SourcesPanel = () => {
 
   return (
     <div
-      className="vertical h-full w-90 justify-between border-r border-slate-300
-        bg-slate-100 p-4"
+      className="vertical h-full w-90 justify-start gap-80 border-r
+        border-slate-300 bg-slate-100 p-4"
       style={{ height: 'calc(100vh - calc(var(--spacing) * 12))' }}
     >
       <div>
@@ -46,9 +47,11 @@ export const SourcesPanel = () => {
           {active?.items.map((item, index) => (
             <li
               key={item.id}
-              className="bg-transparent px-3 py-2 text-slate-700"
+              className="flex flex-row items-center gap-2 bg-transparent px-3
+                py-2 text-slate-700"
             >
-              {item.name} ({index + 5})
+              <WifiHigh size={20} className="-mt-1 rotate-45" />
+              {item.name} ({index})
             </li>
           ))}
         </ul>

@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { CircleUserRound } from 'lucide-react'
 import { type FC } from 'react'
 
 import { useUserInfo } from '@/entities/user/lib'
@@ -27,7 +28,14 @@ export const Header: FC<Props> = ({
 
       {!hideUser && (
         <Link to="/profile">
-          <Typography variant="body">{user?.login}</Typography>
+          {/* eslint-disable-next-line max-len */}
+          <Typography
+            variant="body"
+            className="flex flex-row items-center gap-2 text-neutral-500"
+          >
+            <CircleUserRound size={20} />
+            {user?.login}
+          </Typography>
         </Link>
       )}
     </div>

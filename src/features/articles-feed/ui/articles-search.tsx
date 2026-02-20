@@ -21,7 +21,7 @@ export const ArticlesSearch = () => {
       placeholder="Поиск..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full max-w-100"
+      className="h-7 w-116 w-full"
     />
   )
 }
