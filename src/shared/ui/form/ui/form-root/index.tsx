@@ -26,6 +26,7 @@ export interface BaseFormProps<T extends object> {
   submitText?: string
   customSubmitComponent?: ReactNode
   formTitle?: ReactNode
+  resetAfterSubmit?: boolean
 }
 
 export const FormRoot = <T extends object>({
@@ -38,6 +39,7 @@ export const FormRoot = <T extends object>({
   customSubmitComponent,
   formTitle,
   successMessage = 'Успех!',
+  resetAfterSubmit = true,
 }: BaseFormProps<T>) => {
   const [values, setValues] = useState<T>(initialValues)
 
@@ -52,6 +54,9 @@ export const FormRoot = <T extends object>({
     e.preventDefault()
     await onSubmit(values)
     toast.success(successMessage)
+    if (resetAfterSubmit) {
+      setValues(initialValues)
+    }
   }
 
   return (

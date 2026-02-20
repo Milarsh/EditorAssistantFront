@@ -52,6 +52,7 @@ interface FormBuilderProps<T> {
   submitText?: string
   customSubmitComponent?: ReactNode
   formTitle?: ReactNode
+  resetAfterSubmit?: boolean
 }
 
 export const FormBuilder = <T extends Record<string, any>>({
@@ -62,6 +63,7 @@ export const FormBuilder = <T extends Record<string, any>>({
   submitText,
   customSubmitComponent,
   formTitle,
+  resetAfterSubmit,
 }: FormBuilderProps<T>) => {
   return (
     <FormRoot<T>
@@ -72,6 +74,7 @@ export const FormBuilder = <T extends Record<string, any>>({
       fieldsError={formError}
       customSubmitComponent={customSubmitComponent}
       submitText={submitText}
+      resetAfterSubmit={resetAfterSubmit}
       render={({ handleChange, values, error }) =>
         fields.map((field) => (
           <div key={field.name}>

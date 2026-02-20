@@ -7,7 +7,7 @@ import {
 } from '@/shared/api'
 import { useAppMutation } from '@/shared/api/lib'
 
-import { stopWordsQueryKeys } from './stop-words-query-keys'
+import { stopWordsQueryKeys } from './query-keys.ts'
 
 export const useStopWordCreate = () => {
   const queryClient = useQueryClient()
