@@ -1,7 +1,10 @@
-import { useStopWordsList } from '@/entities/stop-words'
+import { Link } from '@tanstack/react-router'
+
+import { useStopWordsByCategory, useStopWordsList } from '@/entities/stop-words'
 import {
   useStopCategoriesCreate,
   useStopCategoriesList,
+  useStopCategoryDelete,
 } from '@/entities/stop-words-categories/'
 import { ManagerWrapper } from '@/pages/manage/ui/manager-wrapper'
 import type { StopCategory, StopCategoryUpsertRequest } from '@/shared/api'
@@ -34,6 +37,29 @@ const CreateCategoryForm = () => {
   )
 }
 
+const CategoryItemContainer = ({ category }: { category: StopCategory }) => {
+  const { mutate: deleteCategory, normalizedError } = useStopCategoryDelete()
+
+  const categoryStopWords = useStopWordsByCategory(category.id)
+
+  const wordsPreview = categoryStopWords.map((w) => w.value).join(', ')
+
+  return (
+    <Link
+      to="/manage/stop-words/$category-id"
+      params={{ 'category-id': String(category.id) }}
+    >
+      <CategoryItem
+        title={category.title}
+        wordsCount={categoryStopWords.length}
+        wordsPreview={wordsPreview}
+        onDelete={() => deleteCategory(category.id)}
+        error={normalizedError?.message}
+      />
+    </Link>
+  )
+}
+
 export const StopCategoriesManager = () => {
   const { data: stopCategories = [] } = useStopCategoriesList()
   const { data: stopWords = [] } = useStopWordsList()
@@ -55,7 +81,7 @@ export const StopCategoriesManager = () => {
           <List<StopCategory>
             items={stopCategories}
             renderItem={(category) => (
-              <CategoryItem key={category.id} category={category} />
+              <CategoryItemContainer key={category.id} category={category} />
             )}
           />
         )}

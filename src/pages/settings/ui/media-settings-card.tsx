@@ -73,6 +73,7 @@ export const MediaSettingsCard = () => {
     <SettingsCardWrapper title="Настройки медиафайлов">
       <MediaKeepToggle />
       <FormBuilder<SettingUpdate>
+        resetAfterSubmit={false}
         formError={normalizedError}
         fields={[
           {
