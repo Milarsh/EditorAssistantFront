@@ -16,7 +16,7 @@ type ArticlesFeedActions = {
 type ArticlesFeedStore = ArticlesFeedState & ArticlesFeedActions
 
 const initialState: ArticlesListParams = {
-  limit: 20,
+  limit: 25,
   offset: 0,
   source_id: undefined,
   q: '',

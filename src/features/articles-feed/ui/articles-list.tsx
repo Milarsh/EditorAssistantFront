@@ -15,12 +15,15 @@ export const ArticlesList = () => {
   })
 
   const articles = data?.pages.flatMap((page) => page.data.items) ?? []
+  const filteredArticles = articles.filter(
+    (article) => !article.parent_article_id,
+  )
 
   return (
     <div className="vertical gap-4">
-      {articles.map((article, index) => {
+      {filteredArticles.map((article, index) => {
         const shouldAttachRef =
-          articles.length > 1 && index === articles.length - 2
+          filteredArticles.length > 1 && index === filteredArticles.length - 2
 
         return (
           <div key={article.id} ref={shouldAttachRef ? observerRef : undefined}>
