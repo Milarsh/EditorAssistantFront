@@ -54,6 +54,7 @@ export const LoginForm = ({
       fields={loginFormFieldsConfig}
       initialValue={loginInitialValues}
       onSubmit={handleLogin}
+      resetAfterSubmit={false}
       customSubmitComponent={
         <div className="vertical w-full">
           <ForgetPassword onForgetPasswordClick={onForgetPasswordClick} />
