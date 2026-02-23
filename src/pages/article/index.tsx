@@ -11,12 +11,14 @@ import {
 import toast from 'react-hot-toast'
 
 import { useArticleDetails } from '@/entities/articles/lib/use-article-details'
+import { useArticleStats } from '@/entities/articles/lib/use-article-stats'
 import { Typography } from '@/shared/ui/typography'
 
 export const ArticlePage = () => {
   const { id } = useParams({ from: '/_auth/article/$id' })
   const { history } = useRouter()
   const { data: article, isPending } = useArticleDetails(Number(id))
+  const { data: stats } = useArticleStats(Number(id))
 
   if (!article || isPending) {
     return <Typography variant="h2">Загрузка</Typography>
@@ -57,26 +59,37 @@ export const ArticlePage = () => {
       </div>
 
       <div className="px-6">
-        <div
+        <Typography
+          variant="h2"
           className="rounded-tl-xl rounded-tr-xl bg-blue-500 p-2 text-3xl
             text-white"
         >
           {article.title}
-        </div>
+        </Typography>
         <article
-          className="vertical flex flex-row border-x border-gray-300 shadow-sm"
+          className="vertical flex min-h-200 flex-row border-x border-gray-300
+            shadow-sm"
         >
           <div className="flex-1">
             {article.description && (
               <div dangerouslySetInnerHTML={{ __html: article.description }} />
             )}
-            <div className="border-t border-gray-300 py-2 text-gray-500">
-              <div>Количество стоп-слов:</div>
-              <div>Количество ключевых слов:</div>
-              <div className="flex flex-row items-center gap-1">
-                Ключевые слова:
+            {stats && (
+              <div className="border-t border-gray-300 py-2 text-gray-500">
+                <Typography variant="body">
+                  Количество стоп-слов: {stats.stop_words_count}
+                </Typography>
+                <Typography variant="body">
+                  Количество ключевых слов: {stats.key_words_count}
+                </Typography>
+                <Typography
+                  variant="body"
+                  className="flex flex-row items-center gap-1"
+                >
+                  Ключевые слова:
+                </Typography>
               </div>
-            </div>
+            )}
             <div className="flex items-center gap-4 text-lg text-gray-500">
               <Typography
                 variant="body"
