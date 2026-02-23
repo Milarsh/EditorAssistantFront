@@ -28,7 +28,6 @@ export const Header: FC<Props> = ({
 
       {!hideUser && (
         <Link to="/profile">
-          {/* eslint-disable-next-line max-len */}
           <Typography
             variant="body"
             className="flex flex-row items-center gap-2 text-neutral-500"
