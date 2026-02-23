@@ -5,7 +5,7 @@ import { type FC } from 'react'
 import { useUserInfo } from '@/entities/user/lib'
 import { Typography } from '@/shared/ui/typography'
 
-import { DEFAULT_TITLE } from '../config'
+import { DEFAULT_TITLE } from '../config.tsx'
 import { HeaderMenu } from './header-menu'
 
 interface Props {
