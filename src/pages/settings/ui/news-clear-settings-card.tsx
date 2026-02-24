@@ -76,7 +76,12 @@ export const NewsClearSettingsCard = () => {
               remaining={statistics?.remaining ?? '-'}
               deleted={statistics?.deleted ?? '-'}
             />
-            <Button type="submit">Удалить</Button>
+            <Button
+              type="submit"
+              className="flex h-8 w-30 items-center justify-center bg-blue-500"
+            >
+              Удалить
+            </Button>
           </div>
         }
       />

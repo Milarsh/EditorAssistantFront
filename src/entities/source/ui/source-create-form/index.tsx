@@ -9,14 +9,14 @@ export const sourceCreateFieldsConfig: FormFieldConfig<SourceCreate>[] = [
     type: 'text',
     name: 'rss_url',
     props: {
-      placeholder: 'Выберите ссылку на источник',
+      placeholder: 'Введите ссылку на источник',
     },
   },
   {
     type: 'text',
     name: 'name',
     props: {
-      placeholder: 'Выберите название источника',
+      placeholder: 'Введите название источника',
     },
   },
 ]
@@ -35,6 +35,8 @@ export const SourceCreateForm = () => {
       initialValue={initialValues}
       onSubmit={mutateAsync}
       formError={normalizedError}
+      submitText="Добавить"
+      formTitle="Добавить источник"
     />
   )
 }

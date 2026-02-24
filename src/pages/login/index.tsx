@@ -16,8 +16,11 @@ export const LoginPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#EEF1F8]">
-      <div className="w-100 rounded-lg bg-white p-8 shadow-md">
-        <Typography variant="h3" className="mb-6">
+      <div
+        className="flex w-210 flex-col items-center rounded-lg bg-white p-8
+          shadow-md"
+      >
+        <Typography variant="h3" className="mb-6 self-start">
           News Aggregator
         </Typography>
 

@@ -65,7 +65,7 @@ export const FormRoot = <T extends object>({
 
   return (
     <form onSubmit={handleSubmit} className={className}>
-      {formTitle}
+      <div className="text-lg">{formTitle}</div>
       {render({
         values,
         handleChange,
@@ -76,7 +76,11 @@ export const FormRoot = <T extends object>({
           {fieldsError.message}
         </Typography>
       )}
-      {customSubmitComponent ?? <Button type="submit">{submitText}</Button>}
+      {customSubmitComponent ?? (
+        <Button type="submit" className="bg-blue-500">
+          {submitText}
+        </Button>
+      )}
     </form>
   )
 }

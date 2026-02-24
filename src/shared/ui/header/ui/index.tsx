@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router'
+import { CircleUserRound } from 'lucide-react'
 import { type FC } from 'react'
 
 import { useUserInfo } from '@/entities/user/lib'
 import { Typography } from '@/shared/ui/typography'
 
-import { DEFAULT_TITLE } from '../config'
+import { DEFAULT_TITLE } from '../config.tsx'
 import { HeaderMenu } from './header-menu'
 
 interface Props {
@@ -27,7 +28,13 @@ export const Header: FC<Props> = ({
 
       {!hideUser && (
         <Link to="/profile">
-          <Typography variant="body">{user?.login}</Typography>
+          <Typography
+            variant="body"
+            className="flex flex-row items-center gap-2 text-neutral-500"
+          >
+            <CircleUserRound size={20} />
+            {user?.login}
+          </Typography>
         </Link>
       )}
     </div>
