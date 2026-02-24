@@ -16,7 +16,8 @@ import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index'
-import { Route as AuthSettingsSurveyFrequencyRouteImport } from './routes/_auth/settings/survey-frequency'
+import { Route as AuthSettingsSocialStatisticIntervalRouteImport } from './routes/_auth/settings/social-statistic-interval'
+import { Route as AuthSettingsPollIntevalRouteImport } from './routes/_auth/settings/poll-inteval'
 import { Route as AuthSettingsNewsClearRouteImport } from './routes/_auth/settings/news-clear'
 import { Route as AuthSettingsMediafilesRouteImport } from './routes/_auth/settings/mediafiles'
 import { Route as AuthManageSourcesRouteImport } from './routes/_auth/manage/sources'
@@ -25,7 +26,7 @@ import { Route as AuthArticleIdRouteImport } from './routes/_auth/article.$id'
 import { Route as AuthManageStopWordsIndexRouteImport } from './routes/_auth/manage/stop-words/index'
 import { Route as AuthManageKeyWordsIndexRouteImport } from './routes/_auth/manage/key-words/index'
 import { Route as AuthManageStopWordsCategoryIdRouteImport } from './routes/_auth/manage/stop-words/$category-id'
-import { Route as AuthManageKeyWordsCategoryIdRouteImport } from './routes/_auth/manage/key-words/$category-id'
+import { Route as AuthManageKeyWordsRubricIdRouteImport } from './routes/_auth/manage/key-words/$rubric-id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -61,12 +62,17 @@ const AuthManageIndexRoute = AuthManageIndexRouteImport.update({
   path: '/manage/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSettingsSurveyFrequencyRoute =
-  AuthSettingsSurveyFrequencyRouteImport.update({
-    id: '/survey-frequency',
-    path: '/survey-frequency',
+const AuthSettingsSocialStatisticIntervalRoute =
+  AuthSettingsSocialStatisticIntervalRouteImport.update({
+    id: '/social-statistic-interval',
+    path: '/social-statistic-interval',
     getParentRoute: () => AuthSettingsRoute,
   } as any)
+const AuthSettingsPollIntevalRoute = AuthSettingsPollIntevalRouteImport.update({
+  id: '/poll-inteval',
+  path: '/poll-inteval',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
 const AuthSettingsNewsClearRoute = AuthSettingsNewsClearRouteImport.update({
   id: '/news-clear',
   path: '/news-clear',
@@ -109,10 +115,10 @@ const AuthManageStopWordsCategoryIdRoute =
     path: '/manage/stop-words/$category-id',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthManageKeyWordsCategoryIdRoute =
-  AuthManageKeyWordsCategoryIdRouteImport.update({
-    id: '/manage/key-words/$category-id',
-    path: '/manage/key-words/$category-id',
+const AuthManageKeyWordsRubricIdRoute =
+  AuthManageKeyWordsRubricIdRouteImport.update({
+    id: '/manage/key-words/$rubric-id',
+    path: '/manage/key-words/$rubric-id',
     getParentRoute: () => AuthRoute,
   } as any)
 
@@ -126,10 +132,11 @@ export interface FileRoutesByFullPath {
   '/manage/sources': typeof AuthManageSourcesRoute
   '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
-  '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
+  '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings/': typeof AuthSettingsIndexRoute
-  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
   '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
@@ -143,10 +150,11 @@ export interface FileRoutesByTo {
   '/manage/sources': typeof AuthManageSourcesRoute
   '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
-  '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
+  '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
-  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
   '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
@@ -163,10 +171,11 @@ export interface FileRoutesById {
   '/_auth/manage/sources': typeof AuthManageSourcesRoute
   '/_auth/settings/mediafiles': typeof AuthSettingsMediafilesRoute
   '/_auth/settings/news-clear': typeof AuthSettingsNewsClearRoute
-  '/_auth/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
+  '/_auth/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/_auth/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/_auth/manage/': typeof AuthManageIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
-  '/_auth/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/_auth/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/_auth/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/_auth/manage/key-words/': typeof AuthManageKeyWordsIndexRoute
   '/_auth/manage/stop-words/': typeof AuthManageStopWordsIndexRoute
@@ -183,10 +192,11 @@ export interface FileRouteTypes {
     | '/manage/sources'
     | '/settings/mediafiles'
     | '/settings/news-clear'
-    | '/settings/survey-frequency'
+    | '/settings/poll-inteval'
+    | '/settings/social-statistic-interval'
     | '/manage'
     | '/settings/'
-    | '/manage/key-words/$category-id'
+    | '/manage/key-words/$rubric-id'
     | '/manage/stop-words/$category-id'
     | '/manage/key-words'
     | '/manage/stop-words'
@@ -200,10 +210,11 @@ export interface FileRouteTypes {
     | '/manage/sources'
     | '/settings/mediafiles'
     | '/settings/news-clear'
-    | '/settings/survey-frequency'
+    | '/settings/poll-inteval'
+    | '/settings/social-statistic-interval'
     | '/manage'
     | '/settings'
-    | '/manage/key-words/$category-id'
+    | '/manage/key-words/$rubric-id'
     | '/manage/stop-words/$category-id'
     | '/manage/key-words'
     | '/manage/stop-words'
@@ -219,10 +230,11 @@ export interface FileRouteTypes {
     | '/_auth/manage/sources'
     | '/_auth/settings/mediafiles'
     | '/_auth/settings/news-clear'
-    | '/_auth/settings/survey-frequency'
+    | '/_auth/settings/poll-inteval'
+    | '/_auth/settings/social-statistic-interval'
     | '/_auth/manage/'
     | '/_auth/settings/'
-    | '/_auth/manage/key-words/$category-id'
+    | '/_auth/manage/key-words/$rubric-id'
     | '/_auth/manage/stop-words/$category-id'
     | '/_auth/manage/key-words/'
     | '/_auth/manage/stop-words/'
@@ -284,11 +296,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthManageIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/settings/survey-frequency': {
-      id: '/_auth/settings/survey-frequency'
-      path: '/survey-frequency'
-      fullPath: '/settings/survey-frequency'
-      preLoaderRoute: typeof AuthSettingsSurveyFrequencyRouteImport
+    '/_auth/settings/social-statistic-interval': {
+      id: '/_auth/settings/social-statistic-interval'
+      path: '/social-statistic-interval'
+      fullPath: '/settings/social-statistic-interval'
+      preLoaderRoute: typeof AuthSettingsSocialStatisticIntervalRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/poll-inteval': {
+      id: '/_auth/settings/poll-inteval'
+      path: '/poll-inteval'
+      fullPath: '/settings/poll-inteval'
+      preLoaderRoute: typeof AuthSettingsPollIntevalRouteImport
       parentRoute: typeof AuthSettingsRoute
     }
     '/_auth/settings/news-clear': {
@@ -347,11 +366,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthManageStopWordsCategoryIdRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/manage/key-words/$category-id': {
-      id: '/_auth/manage/key-words/$category-id'
-      path: '/manage/key-words/$category-id'
-      fullPath: '/manage/key-words/$category-id'
-      preLoaderRoute: typeof AuthManageKeyWordsCategoryIdRouteImport
+    '/_auth/manage/key-words/$rubric-id': {
+      id: '/_auth/manage/key-words/$rubric-id'
+      path: '/manage/key-words/$rubric-id'
+      fullPath: '/manage/key-words/$rubric-id'
+      preLoaderRoute: typeof AuthManageKeyWordsRubricIdRouteImport
       parentRoute: typeof AuthRoute
     }
   }
@@ -360,14 +379,17 @@ declare module '@tanstack/react-router' {
 interface AuthSettingsRouteChildren {
   AuthSettingsMediafilesRoute: typeof AuthSettingsMediafilesRoute
   AuthSettingsNewsClearRoute: typeof AuthSettingsNewsClearRoute
-  AuthSettingsSurveyFrequencyRoute: typeof AuthSettingsSurveyFrequencyRoute
+  AuthSettingsPollIntevalRoute: typeof AuthSettingsPollIntevalRoute
+  AuthSettingsSocialStatisticIntervalRoute: typeof AuthSettingsSocialStatisticIntervalRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
 }
 
 const AuthSettingsRouteChildren: AuthSettingsRouteChildren = {
   AuthSettingsMediafilesRoute: AuthSettingsMediafilesRoute,
   AuthSettingsNewsClearRoute: AuthSettingsNewsClearRoute,
-  AuthSettingsSurveyFrequencyRoute: AuthSettingsSurveyFrequencyRoute,
+  AuthSettingsPollIntevalRoute: AuthSettingsPollIntevalRoute,
+  AuthSettingsSocialStatisticIntervalRoute:
+    AuthSettingsSocialStatisticIntervalRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
 }
 
@@ -383,7 +405,7 @@ interface AuthRouteChildren {
   AuthManageCategoriesRoute: typeof AuthManageCategoriesRoute
   AuthManageSourcesRoute: typeof AuthManageSourcesRoute
   AuthManageIndexRoute: typeof AuthManageIndexRoute
-  AuthManageKeyWordsCategoryIdRoute: typeof AuthManageKeyWordsCategoryIdRoute
+  AuthManageKeyWordsRubricIdRoute: typeof AuthManageKeyWordsRubricIdRoute
   AuthManageStopWordsCategoryIdRoute: typeof AuthManageStopWordsCategoryIdRoute
   AuthManageKeyWordsIndexRoute: typeof AuthManageKeyWordsIndexRoute
   AuthManageStopWordsIndexRoute: typeof AuthManageStopWordsIndexRoute
@@ -397,7 +419,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthManageCategoriesRoute: AuthManageCategoriesRoute,
   AuthManageSourcesRoute: AuthManageSourcesRoute,
   AuthManageIndexRoute: AuthManageIndexRoute,
-  AuthManageKeyWordsCategoryIdRoute: AuthManageKeyWordsCategoryIdRoute,
+  AuthManageKeyWordsRubricIdRoute: AuthManageKeyWordsRubricIdRoute,
   AuthManageStopWordsCategoryIdRoute: AuthManageStopWordsCategoryIdRoute,
   AuthManageKeyWordsIndexRoute: AuthManageKeyWordsIndexRoute,
   AuthManageStopWordsIndexRoute: AuthManageStopWordsIndexRoute,

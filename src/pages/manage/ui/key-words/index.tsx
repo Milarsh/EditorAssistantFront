@@ -46,8 +46,8 @@ const CategoryItemContainer = ({ rubric }: { rubric: Rubric }) => {
 
   return (
     <Link
-      to="/manage/key-words/$category-id"
-      params={{ 'category-id': String(rubric.id) }}
+      to="/manage/key-words/$rubric-id"
+      params={{ 'rubric-id': String(rubric.id) }}
     >
       <CategoryItem
         title={rubric.title}

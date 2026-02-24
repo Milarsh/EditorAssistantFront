@@ -1,11 +1,19 @@
 import { type FC } from 'react'
 
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
+import type { ArticlesListParams } from '@/entities/articles/model'
 import { useRubricsList } from '@/entities/rubric/lib/use-rubrics-list'
 import { useSourcesList } from '@/entities/source/lib/use-sources-list'
 import { Button } from '@/shared/ui/button'
 import { FormBuilder } from '@/shared/ui/form'
 import { Sidebar } from '@/shared/ui/sidebar'
+
+import {
+  buildDateInterval,
+  type DateRange,
+  resolveDateRange,
+} from '../../lib/utils'
+import { dateOptions } from './config'
 
 interface SidebarFilterProps {
   isOpen: boolean
@@ -14,63 +22,26 @@ interface SidebarFilterProps {
 
 type FilterValues = {
   source_id?: number
-  date_range?: string
+  date_range?: DateRange
   rubric_id?: number
 }
 
-const initialValues: FilterValues = {
-  source_id: undefined,
-}
-
-const dateOptions = [
-  { value: 'today', label: 'Сегодня' },
-  { value: '3d', label: 'За 3 дня' },
-  { value: '5d', label: 'За 5 дней' },
-  { value: '7d', label: 'За неделю' },
-  { value: '14d', label: 'За 2 недели' },
-]
-
-const buildDateInterval = (
-  range?: string,
-): { date_from: string; date_to: string } | undefined => {
-  if (!range) {
-    return undefined
-  }
-
-  const now = new Date()
-  const from = new Date()
-
-  switch (range) {
-    case 'today':
-      from.setHours(0, 0, 0, 0)
-      break
-    case '3d':
-      from.setDate(now.getDate() - 3)
-      break
-    case '5d':
-      from.setDate(now.getDate() - 5)
-      break
-    case '7d':
-      from.setDate(now.getDate() - 7)
-      break
-    case '14d':
-      from.setDate(now.getDate() - 14)
-      break
-    default:
-      return undefined
-  }
-
-  return {
-    date_from: from.toISOString(),
-    date_to: now.toISOString(),
-  }
-}
+const getInitValues = ({
+  date_from,
+  date_to,
+  rubric_id,
+  source_id,
+}: ArticlesListParams): FilterValues => ({
+  source_id: source_id || undefined,
+  rubric_id: rubric_id || undefined,
+  date_range: resolveDateRange(date_from, date_to),
+})
 
 export const SidebarFilter: FC<SidebarFilterProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const { setFilters } = useArticlesFeedStore()
+  const { setFilters, reset, filters } = useArticlesFeedStore()
 
   const handleSubmit = (data: FilterValues) => {
     const dateFilters = buildDateInterval(data.date_range)
@@ -85,6 +56,8 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
 
   const { data: sources = [] } = useSourcesList()
   const { data: rubrics = [] } = useRubricsList()
+
+  const initialValues = getInitValues(filters)
 
   return (
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -104,6 +77,7 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
 
       <div className="flex-1 overflow-y-auto px-5 py-4">
         <FormBuilder<FilterValues>
+          resetAfterSubmit={false}
           fields={[
             {
               type: 'radio',
@@ -127,7 +101,7 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
             {
               type: 'radio',
               name: 'rubric_id',
-              title: 'Источник',
+              title: 'Рубрика',
               props: {
                 options: rubrics.map((rubric) => ({
                   value: String(rubric.id),
@@ -139,9 +113,12 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
           initialValue={initialValues}
           onSubmit={handleSubmit}
           customSubmitComponent={
-            <div className="border-t border-gray-200 p-4">
+            <div className="vertical gap-4 border-t border-gray-200 p-4">
               <Button type="submit" className="bg-blue-500">
-                Применить
+                Применить фильтры
+              </Button>
+              <Button onClick={reset} className="bg-blue-500">
+                Сбросить фильтры
               </Button>
             </div>
           }

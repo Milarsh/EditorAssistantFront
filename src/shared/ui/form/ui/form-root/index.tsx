@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useState } from 'react'
+import { type FormEvent, type ReactNode, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import type { ErrorApiPayload } from '@/shared/api/model'
@@ -42,6 +42,10 @@ export const FormRoot = <T extends object>({
   resetAfterSubmit = true,
 }: BaseFormProps<T>) => {
   const [values, setValues] = useState<T>(initialValues)
+
+  useEffect(() => {
+    setValues(initialValues)
+  }, [initialValues])
 
   const handleChange = <K extends keyof T>(name: K, value: T[K]) => {
     setValues((prev) => ({

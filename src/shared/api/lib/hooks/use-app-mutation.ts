@@ -3,14 +3,15 @@ import type { AxiosError, AxiosResponse } from 'axios'
 
 import type { ErrorApi, ErrorApiPayload } from '@/shared/api/model'
 
-type AppMutationOptions<TData, TVariables> = UseMutationOptions<
+type AppMutationOptions<TData, TVariables, TContext> = UseMutationOptions<
   AxiosResponse<TData>,
   AxiosError<ErrorApi>,
-  TVariables
+  TVariables,
+  TContext
 >
 
-export function useAppMutation<TData, TVariables>(
-  options: AppMutationOptions<TData, TVariables>,
+export function useAppMutation<TData, TVariables, TContext = unknown>(
+  options: AppMutationOptions<TData, TVariables, TContext>,
 ) {
   const mutation = useMutation(options)
 

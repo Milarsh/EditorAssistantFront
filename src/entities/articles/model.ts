@@ -8,4 +8,5 @@ export type ArticlesListParams = {
   date_from?: string
   date_to?: string
   order?: ArticlesListParamsOrderEnum
+  rubric_id?: number
 }

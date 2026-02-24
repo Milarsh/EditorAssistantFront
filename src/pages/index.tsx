@@ -8,9 +8,7 @@ export const MainPage = () => {
       <Header />
       <div className="flex overflow-hidden">
         <SourcesPanel />
-        <div className="w-full overflow-y-auto">
-          <ArticlesFeed />
-        </div>
+        <ArticlesFeed />
       </div>
     </main>
   )
