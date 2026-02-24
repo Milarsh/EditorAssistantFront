@@ -10,9 +10,13 @@ const settingsLinks: { label: string; to: keyof FileRoutesByTo }[] = [
   { label: 'Очистка новостей', to: '/settings/news-clear' },
   {
     label: 'Периодичность опроса источников',
-    to: '/settings/survey-frequency',
+    to: '/settings/poll-inteval',
   },
   { label: 'Настройка медиафайлов', to: '/settings/mediafiles' },
+  {
+    label: 'Периодичность сбора статистики по новостям',
+    to: '/settings/social-statistic-interval',
+  },
 ]
 
 export const SettingsLayout = () => {

@@ -10,18 +10,18 @@ import { Typography } from '@/shared/ui/typography'
 
 import { SettingsCardWrapper } from './settings-card-wrapper'
 
-export const PollIntervalSettings = () => {
+export const SocialStatisticInterval = () => {
   const { data: setting, isLoading } = useSettingsOptionSingle(
-    SETTINGS_CODES.POLL_INTERVAL,
+    SETTINGS_CODES.SOCIAL_STATS_INTERVAL,
   )
 
   const { mutateAsync: updateSettings, normalizedError } = useSettingsUpdate()
 
   const {
-    data: currentPollIntervalSettings,
+    data: currentSocialStatsSettings,
     isPending: isCurrentPollIntervalPending,
   } = useCurrentSettings({
-    codes: SETTINGS_CODES.POLL_INTERVAL,
+    codes: SETTINGS_CODES.SOCIAL_STATS_INTERVAL,
   })
 
   if (isLoading || !setting || isCurrentPollIntervalPending) {
@@ -35,7 +35,7 @@ export const PollIntervalSettings = () => {
     })) || []
 
   return (
-    <SettingsCardWrapper title="Периодичность опроса источников">
+    <SettingsCardWrapper title="Периодичность сбора статистики по новостям">
       <FormBuilder<SettingUpdate>
         formError={normalizedError}
         resetAfterSubmit={false}
@@ -53,8 +53,8 @@ export const PollIntervalSettings = () => {
           },
         ]}
         initialValue={{
-          code: SETTINGS_CODES.POLL_INTERVAL,
-          value: currentPollIntervalSettings?.[0].value || '',
+          code: SETTINGS_CODES.SOCIAL_STATS_INTERVAL,
+          value: currentSocialStatsSettings?.[0].value || '',
         }}
         onSubmit={(data) => updateSettings(data)}
         submitText="Сохранить изменения"
