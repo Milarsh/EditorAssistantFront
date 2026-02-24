@@ -54,7 +54,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
           />
         ))}
         {textField && (
-          <div className="flex items-center gap-2">
+          <div className="col-start-2 flex items-center gap-2">
             <Radio
               value="custom"
               checked={isCustom}

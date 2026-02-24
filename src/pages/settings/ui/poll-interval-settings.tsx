@@ -5,6 +5,7 @@ import {
 } from '@/features/settings'
 import { SETTINGS_CODES } from '@/pages/settings/model'
 import type { SettingUpdate } from '@/shared/api'
+import { Button } from '@/shared/ui/button'
 import { FormBuilder } from '@/shared/ui/form'
 import { Typography } from '@/shared/ui/typography'
 
@@ -45,6 +46,7 @@ export const PollIntervalSettings = () => {
             name: 'value',
             props: {
               options,
+              buttonsClass: 'grid grid-cols-2 gap-2',
               textField: {
                 title: 'Настроить вручную',
                 afterInputSlot: <Typography variant="footnote">мин</Typography>,
@@ -57,7 +59,17 @@ export const PollIntervalSettings = () => {
           value: currentPollIntervalSettings?.[0].value || '',
         }}
         onSubmit={(data) => updateSettings(data)}
-        submitText="Сохранить изменения"
+        customSubmitComponent={
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              size="xs"
+              className="flex h-8 w-40 items-center justify-center bg-blue-500"
+            >
+              Сохранить изменения
+            </Button>
+          </div>
+        }
       />
     </SettingsCardWrapper>
   )
