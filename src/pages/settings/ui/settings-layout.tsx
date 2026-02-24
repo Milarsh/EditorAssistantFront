@@ -27,7 +27,7 @@ export const SettingsLayout = () => {
             Настройки
           </Typography>
 
-          <nav className="vertical gap-1">
+          <nav className="vertical gap-1 text-neutral-500">
             {settingsLinks.map(({ label, to }) => {
               return (
                 <Link
