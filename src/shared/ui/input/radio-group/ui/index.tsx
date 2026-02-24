@@ -35,7 +35,9 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [isCustom, setIsCustom] = useState(false)
+  const [isCustom, setIsCustom] = useState(
+    !options.some((option) => option.value === value),
+  )
 
   return (
     <div className={cn('vertical gap-2', containerClass)}>

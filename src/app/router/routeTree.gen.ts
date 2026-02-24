@@ -25,7 +25,7 @@ import { Route as AuthArticleIdRouteImport } from './routes/_auth/article.$id'
 import { Route as AuthManageStopWordsIndexRouteImport } from './routes/_auth/manage/stop-words/index'
 import { Route as AuthManageKeyWordsIndexRouteImport } from './routes/_auth/manage/key-words/index'
 import { Route as AuthManageStopWordsCategoryIdRouteImport } from './routes/_auth/manage/stop-words/$category-id'
-import { Route as AuthManageKeyWordsCategoryIdRouteImport } from './routes/_auth/manage/key-words/$category-id'
+import { Route as AuthManageKeyWordsRubricIdRouteImport } from './routes/_auth/manage/key-words/$rubric-id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -109,10 +109,10 @@ const AuthManageStopWordsCategoryIdRoute =
     path: '/manage/stop-words/$category-id',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthManageKeyWordsCategoryIdRoute =
-  AuthManageKeyWordsCategoryIdRouteImport.update({
-    id: '/manage/key-words/$category-id',
-    path: '/manage/key-words/$category-id',
+const AuthManageKeyWordsRubricIdRoute =
+  AuthManageKeyWordsRubricIdRouteImport.update({
+    id: '/manage/key-words/$rubric-id',
+    path: '/manage/key-words/$rubric-id',
     getParentRoute: () => AuthRoute,
   } as any)
 
@@ -129,7 +129,7 @@ export interface FileRoutesByFullPath {
   '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings/': typeof AuthSettingsIndexRoute
-  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
   '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
@@ -146,7 +146,7 @@ export interface FileRoutesByTo {
   '/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
-  '/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
   '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
@@ -166,7 +166,7 @@ export interface FileRoutesById {
   '/_auth/settings/survey-frequency': typeof AuthSettingsSurveyFrequencyRoute
   '/_auth/manage/': typeof AuthManageIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
-  '/_auth/manage/key-words/$category-id': typeof AuthManageKeyWordsCategoryIdRoute
+  '/_auth/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
   '/_auth/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
   '/_auth/manage/key-words/': typeof AuthManageKeyWordsIndexRoute
   '/_auth/manage/stop-words/': typeof AuthManageStopWordsIndexRoute
@@ -186,7 +186,7 @@ export interface FileRouteTypes {
     | '/settings/survey-frequency'
     | '/manage'
     | '/settings/'
-    | '/manage/key-words/$category-id'
+    | '/manage/key-words/$rubric-id'
     | '/manage/stop-words/$category-id'
     | '/manage/key-words'
     | '/manage/stop-words'
@@ -203,7 +203,7 @@ export interface FileRouteTypes {
     | '/settings/survey-frequency'
     | '/manage'
     | '/settings'
-    | '/manage/key-words/$category-id'
+    | '/manage/key-words/$rubric-id'
     | '/manage/stop-words/$category-id'
     | '/manage/key-words'
     | '/manage/stop-words'
@@ -222,7 +222,7 @@ export interface FileRouteTypes {
     | '/_auth/settings/survey-frequency'
     | '/_auth/manage/'
     | '/_auth/settings/'
-    | '/_auth/manage/key-words/$category-id'
+    | '/_auth/manage/key-words/$rubric-id'
     | '/_auth/manage/stop-words/$category-id'
     | '/_auth/manage/key-words/'
     | '/_auth/manage/stop-words/'
@@ -347,11 +347,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthManageStopWordsCategoryIdRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/manage/key-words/$category-id': {
-      id: '/_auth/manage/key-words/$category-id'
-      path: '/manage/key-words/$category-id'
-      fullPath: '/manage/key-words/$category-id'
-      preLoaderRoute: typeof AuthManageKeyWordsCategoryIdRouteImport
+    '/_auth/manage/key-words/$rubric-id': {
+      id: '/_auth/manage/key-words/$rubric-id'
+      path: '/manage/key-words/$rubric-id'
+      fullPath: '/manage/key-words/$rubric-id'
+      preLoaderRoute: typeof AuthManageKeyWordsRubricIdRouteImport
       parentRoute: typeof AuthRoute
     }
   }
@@ -383,7 +383,7 @@ interface AuthRouteChildren {
   AuthManageCategoriesRoute: typeof AuthManageCategoriesRoute
   AuthManageSourcesRoute: typeof AuthManageSourcesRoute
   AuthManageIndexRoute: typeof AuthManageIndexRoute
-  AuthManageKeyWordsCategoryIdRoute: typeof AuthManageKeyWordsCategoryIdRoute
+  AuthManageKeyWordsRubricIdRoute: typeof AuthManageKeyWordsRubricIdRoute
   AuthManageStopWordsCategoryIdRoute: typeof AuthManageStopWordsCategoryIdRoute
   AuthManageKeyWordsIndexRoute: typeof AuthManageKeyWordsIndexRoute
   AuthManageStopWordsIndexRoute: typeof AuthManageStopWordsIndexRoute
@@ -397,7 +397,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthManageCategoriesRoute: AuthManageCategoriesRoute,
   AuthManageSourcesRoute: AuthManageSourcesRoute,
   AuthManageIndexRoute: AuthManageIndexRoute,
-  AuthManageKeyWordsCategoryIdRoute: AuthManageKeyWordsCategoryIdRoute,
+  AuthManageKeyWordsRubricIdRoute: AuthManageKeyWordsRubricIdRoute,
   AuthManageStopWordsCategoryIdRoute: AuthManageStopWordsCategoryIdRoute,
   AuthManageKeyWordsIndexRoute: AuthManageKeyWordsIndexRoute,
   AuthManageStopWordsIndexRoute: AuthManageStopWordsIndexRoute,

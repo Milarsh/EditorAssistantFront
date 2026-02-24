@@ -76,15 +76,16 @@ const CreateKeyWordForm = ({ rubricId }: { rubricId: number }) => {
 }
 
 export const KeyWordsCategoryId = () => {
-  const { 'category-id': rubricId } = useParams({
-    from: '/_auth/manage/key-words/$category-id',
+  const { 'rubric-id': rubricId } = useParams({
+    from: '/_auth/manage/key-words/$rubric-id',
   })
   const { data: rubrics = [] } = useRubricsList()
   const keyWordsByCategory = useKeyWordsByRubric(Number(rubricId))
+  const currentRubric = rubrics.find((rubric) => String(rubric.id) === rubricId)
 
   return (
     <ManagerWrapper
-      topSlot={<CategoryIdHeader title="Общие слова про Москву" />}
+      topSlot={<CategoryIdHeader title={currentRubric?.title || ''} />}
       statisticsConfig={{
         title: 'Статистика',
         items: [],

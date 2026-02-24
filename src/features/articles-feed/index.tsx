@@ -18,7 +18,7 @@ export const ArticlesFeed = () => {
   const [showFilters, setShowFilters] = useState(false)
 
   return (
-    <>
+    <div className="w-full overflow-y-auto">
       <div className="vertical w-full gap-6 px-4">
         <div
           className="vertical gap-4 sm:flex-row sm:items-center sm:justify-start
@@ -57,6 +57,6 @@ export const ArticlesFeed = () => {
         <ArticlesList />
       </div>
       <SidebarFilter isOpen={showFilters} setIsOpen={setShowFilters} />
-    </>
+    </div>
   )
 }

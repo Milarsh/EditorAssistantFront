@@ -15,7 +15,7 @@ type ArticlesFeedActions = {
 
 type ArticlesFeedStore = ArticlesFeedState & ArticlesFeedActions
 
-const initialState: ArticlesListParams = {
+export const initialState: ArticlesListParams = {
   limit: 25,
   offset: 0,
   source_id: undefined,
@@ -37,6 +37,6 @@ export const useArticlesFeedStore = create<ArticlesFeedStore>((set) => ({
 
   reset: () =>
     set({
-      filters: initialState,
+      filters: { ...initialState },
     }),
 }))
