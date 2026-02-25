@@ -76,7 +76,7 @@ export interface ArticlesList {
 export interface ArticleAssetsResponse {
   /** @example 327 */
   id: number
-  assets: (AssetImage | AssetFile | AssetVideo)[]
+  assets: AssetImage[]
 }
 
 export interface ArticleChildrenResponse {
@@ -106,35 +106,6 @@ export interface AssetImage {
   mime: string
   /** @example "photo_1.jpg" */
   name: string
-}
-
-export interface AssetFile {
-  type: AssetFileTypeEnum
-  /** @example "/media/vk/-40316705/54155576/doc_1.pdf" */
-  file_url: string
-  /** @example "application/pdf" */
-  mime: string
-  /** @example "doc_1.pdf" */
-  name: string
-}
-
-export interface AssetVideo {
-  type: AssetVideoTypeEnum
-  /**
-   * Встраиваемый плеер VK
-   * @example "https://vk.com/video_ext.php?oid=-40316705&id=54155576&hd=2"
-   */
-  embed_url: string
-  /**
-   * Страница видео VK
-   * @example "https://vk.com/video-40316705_54155576"
-   */
-  page_url?: string
-  /**
-   * URL постера (обычно локальный `/media/...`), если сохранён
-   * @example "/media/vk/-40316705/54155576/video_poster.jpg"
-   */
-  poster?: string | null
 }
 
 export interface TgAuthUser {
@@ -503,6 +474,63 @@ export interface ArticleStat {
   stop_category_id?: number | null
 }
 
+export interface ArticleSocialStat {
+  /**
+   * Количество лайков или реакций
+   * @min 0
+   */
+  like_count: number
+  /**
+   * Количество репостов или пересылок
+   * @min 0
+   */
+  repost_count: number
+  /**
+   * Количество комментариев
+   * @min 0
+   */
+  comment_count: number
+  /**
+   * Количество просмотров
+   * @min 0
+   */
+  view_count: number
+  /**
+   * Метрика вовлеченности E
+   * @format float
+   */
+  engagement_score: number
+  /**
+   * Предыдущее значение вовлеченности (24 часа назад)
+   * @format float
+   */
+  previous_engagement?: number | null
+  /**
+   * Относительное изменение вовлеченности
+   * @format float
+   */
+  engagement_delta?: number | null
+  /** Признак трендовой новости */
+  is_trending: boolean
+  /**
+   * Время сбора статистики (UTC)
+   * @format date-time
+   */
+  collected_at: string
+}
+
+export interface ArticleSocialStatsResponse {
+  /** ID новости (статьи) */
+  id: number
+  /** Доступна ли социальная статистика */
+  has_social_stats: boolean
+  /** Тип источника */
+  source_type: ArticleSocialStatsResponseSourceTypeEnum
+  /** Причина отсутствия статистики */
+  reason?: string | null
+  stats?: ArticleSocialStat | null
+}
+
 /**
  * Машинно-читабельный код ошибки
  * @example "bad_request"
@@ -521,14 +549,6 @@ export enum ErrorCodeEnum {
 
 export enum AssetImageTypeEnum {
   Image = 'image',
-}
-
-export enum AssetFileTypeEnum {
-  File = 'file',
-}
-
-export enum AssetVideoTypeEnum {
-  Video = 'video',
 }
 
 /** @example "pending" */
@@ -579,11 +599,45 @@ export enum SettingOptionsTypeEnum {
   String = 'string',
 }
 
+/** Тип источника */
+export enum ArticleSocialStatsResponseSourceTypeEnum {
+  Rss = 'rss',
+  Tg = 'tg',
+  Vk = 'vk',
+}
+
 /**
  * Направление сортировки по `published_at`, затем по `id`. По умолчанию убывание (`desc`).
  * @default "desc"
  */
 export enum ArticlesListParamsOrderEnum {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+/**
+ * Фильтр по наличию стоп-слов.
+ * any = без разницы, with = есть стоп-слова, without = нет стоп-слов.
+ * @default "any"
+ */
+export enum ArticlesListParamsStopWordsEnum {
+  Any = 'any',
+  With = 'with',
+  Without = 'without',
+}
+
+/**
+ * Фильтр по трендовости (по ArticleSocialStat.is_trending).
+ * @default "all"
+ */
+export enum ArticlesListParamsTrendEnum {
+  All = 'all',
+  Only = 'only',
+  Exclude = 'exclude',
+}
+
+/** Сортировка по релевантности (ArticleStat.key_words_count). */
+export enum ArticlesListParamsRelevanceEnum {
   Asc = 'asc',
   Desc = 'desc',
 }
@@ -800,7 +854,7 @@ export class Api<
      * @tags Sources
      * @name SourcesList
      * @summary Список источников
-     * @request GET:/api/source
+     * @request GET:/api/sources
      */
     sourcesList: (params: RequestParams = {}) =>
       this.request<SourcesList, Error>({
@@ -816,7 +870,7 @@ export class Api<
      * @tags Sources
      * @name SourcesCreate
      * @summary Добавить источник
-     * @request POST:/api/source
+     * @request POST:/api/sources
      */
     sourcesCreate: (data: SourceCreate, params: RequestParams = {}) =>
       this.request<Source, Error>({
@@ -834,7 +888,7 @@ export class Api<
      * @tags Sources
      * @name SourcesDelete
      * @summary Удалить источник
-     * @request DELETE:/api/source/{id}
+     * @request DELETE:/api/sources/{id}
      */
     sourcesDelete: (id: number, params: RequestParams = {}) =>
       this.request<
@@ -897,6 +951,19 @@ export class Api<
          * @min 1
          */
         rubric_id?: number
+        /**
+         * Фильтр по наличию стоп-слов.
+         * any = без разницы, with = есть стоп-слова, without = нет стоп-слов.
+         * @default "any"
+         */
+        stop_words?: ArticlesListParamsStopWordsEnum
+        /**
+         * Фильтр по трендовости (по ArticleSocialStat.is_trending).
+         * @default "all"
+         */
+        trend?: ArticlesListParamsTrendEnum
+        /** Сортировка по релевантности (ArticleStat.key_words_count). */
+        relevance?: ArticlesListParamsRelevanceEnum
       },
       params: RequestParams = {},
     ) =>
@@ -913,14 +980,13 @@ export class Api<
      *
      * @tags Articles
      * @name ArticlesExportList
-     * @summary Экспорт статистики статей в Excel
+     * @summary Экспорт статистики и изображений
      * @request GET:/api/articles/export
      */
     articlesExportList: (params: RequestParams = {}) =>
-      this.request<Blob, any>({
+      this.request<File, any>({
         path: `/api/articles/export`,
         method: 'GET',
-        responseType: 'blob',
         ...params,
       }),
 
@@ -941,11 +1007,11 @@ export class Api<
       }),
 
     /**
-     * @description Возвращает список медиа (assets) для статьи. Локальные файлы (картинки/документы) отдаются через `/media/...`. Видео — внешние ссылки/встраиваемый плеер VK. Видео из Telegram скачиваются.
+     * @description Возвращает список изображений (assets) для статьи. Локальные файлы отдаются через `/media/...`.
      *
      * @tags Articles
      * @name ArticlesMediaList
-     * @summary Медиа-данные статьи (локальные файлы и данные о видео)
+     * @summary Медиа-данные статьи (локальные изображения)
      * @request GET:/api/articles/{id}/media
      */
     articlesMediaList: (id: number, params: RequestParams = {}) =>
@@ -1623,6 +1689,22 @@ export class Api<
     articlesStatsList: (id: number, params: RequestParams = {}) =>
       this.request<ArticleStat, Error>({
         path: `/api/articles/${id}/stats`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Articles
+     * @name ArticlesSocialStatsList
+     * @summary Социальная статистика для статьи
+     * @request GET:/api/articles/{id}/social-stats
+     */
+    articlesSocialStatsList: (id: number, params: RequestParams = {}) =>
+      this.request<ArticleSocialStatsResponse, Error>({
+        path: `/api/articles/${id}/social-stats`,
         method: 'GET',
         format: 'json',
         ...params,
