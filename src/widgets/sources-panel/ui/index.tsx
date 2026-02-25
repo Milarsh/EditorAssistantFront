@@ -33,8 +33,8 @@ export const SourcesPanel = () => {
 
   return (
     <div
-      className="vertical h-full w-90 justify-start gap-80 border-r
-        border-slate-300 bg-slate-100 p-4"
+      className="vertical h-full w-90 justify-between border-r border-slate-300
+        bg-slate-100 p-4"
       style={{ height: 'calc(100vh - calc(var(--spacing) * 12))' }}
     >
       <div>
