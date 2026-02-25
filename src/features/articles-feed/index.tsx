@@ -1,4 +1,4 @@
-import { FileUp, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
 import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
@@ -47,7 +47,7 @@ export const ArticlesFeed = () => {
             className="flex items-center gap-2 rounded-md bg-blue-500 px-2
               text-sm text-white"
           >
-            экспорт Excel <FileUp size={16} />
+            Экспорт
           </button>
         </div>
 

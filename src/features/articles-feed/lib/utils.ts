@@ -1,28 +1,39 @@
+import toast from 'react-hot-toast'
+
 import { httpClient } from '@/shared/api'
 
 export const handleExportExcel = async () => {
   try {
-    const response = await httpClient.api.articlesExportList({ format: 'blob' })
+    const response = await httpClient.api.articlesExportList({
+      format: 'blob',
+    })
 
     const blob =
-      response.data instanceof Blob
-        ? response.data
-        : new Blob([response.data], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          })
+      response.data instanceof Blob ? response.data : new Blob([response.data])
+
+    const contentDisposition = response.headers?.['content-disposition']
+
+    let fileName = 'export.zip'
+
+    if (contentDisposition) {
+      const match = contentDisposition.match(
+        /filename\*=UTF-8''(.+)|filename="?([^"]+)"?/,
+      )
+
+      fileName = decodeURIComponent(match?.[1] || match?.[2] || fileName)
+    }
 
     const url = URL.createObjectURL(blob)
 
     const a = document.createElement('a')
 
     a.href = url
-    a.download = 'articles.xlsx'
+    a.download = fileName
     a.click()
 
     URL.revokeObjectURL(url)
   } catch (error) {
-    // eslint-disable-next-line
-    console.error(error)
+    toast.error('Не удалось скачать файл')
   }
 }
 
