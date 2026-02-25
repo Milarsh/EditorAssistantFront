@@ -33,7 +33,7 @@ export const ActionPanel = ({
         onClick={onToggleSort}
         className={controlButton({ active: false })}
       >
-        {!sortAsc ? 'Сначала старые' : 'Сначала новые'}
+        {sortAsc ? 'Сначала старые' : 'Сначала новые'}
       </button>
       <button
         type="button"

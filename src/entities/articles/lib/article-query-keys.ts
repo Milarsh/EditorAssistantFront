@@ -20,6 +20,11 @@ export const articlesQueryKeys = createQueryKeys('article', {
     queryFn: () =>
       httpClient.api.articlesStatsList(id, params).then((res) => res.data),
   }),
+  keyWords: (id: number, params?: RequestParams) => ({
+    queryKey: [`keyWords`, id],
+    queryFn: () =>
+      httpClient.api.articlesKeyWordsList(id, params).then((res) => res.data),
+  }),
   media: (id: number, params?: RequestParams) => ({
     queryKey: [`media`, id],
     queryFn: () =>
