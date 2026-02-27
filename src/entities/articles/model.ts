@@ -1,4 +1,8 @@
-import { ArticlesListParamsOrderEnum } from '@/shared/api'
+import {
+  ArticlesListParamsOrderEnum,
+  ArticlesListParamsRelevanceEnum,
+  ArticlesListParamsTrendEnum,
+} from '@/shared/api'
 
 export type ArticlesListParams = {
   limit?: number
@@ -9,4 +13,6 @@ export type ArticlesListParams = {
   date_to?: string
   order?: ArticlesListParamsOrderEnum
   rubric_id?: number
+  trend?: ArticlesListParamsTrendEnum
+  relevance?: ArticlesListParamsRelevanceEnum
 }

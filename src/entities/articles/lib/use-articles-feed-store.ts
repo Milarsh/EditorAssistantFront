@@ -2,7 +2,10 @@
 import { create } from 'zustand'
 
 import type { ArticlesListParams } from '@/entities/articles/model'
-import { ArticlesListParamsOrderEnum } from '@/shared/api'
+import {
+  ArticlesListParamsOrderEnum,
+  ArticlesListParamsRelevanceEnum,
+} from '@/shared/api'
 
 type ArticlesFeedState = {
   filters: ArticlesListParams
@@ -23,6 +26,7 @@ export const initialState: ArticlesListParams = {
   date_from: undefined,
   date_to: undefined,
   order: ArticlesListParamsOrderEnum.Asc,
+  relevance: ArticlesListParamsRelevanceEnum.Asc,
 }
 
 export const useArticlesFeedStore = create<ArticlesFeedStore>((set) => ({
