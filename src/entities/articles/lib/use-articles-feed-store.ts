@@ -1,4 +1,3 @@
-// entities/articles/model/articles-feed.use-articles-feed-store.ts
 import { create } from 'zustand'
 
 import type { ArticlesListParams } from '@/entities/articles/model'
@@ -26,7 +25,7 @@ export const initialState: ArticlesListParams = {
   date_from: undefined,
   date_to: undefined,
   order: ArticlesListParamsOrderEnum.Asc,
-  relevance: ArticlesListParamsRelevanceEnum.Asc,
+  relevance: ArticlesListParamsRelevanceEnum.Desc,
 }
 
 export const useArticlesFeedStore = create<ArticlesFeedStore>((set) => ({

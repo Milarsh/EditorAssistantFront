@@ -1,8 +1,6 @@
 import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
-import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-store'
-import { ArticlesListParamsOrderEnum } from '@/shared/api'
 import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 
@@ -13,8 +11,6 @@ import { ArticlesSearch } from './ui/articles-search'
 import { SidebarFilter } from './ui/sidebar-filter'
 
 export const ArticlesFeed = () => {
-  const { filters, setFilters } = useArticlesFeedStore()
-
   const [showFilters, setShowFilters] = useState(false)
 
   return (
@@ -51,18 +47,7 @@ export const ArticlesFeed = () => {
           </button>
         </div>
 
-        <ActionPanel
-          onOpenFilter={() => setShowFilters(true)}
-          sortAsc={filters.order === ArticlesListParamsOrderEnum.Asc}
-          onToggleSort={() =>
-            setFilters({
-              order:
-                filters.order === ArticlesListParamsOrderEnum.Asc
-                  ? ArticlesListParamsOrderEnum.Desc
-                  : ArticlesListParamsOrderEnum.Asc,
-            })
-          }
-        />
+        <ActionPanel onOpenFilter={() => setShowFilters(true)} />
         <ArticlesList />
       </div>
       <SidebarFilter isOpen={showFilters} setIsOpen={setShowFilters} />
