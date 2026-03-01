@@ -1,3 +1,5 @@
+import type { ComponentProps, InputHTMLAttributes } from 'react'
+
 import type { FormFieldConfig } from '@/shared/ui/form/ui'
 import {
   CheckboxGroup,
@@ -9,42 +11,67 @@ import {
   ToggleSwitch,
 } from '@/shared/ui/input'
 
+const mergeClassName = (
+  props: { className?: string },
+  fieldClassName?: string,
+): string | undefined => {
+  if (!fieldClassName) {
+    return props.className
+  }
+
+  return [props.className, fieldClassName].filter(Boolean).join(' ')
+}
+
 export const renderField = <T extends Record<string, any>>(
   field: FormFieldConfig<T>,
   values: T,
   handleChange: (name: string, value: any) => void,
+  fieldClassName?: string,
 ) => {
   switch (field.type) {
     case 'text':
-    case 'password':
+    case 'password': {
+      const props = field.props as InputHTMLAttributes<HTMLInputElement>
+
       return (
         <TextField
           key={String(field.name)}
-          {...field.props}
+          {...props}
+          className={mergeClassName(props, fieldClassName)}
           type={field.type}
           value={values[field.name]}
           onChange={(e) => handleChange(field.name, e.target.value)}
         />
       )
+    }
 
-    case 'textarea':
+    case 'textarea': {
+      const props = field.props as ComponentProps<typeof TextareaField>
+
       return (
         <TextareaField
           key={String(field.name)}
-          {...field.props}
+          {...props}
+          className={mergeClassName(props, fieldClassName)}
           value={values[field.name]}
           onChange={(e) => handleChange(field.name, e.target.value)}
         />
       )
+    }
 
-    case 'select':
+    case 'select': {
+      const props = field.props as ComponentProps<typeof SelectField>
+
       return (
         <SelectField
           key={field.name}
-          {...field.props}
+          {...props}
+          className={mergeClassName(props, fieldClassName)}
+          value={values[field.name]}
           onChange={(e) => handleChange(field.name, e.target.value)}
         />
       )
+    }
 
     case 'toggle':
       return (

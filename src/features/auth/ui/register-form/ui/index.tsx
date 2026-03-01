@@ -4,6 +4,7 @@ import type {
   AuthRegisterConfirmRequest,
   AuthRegisterRequest,
 } from '@/shared/api'
+import { Button } from '@/shared/ui/button'
 import { FormBuilder } from '@/shared/ui/form'
 
 import { confirmFormFieldsConfig, registerFormFieldsConfig } from '../../config'
@@ -59,6 +60,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
         fields={confirmFormFieldsConfig}
         initialValue={getConfirmInitValues(confirmEmail)}
         onSubmit={handleConfirm}
+        fieldClassName="w-full bg-[#E2E7EDB2] border-none"
       />
     )
   }
@@ -69,7 +71,14 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       fields={registerFormFieldsConfig}
       initialValue={registerInitialValues}
       onSubmit={handleRegister}
-      submitText="Регистрация"
+      fieldClassName="w-full bg-[#E2E7EDB2] border-none"
+      customSubmitComponent={
+        <div className="flex justify-center">
+          <Button type="submit" className="w-[238px] bg-blue-500">
+            Регистрация
+          </Button>
+        </div>
+      }
     />
   )
 }
