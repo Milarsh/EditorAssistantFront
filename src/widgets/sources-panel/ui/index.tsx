@@ -42,7 +42,15 @@ export const SourcesPanel = () => {
           Источники
         </Typography>
 
-        <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+          className="w-full"
+          tabClassName="flex-1 bg-blue-600 rounded-lg"
+          activeTabClassName="text-white"
+          inactiveTabClassName="text-gray-600"
+        />
         <ul className="space-y-2">
           {active?.items.map((item, index) => (
             <li

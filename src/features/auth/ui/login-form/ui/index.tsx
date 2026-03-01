@@ -57,12 +57,15 @@ export const LoginForm = ({
       initialValue={loginInitialValues}
       onSubmit={handleLogin}
       resetAfterSubmit={false}
+      fieldClassName="w-full bg-[#E2E7EDB2] border-none"
       customSubmitComponent={
         <div className="vertical w-full">
           <ForgetPassword onForgetPasswordClick={onForgetPasswordClick} />
-          <Button type="submit" className="bg-blue-500">
-            Войти
-          </Button>
+          <div className="flex justify-center">
+            <Button type="submit" className="w-[160px] bg-blue-500">
+              Войти
+            </Button>
+          </div>
         </div>
       }
     />
