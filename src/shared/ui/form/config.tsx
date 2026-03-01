@@ -4,6 +4,7 @@ import type { FormFieldConfig } from '@/shared/ui/form/ui'
 import {
   CheckboxGroup,
   DatePicker,
+  PasswordField,
   RadioGroup,
   SelectField,
   TextareaField,
@@ -29,8 +30,7 @@ export const renderField = <T extends Record<string, any>>(
   fieldClassName?: string,
 ) => {
   switch (field.type) {
-    case 'text':
-    case 'password': {
+    case 'text': {
       const props = field.props as InputHTMLAttributes<HTMLInputElement>
 
       return (
@@ -38,7 +38,21 @@ export const renderField = <T extends Record<string, any>>(
           key={String(field.name)}
           {...props}
           className={mergeClassName(props, fieldClassName)}
-          type={field.type}
+          type="text"
+          value={values[field.name]}
+          onChange={(e) => handleChange(field.name, e.target.value)}
+        />
+      )
+    }
+
+    case 'password': {
+      const props = field.props as InputHTMLAttributes<HTMLInputElement>
+
+      return (
+        <PasswordField
+          key={String(field.name)}
+          {...props}
+          className={mergeClassName(props, fieldClassName)}
           value={values[field.name]}
           onChange={(e) => handleChange(field.name, e.target.value)}
         />
