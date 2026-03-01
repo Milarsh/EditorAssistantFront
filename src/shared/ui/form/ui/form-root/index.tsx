@@ -27,6 +27,7 @@ export interface BaseFormProps<T extends object> {
   customSubmitComponent?: ReactNode
   formTitle?: ReactNode
   resetAfterSubmit?: boolean
+  validate?: (values: T) => FormValidationError | null
 }
 
 export const FormRoot = <T extends object>({
@@ -40,8 +41,11 @@ export const FormRoot = <T extends object>({
   formTitle,
   successMessage = 'Успех!',
   resetAfterSubmit = true,
+  validate,
 }: BaseFormProps<T>) => {
   const [values, setValues] = useState<T>(initialValues)
+  const [validationError, setValidationError] =
+    useState<FormValidationError | null>(null)
 
   useEffect(() => {
     setValues(initialValues)
@@ -52,10 +56,19 @@ export const FormRoot = <T extends object>({
       ...prev,
       [name]: value,
     }))
+    setValidationError(null)
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    const clientError = validate?.(values) ?? null
+
+    if (clientError?.details && Object.keys(clientError.details).length > 0) {
+      setValidationError(clientError)
+
+      return
+    }
+    setValidationError(null)
     await onSubmit(values)
     toast.success(successMessage)
     if (resetAfterSubmit) {
@@ -63,17 +76,19 @@ export const FormRoot = <T extends object>({
     }
   }
 
+  const error = validationError ?? fieldsError
+
   return (
     <form onSubmit={handleSubmit} className={className}>
       <div className="text-lg">{formTitle}</div>
       {render({
         values,
         handleChange,
-        error: fieldsError,
+        error,
       })}
-      {fieldsError?.message && (
+      {error?.message && (
         <Typography variant="error" className="text-center">
-          {fieldsError.message}
+          {error.message}
         </Typography>
       )}
       {customSubmitComponent ?? (

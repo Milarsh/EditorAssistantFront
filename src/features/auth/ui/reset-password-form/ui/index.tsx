@@ -67,6 +67,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({
         fields={resetPasswordFormFieldsConfig}
         initialValue={getPasswordResetInitValues(confirmEmail)}
         onSubmit={handleResetPassword}
+        fieldClassName="w-full bg-[#E2E7EDB2] border-none"
       />
     )
   }
@@ -77,6 +78,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({
       fields={passwordSendCodeFormFieldsConfig}
       initialValue={passwordSendCodeInitValues}
       onSubmit={handleSendEmail}
+      fieldClassName="w-full bg-[#E2E7EDB2] border-none"
     />
   )
 }

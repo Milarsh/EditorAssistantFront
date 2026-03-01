@@ -17,29 +17,31 @@ export const LoginPage = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#EEF1F8]">
       <div
-        className="flex w-210 flex-col items-center rounded-lg bg-white p-8
-          shadow-md"
+        className="flex min-w-[524px] flex-col items-center rounded-lg bg-white
+          p-8 shadow-md"
       >
         <Typography variant="h3" className="mb-6 self-start">
           News Aggregator
         </Typography>
 
-        <Tabs
-          tabs={TABS}
-          activeTab={activeView}
-          onChange={(id) => setActiveView(id as ViewsId)}
-        />
-        {activeView === 'login' && (
-          <LoginForm
-            onForgetPasswordClick={() => setActiveView('password_reset')}
+        <div className="w-[460px]">
+          <Tabs
+            tabs={TABS}
+            activeTab={activeView}
+            onChange={(id) => setActiveView(id as ViewsId)}
           />
-        )}
-        {activeView === 'password_reset' && (
-          <ResetPasswordForm onResetSuccess={() => setActiveView('login')} />
-        )}
-        {activeView === 'register' && (
-          <RegisterForm onRegisterSuccess={() => setActiveView('login')} />
-        )}
+          {activeView === 'login' && (
+            <LoginForm
+              onForgetPasswordClick={() => setActiveView('password_reset')}
+            />
+          )}
+          {activeView === 'password_reset' && (
+            <ResetPasswordForm onResetSuccess={() => setActiveView('login')} />
+          )}
+          {activeView === 'register' && (
+            <RegisterForm onRegisterSuccess={() => setActiveView('login')} />
+          )}
+        </div>
       </div>
     </div>
   )
