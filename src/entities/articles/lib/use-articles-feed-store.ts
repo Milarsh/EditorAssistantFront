@@ -24,7 +24,7 @@ export const initialState: ArticlesListParams = {
   q: '',
   date_from: undefined,
   date_to: undefined,
-  order: ArticlesListParamsOrderEnum.Asc,
+  order: ArticlesListParamsOrderEnum.Desc,
   relevance: ArticlesListParamsRelevanceEnum.Desc,
 }
 
