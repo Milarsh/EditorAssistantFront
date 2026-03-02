@@ -19,6 +19,8 @@ const SOURCE_TYPE_LABELS: Record<string, string> = {
 const SourceItem = ({ source }: { source: Source }) => {
   const { data: articles } = useArticlesList({ source_id: source.id })
   const articlesTotal = articles?.pages[0]?.data.total
+  const formattedTotal =
+    articlesTotal && articlesTotal > 999 ? '999+' : articlesTotal
 
   return (
     <li
@@ -27,7 +29,7 @@ const SourceItem = ({ source }: { source: Source }) => {
         text-slate-700"
     >
       <WifiHigh size={20} className="-mt-1 rotate-45" />
-      {source.name} {articlesTotal && `(${articlesTotal})`}
+      {source.name} {articlesTotal && `(${formattedTotal})`}
     </li>
   )
 }
