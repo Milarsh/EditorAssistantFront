@@ -4,7 +4,7 @@ import { httpClient } from '@/shared/api'
 
 import type { ArticlesListParams } from '../model'
 
-export const useArticlesList = (filters: ArticlesListParams) => {
+export const useArticlesList = (filters?: ArticlesListParams) => {
   return useInfiniteQuery({
     queryKey: ['articles', filters],
 
@@ -14,11 +14,11 @@ export const useArticlesList = (filters: ArticlesListParams) => {
       httpClient.api.articlesList({
         ...filters,
         offset: pageParam,
-        limit: filters.limit ?? 10,
+        limit: filters?.limit ?? 10,
       }),
 
     getNextPageParam: (lastPage, allPages) => {
-      const limit = filters.limit ?? 10
+      const limit = filters?.limit ?? 10
 
       if (lastPage.data.items.length < limit) {
         return undefined
