@@ -1,13 +1,5 @@
 import { useParams, useRouter } from '@tanstack/react-router'
-import {
-  ArrowLeft,
-  Calendar,
-  Copy,
-  FileText,
-  Link,
-  Pencil,
-  Trash2,
-} from 'lucide-react'
+import { ArrowLeft, Calendar, Copy, FileText, Link } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 import { useArticleDetails } from '@/entities/articles/lib/use-article-details'
@@ -74,7 +66,19 @@ export const ArticlePage = () => {
         >
           <div className="flex-1">
             {article.description && (
-              <div dangerouslySetInnerHTML={{ __html: article.description }} />
+              <div className="inline">
+                <span
+                  className="inline"
+                  dangerouslySetInnerHTML={{ __html: article.description }}
+                />
+                <button
+                  type="button"
+                  onClick={handleCopyText}
+                  className="ml-1 inline align-baseline"
+                >
+                  <Copy size={16} />
+                </button>
+              </div>
             )}
             {stats && (
               <div className="border-t border-gray-300 py-2 text-gray-500">
@@ -132,27 +136,6 @@ export const ArticlePage = () => {
             </div>
           </div>
         </article>
-      </div>
-
-      <div
-        className="mt-2 flex w-full flex-row items-center justify-end gap-4
-          border-t border-gray-300 px-8 py-4"
-      >
-        <button type="button" className="flex flex-row items-center gap-2">
-          <Trash2 size={18} /> Удалить
-        </button>
-        <button type="button" className="flex flex-row items-center gap-2">
-          <Pencil size={18} />
-          Редактировать
-        </button>
-        <button
-          type="button"
-          onClick={handleCopyText}
-          className="flex flex-row items-center gap-2"
-        >
-          <Copy size={18} />
-          Копировать текст
-        </button>
       </div>
     </div>
   )
