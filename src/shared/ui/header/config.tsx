@@ -26,4 +26,4 @@ export const menuLinks: MenuLink[] = [
   },
 ]
 
-export const DEFAULT_TITLE = 'News Agregator'
+export const DEFAULT_TITLE = 'Агрегатор Новостей'
