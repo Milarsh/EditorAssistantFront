@@ -5,8 +5,6 @@ import { useAuthStore } from '@/features/auth/store'
 import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 
-import { ProfileEditForm } from './profile-edit-form'
-
 const ProfileCardTop = () => {
   const { navigate } = useRouter()
   const { data: user } = useUserInfo()
@@ -18,7 +16,7 @@ const ProfileCardTop = () => {
   }
 
   return (
-    <div className="mb-8 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <div>
         <Typography variant="h2">{user?.login}</Typography>
         <Typography variant="body">{user?.email}</Typography>
@@ -44,12 +42,12 @@ export const ProfileCard = () => {
           shadow-sm"
       >
         <ProfileCardTop />
-        <ProfileEditForm
-          initValues={{
-            login: user.login || '',
-            email: user.email || '',
-          }}
-        />
+        {/* <ProfileEditForm */}
+        {/*  initValues={{ */}
+        {/*    login: user.login || '', */}
+        {/*    email: user.email || '', */}
+        {/*  }} */}
+        {/* /> */}
       </div>
     </div>
   )
