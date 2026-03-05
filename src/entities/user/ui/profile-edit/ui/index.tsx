@@ -16,7 +16,7 @@ const ProfileCardTop = () => {
   }
 
   return (
-    <div className="mb-8 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <div>
         <Typography variant="h2">{user?.login}</Typography>
         <Typography variant="body">{user?.email}</Typography>
