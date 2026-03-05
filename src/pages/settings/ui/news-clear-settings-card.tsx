@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useArticlesCleanup } from '@/entities/articles/lib/use-articles-cleanup'
 import type {
@@ -43,12 +43,19 @@ export const NewsClearSettingsCard = () => {
   const [statistics, setStatistics] = useState<ArticleCleanupResponse | null>(
     null,
   )
-
   const onValueChange = async (value: string) => {
     const { data } = await mutateAsync({ date_to: value, dry_run: true })
 
     setStatistics(data)
   }
+
+  const initialValues: ArticleCleanupRequest = useMemo(
+    () => ({
+      dry_run: false,
+      date_to: '',
+    }),
+    [],
+  )
 
   return (
     <SettingsCardWrapper title="Очистка новостей">
@@ -63,10 +70,7 @@ export const NewsClearSettingsCard = () => {
             props: {},
           },
         ]}
-        initialValue={{
-          dry_run: false,
-          date_to: '',
-        }}
+        initialValue={initialValues}
         onSubmit={(data) => mutateAsync(data)}
         submitText="Удалить"
         customSubmitComponent={
