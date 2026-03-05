@@ -22,7 +22,7 @@ export const Sidebar: FC<SidebarProps> = ({ isOpen, setIsOpen, children }) => {
       />
       <aside
         className={cn(
-          `fixed top-0 right-0 z-50 flex h-full w-[320px] translate-x-0 flex-col
+          `fixed top-0 right-0 z-50 flex h-full w-[380px] translate-x-0 flex-col
           border-l border-gray-200 bg-white shadow-lg transition-transform
           duration-300 ease-in-out`,
           { 'translate-x-full': !isOpen },

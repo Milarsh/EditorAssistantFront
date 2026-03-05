@@ -113,11 +113,14 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
           initialValue={initialValues}
           onSubmit={handleSubmit}
           customSubmitComponent={
-            <div className="vertical gap-4 border-t border-gray-200 p-4">
-              <Button type="submit" className="bg-blue-500">
+            <div
+              className="flex flex-row items-center justify-center gap-2
+                border-t border-gray-200 p-2"
+            >
+              <Button type="submit" size="xs" className="bg-blue-500">
                 Применить фильтры
               </Button>
-              <Button onClick={reset} className="bg-blue-500">
+              <Button onClick={reset} size="xs" className="bg-blue-500">
                 Сбросить фильтры
               </Button>
             </div>
