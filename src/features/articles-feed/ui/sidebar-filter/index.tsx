@@ -4,6 +4,10 @@ import { useArticlesFeedStore } from '@/entities/articles/lib/use-articles-feed-
 import type { ArticlesListParams } from '@/entities/articles/model'
 import { useRubricsList } from '@/entities/rubric/lib/use-rubrics-list'
 import { useSourcesList } from '@/entities/source/lib/use-sources-list'
+import {
+  ArticlesListParamsStopWordsEnum,
+  ArticlesListParamsTrendEnum,
+} from '@/shared/api'
 import { Button } from '@/shared/ui/button'
 import { FormBuilder } from '@/shared/ui/form'
 import { Sidebar } from '@/shared/ui/sidebar'
@@ -21,10 +25,8 @@ interface SidebarFilterProps {
 }
 
 type FilterValues = {
-  source_id?: number
   date_range?: DateRange
-  rubric_id?: number
-}
+} & ArticlesListParams
 
 const getInitValues = ({
   date_from,
@@ -107,6 +109,40 @@ export const SidebarFilter: FC<SidebarFilterProps> = ({
                   value: String(rubric.id),
                   label: rubric.title,
                 })),
+              },
+            },
+            {
+              type: 'radio',
+              name: 'trend',
+              title: 'По трендам',
+              props: {
+                options: [
+                  {
+                    value: ArticlesListParamsTrendEnum.Only,
+                    label: 'Только новости в тренде',
+                  },
+                  {
+                    value: ArticlesListParamsTrendEnum.Exclude,
+                    label: 'Только новости не в тренде',
+                  },
+                ],
+              },
+            },
+            {
+              type: 'radio',
+              name: 'stop_words',
+              title: 'По стоп-словам',
+              props: {
+                options: [
+                  {
+                    value: ArticlesListParamsStopWordsEnum.With,
+                    label: 'Только новости со стоп-словами',
+                  },
+                  {
+                    value: ArticlesListParamsStopWordsEnum.Without,
+                    label: 'Только новости без стоп-слов',
+                  },
+                ],
               },
             },
           ]}

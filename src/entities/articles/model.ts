@@ -1,6 +1,7 @@
 import {
   ArticlesListParamsOrderEnum,
   ArticlesListParamsRelevanceEnum,
+  ArticlesListParamsStopWordsEnum,
   ArticlesListParamsTrendEnum,
 } from '@/shared/api'
 
@@ -13,6 +14,7 @@ export type ArticlesListParams = {
   date_to?: string
   order?: ArticlesListParamsOrderEnum
   rubric_id?: number
+  stop_words?: ArticlesListParamsStopWordsEnum
   trend?: ArticlesListParamsTrendEnum
   relevance?: ArticlesListParamsRelevanceEnum
 }

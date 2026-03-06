@@ -22,6 +22,8 @@ export const initialState: ArticlesListParams = {
   date_from: undefined,
   date_to: undefined,
   order: ArticlesListParamsOrderEnum.Desc,
+  trend: undefined,
+  stop_words: undefined,
 }
 
 export const useArticlesFeedStore = create<ArticlesFeedStore>((set) => ({
