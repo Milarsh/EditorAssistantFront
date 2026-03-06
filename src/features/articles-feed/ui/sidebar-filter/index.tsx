@@ -33,10 +33,14 @@ const getInitValues = ({
   date_to,
   rubric_id,
   source_id,
+  trend,
+  stop_words,
 }: ArticlesListParams): FilterValues => ({
-  source_id: source_id || undefined,
-  rubric_id: rubric_id || undefined,
+  source_id,
+  rubric_id,
   date_range: resolveDateRange(date_from, date_to),
+  stop_words,
+  trend,
 })
 
 export const SidebarFilter: FC<SidebarFilterProps> = ({
