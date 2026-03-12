@@ -17,6 +17,10 @@ const settingsLinks: { label: string; to: keyof FileRoutesByTo }[] = [
     label: 'Периодичность сбора статистики по новостям',
     to: '/settings/social-statistic-interval',
   },
+  {
+    label: 'Привязка Telegram-аккаунта',
+    to: '/settings/tg-auth',
+  },
 ]
 
 export const SettingsLayout = () => {
