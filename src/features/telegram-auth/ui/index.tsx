@@ -1,30 +1,31 @@
 import { useState } from 'react'
 
+import { useTgAuthStatus } from '@/entities/telegram/lib'
 import { TgAuthStatusStatusEnum } from '@/shared/api'
 import { cn } from '@/shared/lib'
 import { Button } from '@/shared/ui/button'
 
 import { TgAuthModal } from './tg-auth-modal'
 
-const data = {
-  status: TgAuthStatusStatusEnum.Unauthorized,
-}
+// const data = {
+//   status: TgAuthStatusStatusEnum.Unauthorized,
+// }
 
 export const TgAuth = () => {
-  // const { data, isLoading, isError } = useTgAuthStatus()
+  const { data, isLoading, isError } = useTgAuthStatus()
   const [modalOpen, setModalOpen] = useState(false)
 
-  // if (isLoading) {
-  //   return <div className="p-8">Загрузка...</div>
-  // }
-  //
-  // if (isError || !data) {
-  //   return <div className="p-8 text-red-500">Ошибка загрузки</div>
-  // }
-  //
-  // if (data?.status === 'error') {
-  //   return <div className="p-2 text-red-500">Ошибка: {data.error}</div>
-  // }
+  if (isLoading) {
+    return <div className="p-8">Загрузка...</div>
+  }
+
+  if (isError || !data) {
+    return <div className="p-8 text-red-500">Ошибка загрузки</div>
+  }
+
+  if (data?.status === 'error') {
+    return <div className="p-2 text-red-500">Ошибка: {data.error}</div>
+  }
 
   const { status } = data
 
@@ -64,7 +65,9 @@ export const TgAuth = () => {
         </div>
 
         {/* НЕ АВТОРИЗОВАН */}
-        {status === TgAuthStatusStatusEnum.Unauthorized && (
+        {(status === TgAuthStatusStatusEnum.Unauthorized ||
+          status === TgAuthStatusStatusEnum.Expired ||
+          status === TgAuthStatusStatusEnum.Pending) && (
           <>
             <p className="mb-6 text-gray-600">
               Привяжите свой аккаунт, чтобы получать уведомления из Telegram

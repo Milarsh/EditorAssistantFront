@@ -1,8 +1,17 @@
+import { useQuery } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import { useEffect } from 'react'
 import QRCode from 'react-qr-code'
 
-import { useQrCreate } from '@/entities/telegram/lib'
+import { telegramQueryKeys, useQrCreate } from '@/entities/telegram/lib'
+import { type RequestParams, TgAuthStatusStatusEnum } from '@/shared/api'
+
+export const useTgAuthStatus = (params?: RequestParams, enabled = true) =>
+  useQuery({
+    ...telegramQueryKeys.list(params),
+    enabled,
+    refetchInterval: enabled ? 10000 : false,
+  })
 
 type Props = {
   open: boolean
@@ -11,6 +20,8 @@ type Props = {
 
 export const TgAuthModal = ({ open, onClose }: Props) => {
   const { mutate: createQr, data } = useQrCreate()
+
+  const { data: statusData } = useTgAuthStatus(undefined, open)
 
   useEffect(() => {
     if (open) {
@@ -25,10 +36,8 @@ export const TgAuthModal = ({ open, onClose }: Props) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* overlay */}
-      {/* <div */}
-      {/*  className="absolute inset-0 bg-black/40" */}
-      {/*  onClick={onClose} */}
-      {/* /> */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* modal */}
       <div
@@ -53,16 +62,19 @@ export const TgAuthModal = ({ open, onClose }: Props) => {
             1. Сканирование QR-кода
           </h3>
 
-          {/* инструкция */}
           <div className="mb-8 w-full rounded-xl bg-gray-100 p-5 text-gray-600">
             <ul className="list-disc space-y-1 pl-5">
-              <li>Откройте Telegram на своем устройстве</li>
-              <li>Отсканируйте QR-код ниже или нажмите на ссылку</li>
-              <li>После сканирования вернитесь на эту страницу</li>
+              <li>Откройте Telegram</li>
+              <li>Отсканируйте QR-код</li>
+              <li>После сканирования вернитесь на страницу</li>
             </ul>
           </div>
+          {statusData?.status === TgAuthStatusStatusEnum.Authorized && (
+            <div>Успех</div>
+          )}
+
           {data?.data.qr_url && (
-            <QRCode value={data?.data.qr_url} className="size-56" />
+            <QRCode value={data.data.qr_url} className="size-56" />
           )}
         </div>
       </div>
