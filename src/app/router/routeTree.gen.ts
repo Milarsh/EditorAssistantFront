@@ -16,6 +16,7 @@ import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index'
+import { Route as AuthSettingsTgAuthRouteImport } from './routes/_auth/settings/tg-auth'
 import { Route as AuthSettingsSocialStatisticIntervalRouteImport } from './routes/_auth/settings/social-statistic-interval'
 import { Route as AuthSettingsPollIntevalRouteImport } from './routes/_auth/settings/poll-inteval'
 import { Route as AuthSettingsNewsClearRouteImport } from './routes/_auth/settings/news-clear'
@@ -61,6 +62,11 @@ const AuthManageIndexRoute = AuthManageIndexRouteImport.update({
   id: '/manage/',
   path: '/manage/',
   getParentRoute: () => AuthRoute,
+} as any)
+const AuthSettingsTgAuthRoute = AuthSettingsTgAuthRouteImport.update({
+  id: '/tg-auth',
+  path: '/tg-auth',
+  getParentRoute: () => AuthSettingsRoute,
 } as any)
 const AuthSettingsSocialStatisticIntervalRoute =
   AuthSettingsSocialStatisticIntervalRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings/': typeof AuthSettingsIndexRoute
   '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/_auth/settings/news-clear': typeof AuthSettingsNewsClearRoute
   '/_auth/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/_auth/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/_auth/settings/tg-auth': typeof AuthSettingsTgAuthRoute
   '/_auth/manage/': typeof AuthManageIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
   '/_auth/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/settings/news-clear'
     | '/settings/poll-inteval'
     | '/settings/social-statistic-interval'
+    | '/settings/tg-auth'
     | '/manage'
     | '/settings/'
     | '/manage/key-words/$rubric-id'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/settings/news-clear'
     | '/settings/poll-inteval'
     | '/settings/social-statistic-interval'
+    | '/settings/tg-auth'
     | '/manage'
     | '/settings'
     | '/manage/key-words/$rubric-id'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/_auth/settings/news-clear'
     | '/_auth/settings/poll-inteval'
     | '/_auth/settings/social-statistic-interval'
+    | '/_auth/settings/tg-auth'
     | '/_auth/manage/'
     | '/_auth/settings/'
     | '/_auth/manage/key-words/$rubric-id'
@@ -295,6 +307,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/manage'
       preLoaderRoute: typeof AuthManageIndexRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings/tg-auth': {
+      id: '/_auth/settings/tg-auth'
+      path: '/tg-auth'
+      fullPath: '/settings/tg-auth'
+      preLoaderRoute: typeof AuthSettingsTgAuthRouteImport
+      parentRoute: typeof AuthSettingsRoute
     }
     '/_auth/settings/social-statistic-interval': {
       id: '/_auth/settings/social-statistic-interval'
@@ -381,6 +400,7 @@ interface AuthSettingsRouteChildren {
   AuthSettingsNewsClearRoute: typeof AuthSettingsNewsClearRoute
   AuthSettingsPollIntevalRoute: typeof AuthSettingsPollIntevalRoute
   AuthSettingsSocialStatisticIntervalRoute: typeof AuthSettingsSocialStatisticIntervalRoute
+  AuthSettingsTgAuthRoute: typeof AuthSettingsTgAuthRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
 }
 
@@ -390,6 +410,7 @@ const AuthSettingsRouteChildren: AuthSettingsRouteChildren = {
   AuthSettingsPollIntevalRoute: AuthSettingsPollIntevalRoute,
   AuthSettingsSocialStatisticIntervalRoute:
     AuthSettingsSocialStatisticIntervalRoute,
+  AuthSettingsTgAuthRoute: AuthSettingsTgAuthRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
 }
 
