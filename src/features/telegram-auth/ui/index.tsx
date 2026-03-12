@@ -27,7 +27,7 @@ export const TgAuth = () => {
     return <div className="p-2 text-red-500">Ошибка: {data.error}</div>
   }
 
-  const { status } = data
+  const { status, user } = data
 
   return (
     <div className="mx-auto mt-10 max-w-4xl rounded-xl bg-white p-8 shadow-lg">
@@ -115,30 +115,34 @@ export const TgAuth = () => {
         {/* )} */}
 
         {/* АВТОРИЗОВАН */}
-        {/* {status === TgAuthStatusStatusEnum.Authorized && user && ( */}
-        {/*  <> */}
-        {/*    <div className="mb-6 space-y-2 text-gray-700"> */}
-        {/*      <p> */}
-        {/*        Имя:{' '} */}
-        {/*        <span className="font-medium"> */}
-        {/*          {user.first_name} {user.last_name} */}
-        {/*        </span> */}
-        {/*      </p> */}
+        {status === TgAuthStatusStatusEnum.Authorized && user && (
+          <>
+            <div className="mb-6 space-y-2 text-gray-700">
+              <p>
+                Имя:{' '}
+                <span className="font-medium">
+                  {user.first_name} {user.last_name}
+                </span>
+              </p>
 
-        {/*      <p> */}
-        {/*        Username: <span className="font-medium">@{user.username}</span> */}
-        {/*      </p> */}
+              <p>
+                Username: <span className="font-medium">@{user.username}</span>
+              </p>
 
-        {/*      <p> */}
-        {/*        Телефон: <span className="font-medium">+{user.phone}</span> */}
-        {/*      </p> */}
-        {/*    </div> */}
+              <p>
+                Телефон: <span className="font-medium">+{user.phone}</span>
+              </p>
+            </div>
 
-        {/*    /!* <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition"> *!/ */}
-        {/*    /!*  Отвязать аккаунт *!/ */}
-        {/*    /!* </button> *!/ */}
-        {/*  </> */}
-        {/* )} */}
+            <button
+              type="button"
+              className="rounded-lg bg-red-500 px-6 py-3 text-white transition
+                hover:bg-red-600"
+            >
+              Отвязать аккаунт
+            </button>
+          </>
+        )}
       </div>
     </div>
   )
