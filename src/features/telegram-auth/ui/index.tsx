@@ -1,19 +1,17 @@
 import { useState } from 'react'
 
 import { useTgAuthStatus } from '@/entities/telegram/lib'
+import { useTgAuthLogout } from '@/entities/telegram/lib/hooks/use-tg-auth-logout'
 import { TgAuthStatusStatusEnum } from '@/shared/api'
 import { cn } from '@/shared/lib'
 import { Button } from '@/shared/ui/button'
 
 import { TgAuthModal } from './tg-auth-modal'
 
-// const data = {
-//   status: TgAuthStatusStatusEnum.Unauthorized,
-// }
-
 export const TgAuth = () => {
   const { data, isLoading, isError } = useTgAuthStatus()
   const [modalOpen, setModalOpen] = useState(false)
+  const { mutate: logout } = useTgAuthLogout()
 
   if (isLoading) {
     return <div className="p-8">Загрузка...</div>
@@ -135,6 +133,7 @@ export const TgAuth = () => {
             </div>
 
             <button
+              onClick={() => logout()}
               type="button"
               className="rounded-lg bg-red-500 px-6 py-3 text-white transition
                 hover:bg-red-600"
