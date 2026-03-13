@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Позволяет получать новости и их источники в формате JSON, проверять состояние сервиса.
 servers:
-- url: http://localhost:8000
+- url: http://188.44.58.18:8000
   description: Локальный сервер
 tags:
 - name: Health
@@ -122,8 +122,8 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Offset'
         - $ref: '#/components/parameters/SourceId'
-        - $ref: '#/components/parameters/Q'   
-        - $ref: '#/components/parameters/DateFrom' 
+        - $ref: '#/components/parameters/Q'
+        - $ref: '#/components/parameters/DateFrom'
         - $ref: '#/components/parameters/DateTo'
         - $ref: '#/components/parameters/Order'
         - $ref: '#/components/parameters/RubricId'

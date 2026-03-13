@@ -68,7 +68,7 @@ export const TgAuth = () => {
           status === TgAuthStatusStatusEnum.Pending) && (
           <>
             <p className="mb-6 text-gray-600">
-              Привяжите свой аккаунт, чтобы получать уведомления из Telegram
+              Привяжите свой аккаунт, чтобы собирать новости из Telegram
             </p>
 
             <Button onClick={() => setModalOpen(true)} className="bg-blue-600">
