@@ -133,7 +133,10 @@ export const TgAuth = () => {
             </div>
 
             <button
-              onClick={() => logout()}
+              onClick={() => {
+                setModalOpen(false)
+                logout()
+              }}
               type="button"
               className="rounded-lg bg-red-500 px-6 py-3 text-white transition
                 hover:bg-red-600"
