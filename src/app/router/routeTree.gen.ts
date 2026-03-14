@@ -16,6 +16,7 @@ import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index'
+import { Route as AuthSettingsUseMlNewsAnalysisRouteImport } from './routes/_auth/settings/use-ml-news-analysis'
 import { Route as AuthSettingsTgAuthRouteImport } from './routes/_auth/settings/tg-auth'
 import { Route as AuthSettingsSocialStatisticIntervalRouteImport } from './routes/_auth/settings/social-statistic-interval'
 import { Route as AuthSettingsPollIntevalRouteImport } from './routes/_auth/settings/poll-inteval'
@@ -63,6 +64,12 @@ const AuthManageIndexRoute = AuthManageIndexRouteImport.update({
   path: '/manage/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthSettingsUseMlNewsAnalysisRoute =
+  AuthSettingsUseMlNewsAnalysisRouteImport.update({
+    id: '/use-ml-news-analysis',
+    path: '/use-ml-news-analysis',
+    getParentRoute: () => AuthSettingsRoute,
+  } as any)
 const AuthSettingsTgAuthRoute = AuthSettingsTgAuthRouteImport.update({
   id: '/tg-auth',
   path: '/tg-auth',
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings/': typeof AuthSettingsIndexRoute
   '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -160,6 +168,7 @@ export interface FileRoutesByTo {
   '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
   '/manage': typeof AuthManageIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -182,6 +191,7 @@ export interface FileRoutesById {
   '/_auth/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
   '/_auth/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
   '/_auth/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/_auth/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
   '/_auth/manage/': typeof AuthManageIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
   '/_auth/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/settings/poll-inteval'
     | '/settings/social-statistic-interval'
     | '/settings/tg-auth'
+    | '/settings/use-ml-news-analysis'
     | '/manage'
     | '/settings/'
     | '/manage/key-words/$rubric-id'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/settings/poll-inteval'
     | '/settings/social-statistic-interval'
     | '/settings/tg-auth'
+    | '/settings/use-ml-news-analysis'
     | '/manage'
     | '/settings'
     | '/manage/key-words/$rubric-id'
@@ -244,6 +256,7 @@ export interface FileRouteTypes {
     | '/_auth/settings/poll-inteval'
     | '/_auth/settings/social-statistic-interval'
     | '/_auth/settings/tg-auth'
+    | '/_auth/settings/use-ml-news-analysis'
     | '/_auth/manage/'
     | '/_auth/settings/'
     | '/_auth/manage/key-words/$rubric-id'
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/manage'
       preLoaderRoute: typeof AuthManageIndexRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings/use-ml-news-analysis': {
+      id: '/_auth/settings/use-ml-news-analysis'
+      path: '/use-ml-news-analysis'
+      fullPath: '/settings/use-ml-news-analysis'
+      preLoaderRoute: typeof AuthSettingsUseMlNewsAnalysisRouteImport
+      parentRoute: typeof AuthSettingsRoute
     }
     '/_auth/settings/tg-auth': {
       id: '/_auth/settings/tg-auth'
@@ -401,6 +421,7 @@ interface AuthSettingsRouteChildren {
   AuthSettingsPollIntevalRoute: typeof AuthSettingsPollIntevalRoute
   AuthSettingsSocialStatisticIntervalRoute: typeof AuthSettingsSocialStatisticIntervalRoute
   AuthSettingsTgAuthRoute: typeof AuthSettingsTgAuthRoute
+  AuthSettingsUseMlNewsAnalysisRoute: typeof AuthSettingsUseMlNewsAnalysisRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
 }
 
@@ -411,6 +432,7 @@ const AuthSettingsRouteChildren: AuthSettingsRouteChildren = {
   AuthSettingsSocialStatisticIntervalRoute:
     AuthSettingsSocialStatisticIntervalRoute,
   AuthSettingsTgAuthRoute: AuthSettingsTgAuthRoute,
+  AuthSettingsUseMlNewsAnalysisRoute: AuthSettingsUseMlNewsAnalysisRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
 }
 

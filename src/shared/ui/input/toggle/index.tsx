@@ -3,14 +3,14 @@ import type { FC } from 'react'
 import { cn } from '@/shared/lib/cn'
 
 interface ToggleSwitchProps {
-  checked: boolean
+  checked?: boolean
   onChange?: (value: boolean) => void
   label?: string
   className?: string
 }
 
 export const ToggleSwitch: FC<ToggleSwitchProps> = ({
-  checked,
+  checked = false,
   onChange,
   label,
   className,

@@ -21,6 +21,10 @@ const settingsLinks: { label: string; to: keyof FileRoutesByTo }[] = [
     label: 'Привязка Telegram-аккаунта',
     to: '/settings/tg-auth',
   },
+  {
+    label: 'Использование ML-модели для определения релевантности',
+    to: '/settings/use-ml-news-analysis',
+  },
 ]
 
 export const SettingsLayout = () => {
