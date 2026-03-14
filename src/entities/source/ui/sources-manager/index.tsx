@@ -17,8 +17,7 @@ export const SourcesManager = () => {
         <List
           renderItem={(source) => (
             <SourceListItem
-              name={source.name}
-              newsCount={10}
+              source={source}
               onDelete={() => mutate(source.id)}
             />
           )}
