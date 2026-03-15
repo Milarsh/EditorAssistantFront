@@ -2,6 +2,7 @@ import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/shared/ui/button'
+import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
 
 import { handleExportExcel } from './lib/utils'
@@ -10,8 +11,15 @@ import { ArticlesList } from './ui/articles-list'
 import { ArticlesSearch } from './ui/articles-search'
 import { SidebarFilter } from './ui/sidebar-filter'
 
+const TABS = [
+  { id: 'all', label: 'Все' },
+  { id: 'news', label: 'Новостные сайты' },
+  { id: 'socialMedia', label: 'Социальные сети' },
+]
+
 export const ArticlesFeed = () => {
   const [showFilters, setShowFilters] = useState(false)
+  const [activeTab, setActiveTab] = useState('all')
 
   return (
     <div className="w-full overflow-y-auto">
@@ -36,11 +44,22 @@ export const ArticlesFeed = () => {
             <RefreshCw className="ml-2 inline-block" />
           </Button>
         </div>
-        <div className="flex justify-end border-y border-gray-300 p-2">
+        <div
+          className="flex items-center justify-between border-y border-gray-300
+            px-2"
+        >
+          <div>
+            <Tabs
+              tabs={TABS}
+              activeTab={activeTab}
+              onChange={(id) => setActiveTab(id)}
+            />
+          </div>
+
           <button
             type="button"
             onClick={handleExportExcel}
-            className="flex items-center gap-2 rounded-md bg-blue-500 px-2
+            className="flex h-5 items-center gap-2 rounded-md bg-blue-500 px-2
               text-sm text-white"
           >
             Экспорт
@@ -48,7 +67,7 @@ export const ArticlesFeed = () => {
         </div>
 
         <ActionPanel onOpenFilter={() => setShowFilters(true)} />
-        <ArticlesList />
+        <ArticlesList activeTab={activeTab} />
       </div>
       <SidebarFilter isOpen={showFilters} setIsOpen={setShowFilters} />
     </div>
