@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui/button'
 import { SettingsCardWrapper } from './settings-card-wrapper'
 
 export const TgAuthPage = () => {
-  const { data, isLoading, isError } = useTgAuthStatus()
+  const { data, isLoading, isError, refetch } = useTgAuthStatus()
   const [modalOpen, setModalOpen] = useState(false)
   const { mutate: logout } = useTgAuthLogout()
 
@@ -132,7 +132,11 @@ export const TgAuthPage = () => {
             <button
               onClick={() => {
                 setModalOpen(false)
-                logout()
+                logout(undefined, {
+                  onSuccess: () => {
+                    refetch()
+                  },
+                })
               }}
               type="button"
               className="rounded-lg bg-red-500 px-6 py-3 text-white transition

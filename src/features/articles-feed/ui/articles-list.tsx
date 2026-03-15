@@ -4,7 +4,36 @@ import { useIntersectionObserver } from '@/features/articles-feed/lib/hooks/use-
 import { ArticleCard } from '@/shared/ui/article-card'
 import { Loader } from '@/shared/ui/loader'
 
-export const ArticlesList = () => {
+const isSocialMedia = (guid: string | null | undefined) => {
+  if (!guid) {
+    return false
+  }
+
+  const lower = guid.toLowerCase()
+
+  return lower.includes('vk') || lower.includes('tg')
+}
+
+const filterByTab = <T extends { guid?: string | null }>(
+  articles: T[],
+  tab: string,
+): T[] => {
+  if (tab === 'socialMedia') {
+    return articles.filter((a) => isSocialMedia(a.guid))
+  }
+
+  if (tab === 'news') {
+    return articles.filter((a) => !isSocialMedia(a.guid))
+  }
+
+  return articles
+}
+
+type ArticlesListProps = {
+  activeTab: string
+}
+
+export const ArticlesList = ({ activeTab }: ArticlesListProps) => {
   const { filters } = useArticlesFeedStore()
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useArticlesList(filters)
@@ -15,9 +44,10 @@ export const ArticlesList = () => {
   })
 
   const articles = data?.pages.flatMap((page) => page.data.items) ?? []
-  const filteredArticles = articles.filter(
+  const withoutParents = articles.filter(
     (article) => !article.parent_article_id,
   )
+  const filteredArticles = filterByTab(withoutParents, activeTab)
 
   return (
     <div className="vertical gap-4">
