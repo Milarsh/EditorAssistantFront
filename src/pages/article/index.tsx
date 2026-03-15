@@ -7,6 +7,36 @@ import { useArticleKeyWords } from '@/entities/articles/lib/use-article-key-word
 import { useArticleStats } from '@/entities/articles/lib/use-article-stats'
 import { Typography } from '@/shared/ui/typography'
 
+const copyTextToClipboard = async (text: string) => {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text)
+
+    return
+  }
+
+  const textArea = document.createElement('textarea')
+
+  textArea.value = text
+  textArea.setAttribute('readonly', '')
+  textArea.style.position = 'fixed'
+  textArea.style.top = '0'
+  textArea.style.left = '0'
+  textArea.style.opacity = '0'
+
+  document.body.append(textArea)
+  textArea.focus()
+  textArea.select()
+  textArea.setSelectionRange(0, text.length)
+
+  const isCopied = document.execCommand('copy')
+
+  textArea.remove()
+
+  if (!isCopied) {
+    throw new Error('Copy command failed')
+  }
+}
+
 export const ArticlePage = () => {
   const { id } = useParams({ from: '/_auth/article/$id' })
   const { history } = useRouter()
@@ -28,7 +58,7 @@ export const ArticlePage = () => {
     const plainText = article.description.replace(/<[^>]+>/g, '')
 
     try {
-      await navigator.clipboard.writeText(plainText)
+      await copyTextToClipboard(plainText)
 
       toast.success('Текст успешно скопирован')
     } catch (e) {
