@@ -33,7 +33,7 @@ export const UseMlNewAnalysis = () => {
             })
           }
         />
-        <Typography>{isChecked ? 'Выключить' : 'Включить'}</Typography>
+        <Typography>{isChecked ? 'Включено' : 'Выключено'}</Typography>
       </div>
     </SettingsCardWrapper>
   )
