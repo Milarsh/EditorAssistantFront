@@ -1,12 +1,9 @@
 import { Link } from '@tanstack/react-router'
 
-import { useSourceById } from '@/entities/source/lib/use-source-by-id'
-import type { Article } from '@/shared/api'
+import type { ArticleListItem } from '@/shared/api'
 import { Typography } from '@/shared/ui/typography'
 
-export const ArticleCard = ({ article }: { article: Article }) => {
-  const source = useSourceById(article.source_id)
-
+export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
   return (
     <Link to="/article/$id" params={{ id: String(article.id) }}>
       <div
@@ -14,7 +11,7 @@ export const ArticleCard = ({ article }: { article: Article }) => {
           border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
       >
         <div className="flex items-center gap-4">
-          <Typography variant="caption">{source?.name}</Typography>
+          <Typography variant="caption">{`${article.source_type}/${article?.source_name}`}</Typography>
           <div className="flex gap-2">
             {article.rubric_title && (
               <div className="flex-center rounded-full bg-[#87A7ED] px-3 py-1">

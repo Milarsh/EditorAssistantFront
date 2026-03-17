@@ -78,7 +78,33 @@ export interface ArticlesList {
   total: number
   limit: number
   offset: number
-  items: Article[]
+  items: ArticleListItem[]
+}
+
+export interface ArticleListItem {
+  id: number
+  source_id: number
+  /** Название источника новости. */
+  source_name: string
+  /** Тип источника новости. */
+  source_type: ArticleListItemSourceTypeEnum
+  title: string
+  /** @format uri */
+  link: string
+  description?: string | null
+  guid: string
+  /** UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]" */
+  published_at?: string | null
+  /** UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]" */
+  fetched_at: string
+  /** ID родительской статьи (TG) */
+  parent_article_id: number | null
+  /** Название рубрики из статистики статьи. */
+  rubric_title?: string | null
+  /** Количество ключевых слов из статистики статьи. */
+  key_words_count: number
+  /** Признак трендовости из социальной статистики статьи. */
+  is_trending: boolean
 }
 
 export interface ArticleAssetsResponse {
@@ -553,6 +579,13 @@ export enum ErrorCodeEnum {
   InternalError = 'internal_error',
   SourceError = 'source_error',
   ParserError = 'parser_error',
+}
+
+/** Тип источника новости. */
+export enum ArticleListItemSourceTypeEnum {
+  Rss = 'rss',
+  Tg = 'tg',
+  Vk = 'vk',
 }
 
 export enum AssetImageTypeEnum {
