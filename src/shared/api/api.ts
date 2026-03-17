@@ -53,6 +53,8 @@ export type SourcesList = Source[]
 export interface Article {
   id: number
   source_id: number
+  /** Название источника новости. */
+  source_name?: string
   title: string
   /** @format uri */
   link: string
@@ -63,7 +65,13 @@ export interface Article {
   /** UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]" */
   fetched_at: string
   /** ID родительской статьи (TG) */
-  parent_article_id: number
+  parent_article_id: number | null
+  /** Название рубрики из статистики статьи. */
+  rubric_title?: string | null
+  /** Количество ключевых слов из статистики статьи. */
+  key_words_count?: number
+  /** Признак трендовости из социальной статистики статьи. */
+  is_trending?: boolean
 }
 
 export interface ArticlesList {

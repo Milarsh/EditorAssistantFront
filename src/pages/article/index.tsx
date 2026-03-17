@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { useArticleDetails } from '@/entities/articles/lib/use-article-details'
 import { useArticleKeyWords } from '@/entities/articles/lib/use-article-key-words'
 import { useArticleStats } from '@/entities/articles/lib/use-article-stats'
+import { useSourceById } from '@/entities/source/lib/use-source-by-id'
 import { Typography } from '@/shared/ui/typography'
 
 const copyTextToClipboard = async (text: string) => {
@@ -43,6 +44,8 @@ export const ArticlePage = () => {
   const { data: article, isPending } = useArticleDetails(Number(id))
   const { data: stats } = useArticleStats(Number(id))
   const { data: keyWords } = useArticleKeyWords(Number(id))
+
+  const source = useSourceById(article?.source_id)
 
   if (!article || isPending) {
     return <Typography variant="h2">Загрузка</Typography>
@@ -151,7 +154,7 @@ export const ArticlePage = () => {
 
               <div className="mb-2 flex flex-row items-center gap-2">
                 <FileText size={20} />
-                Источник: {article.source_id}
+                Источник: {source?.name}
               </div>
 
               <a
