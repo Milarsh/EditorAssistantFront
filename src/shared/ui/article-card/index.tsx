@@ -4,6 +4,9 @@ import type { ArticleListItem } from '@/shared/api'
 import { Typography } from '@/shared/ui/typography'
 
 export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
+  const sourceTitle =
+    `${article.source_type}/${article?.source_name}`.toUpperCase()
+
   return (
     <Link to="/article/$id" params={{ id: String(article.id) }}>
       <div
@@ -11,7 +14,9 @@ export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
           border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
       >
         <div className="flex items-center gap-4">
-          <Typography variant="caption">{`${article.source_type}/${article?.source_name}`}</Typography>
+          <Typography variant="caption" className="font-semibold text-gray-500">
+            {sourceTitle}
+          </Typography>
           <div className="flex gap-2">
             {article.rubric_title && (
               <div className="flex-center rounded-full bg-[#87A7ED] px-3 py-1">
