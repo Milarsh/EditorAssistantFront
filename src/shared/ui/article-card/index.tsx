@@ -1,11 +1,12 @@
 import { Link } from '@tanstack/react-router'
 
 import type { ArticleListItem } from '@/shared/api'
+import { SourceTypeIcon } from '@/shared/ui/source-type-icon'
 import { Typography } from '@/shared/ui/typography'
 
 export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
-  const sourceTitle =
-    `${article.source_type}/${article?.source_name}`.toUpperCase()
+  const sourceType = article.source_type.toUpperCase()
+  const sourceTitle = `${sourceType}/${article?.source_name}`
 
   return (
     <Link to="/article/$id" params={{ id: String(article.id) }}>
@@ -14,9 +15,15 @@ export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
           border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
       >
         <div className="flex items-center gap-4">
-          <Typography variant="caption" className="font-semibold text-gray-500">
-            {sourceTitle}
-          </Typography>
+          <div className="flex items-center gap-1">
+            <SourceTypeIcon type={article.source_type} size={14} />
+            <Typography
+              variant="caption"
+              className="font-semibold text-gray-500"
+            >
+              {sourceTitle}
+            </Typography>
+          </div>
           <div className="flex gap-2">
             {article.rubric_title && (
               <div className="flex-center rounded-full bg-[#87A7ED] px-3 py-1">
@@ -43,10 +50,12 @@ export const ArticleCard = ({ article }: { article: ArticleListItem }) => {
         <Typography variant="h3">{article.title}</Typography>
         <Typography variant="body">
           {article.published_at
-            ? new Date(article.published_at).toLocaleDateString('ru-RU', {
+            ? new Date(article.published_at).toLocaleString('ru-RU', {
                 day: '2-digit',
-                month: 'long',
+                month: '2-digit',
                 year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
               })
             : 'Дата отсутствует'}
         </Typography>

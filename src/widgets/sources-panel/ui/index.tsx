@@ -1,10 +1,10 @@
-import { WifiHigh } from 'lucide-react'
 import { useState } from 'react'
 
 import { useArticlesList } from '@/entities/articles/lib/use-articles-list'
 import { useSourcesList } from '@/entities/source/lib/use-sources-list'
 import { SourceCreateForm } from '@/entities/source/ui/source-create-form'
 import type { Source } from '@/shared/api'
+import { SourceTypeIcon } from '@/shared/ui/source-type-icon'
 import { Tabs } from '@/shared/ui/tabs'
 import { Typography } from '@/shared/ui/typography'
 
@@ -28,7 +28,7 @@ const SourceItem = ({ source }: { source: Source }) => {
       className="flex flex-row items-center gap-2 bg-transparent px-3 py-2
         text-slate-700"
     >
-      <WifiHigh size={20} className="-mt-1 rotate-45" />
+      <SourceTypeIcon type={source.type} size={20} className="-mt-1" />
       {source.name} {articlesTotal && `(${formattedTotal})`}
     </li>
   )
