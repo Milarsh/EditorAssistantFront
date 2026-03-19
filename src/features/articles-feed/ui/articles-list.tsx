@@ -4,26 +4,19 @@ import { useIntersectionObserver } from '@/features/articles-feed/lib/hooks/use-
 import { ArticleCard } from '@/shared/ui/article-card'
 import { Loader } from '@/shared/ui/loader'
 
-const isSocialMedia = (guid: string | null | undefined) => {
-  if (!guid) {
-    return false
-  }
+const isSocialMedia = (sourceType: string | null | undefined) =>
+  sourceType === 'vk' || sourceType === 'tg'
 
-  const lower = guid.toLowerCase()
-
-  return lower.includes('vk') || lower.includes('tg')
-}
-
-const filterByTab = <T extends { guid?: string | null }>(
+const filterByTab = <T extends { source_type?: string | null }>(
   articles: T[],
   tab: string,
 ): T[] => {
   if (tab === 'socialMedia') {
-    return articles.filter((a) => isSocialMedia(a.guid))
+    return articles.filter((a) => isSocialMedia(a.source_type))
   }
 
   if (tab === 'news') {
-    return articles.filter((a) => !isSocialMedia(a.guid))
+    return articles.filter((a) => !isSocialMedia(a.source_type))
   }
 
   return articles
