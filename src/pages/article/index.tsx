@@ -1,0 +1,175 @@
+import { useParams, useRouter } from '@tanstack/react-router'
+import { ArrowLeft, Calendar, Copy, FileText, Link } from 'lucide-react'
+import toast from 'react-hot-toast'
+
+import { useArticleDetails } from '@/entities/articles/lib/use-article-details'
+import { useArticleKeyWords } from '@/entities/articles/lib/use-article-key-words'
+import { useArticleStats } from '@/entities/articles/lib/use-article-stats'
+import { useSourceById } from '@/entities/source/lib/use-source-by-id'
+import { Typography } from '@/shared/ui/typography'
+
+const copyTextToClipboard = async (text: string) => {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text)
+
+    return
+  }
+
+  const textArea = document.createElement('textarea')
+
+  textArea.value = text
+  textArea.setAttribute('readonly', '')
+  textArea.style.position = 'fixed'
+  textArea.style.top = '0'
+  textArea.style.left = '0'
+  textArea.style.opacity = '0'
+
+  document.body.append(textArea)
+  textArea.focus()
+  textArea.select()
+  textArea.setSelectionRange(0, text.length)
+
+  const isCopied = document.execCommand('copy')
+
+  textArea.remove()
+
+  if (!isCopied) {
+    throw new Error('Copy command failed')
+  }
+}
+
+export const ArticlePage = () => {
+  const { id } = useParams({ from: '/_auth/article/$id' })
+  const { history } = useRouter()
+  const { data: article, isPending } = useArticleDetails(Number(id))
+  const { data: stats } = useArticleStats(Number(id))
+  const { data: keyWords } = useArticleKeyWords(Number(id))
+
+  const source = useSourceById(article?.source_id)
+
+  if (!article || isPending) {
+    return <Typography variant="h2">Загрузка</Typography>
+  }
+
+  const handleGoBack = () => history.back()
+
+  const handleCopyText = async () => {
+    if (!article.description) {
+      return
+    }
+
+    const plainText = article.description.replace(/<[^>]+>/g, '')
+
+    try {
+      await copyTextToClipboard(plainText)
+
+      toast.success('Текст успешно скопирован')
+    } catch (e) {
+      toast.error('Не удалось скопировать текст')
+    }
+  }
+
+  return (
+    <div>
+      <div
+        className="mb-2 flex h-20 w-full items-center gap-2 border-b
+          border-gray-300 p-4"
+      >
+        <button
+          type="button"
+          onClick={handleGoBack}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft />
+          Назад
+        </button>
+      </div>
+
+      <div className="px-6">
+        <Typography
+          variant="h2"
+          className="rounded-tl-xl rounded-tr-xl bg-blue-500 p-2 text-3xl
+            text-white"
+        >
+          {article.title}
+        </Typography>
+        <article
+          className="vertical flex min-h-200 flex-row border-x border-gray-300
+            shadow-sm"
+        >
+          <div className="flex-1">
+            {article.description && (
+              <div className="inline">
+                <span
+                  className="inline"
+                  dangerouslySetInnerHTML={{ __html: article.description }}
+                />
+                <button
+                  type="button"
+                  onClick={handleCopyText}
+                  className="ml-1 inline align-baseline"
+                >
+                  <Copy size={16} />
+                </button>
+              </div>
+            )}
+            {stats && (
+              <div className="border-t border-gray-300 py-2 text-gray-500">
+                <Typography variant="body">
+                  Количество стоп-слов: {stats.stop_words_count}
+                </Typography>
+                <Typography variant="body">
+                  Количество ключевых слов: {stats.key_words_count}
+                </Typography>
+                {keyWords && (
+                  <Typography
+                    variant="body"
+                    className="flex flex-row items-center gap-1"
+                  >
+                    Ключевые слова:{' '}
+                    {keyWords.items.map((item) => item.value).join(', ')}
+                  </Typography>
+                )}
+              </div>
+            )}
+            <div className="flex items-center gap-4 text-lg text-gray-500">
+              <Typography
+                variant="body"
+                className="mb-2 flex flex-row items-center gap-2"
+              >
+                <Calendar size={26} />
+                {article.published_at
+                  ? new Date(article.published_at)
+                      .toLocaleString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      })
+                      .replace(',', '')
+                  : 'Дата отсутствует'}
+              </Typography>
+
+              <div className="mb-2 flex flex-row items-center gap-2">
+                <FileText size={20} />
+                Источник: {source?.name}
+              </div>
+
+              <a
+                className="mb-2 flex flex-row items-center gap-2 text-gray-600"
+                href={article.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Link size={20} />
+                Перейти к оригиналу
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  )
+}

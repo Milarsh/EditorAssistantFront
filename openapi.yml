@@ -1,0 +1,2115 @@
+openapi: 3.0.3
+info:
+  title: Editor Assistant API
+  version: 1.0.0
+  description: Позволяет получать новости и их источники в формате JSON, проверять состояние сервиса.
+servers:
+- url: http://localhost:8000
+  description: Локальный сервер
+tags:
+- name: Health
+- name: Sources
+- name: Articles
+- name: Media
+- name: TelegramAuth
+- name: Authorization
+- name: Settings
+- name: StopWords
+- name: KeyWords
+paths:
+  /healthz:
+    get:
+      tags:
+      - Health
+      summary: Проверка состояния сервиса
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+  /api/sources:
+    get:
+      tags:
+      - Sources
+      summary: Список источников
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourcesList'
+              examples:
+                ok:
+                  value:
+                  - id: 1
+                    name: Example
+                    type: rss
+                    rss_url: https://example.com/rss.xml
+                    enabled: true
+                    created_at: '2025-10-10T09:20:17Z'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+      - Sources
+      summary: Добавить источник
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceCreate'
+            examples:
+              sample:
+                value:
+                  name: Example
+                  rss_url: https://example.com/rss.xml
+                  enabled: true
+      responses:
+        '201':
+          description: Создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Source'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/sources/{id}:
+    delete:
+      tags:
+      - Sources
+      summary: Удалить источник
+      parameters:
+      - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+                  id:
+                    type: integer
+                    example: 1
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/articles:
+    get:
+      tags:
+        - Articles
+      summary: Список статей
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/SourceId'
+        - $ref: '#/components/parameters/Q'   
+        - $ref: '#/components/parameters/DateFrom' 
+        - $ref: '#/components/parameters/DateTo'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/RubricId'
+        - $ref: '#/components/parameters/StopWords'
+        - $ref: '#/components/parameters/Trend'
+        - $ref: '#/components/parameters/Relevance'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticlesList'
+              examples:
+                example:
+                  value:
+                    total: 2
+                    limit: 20
+                    offset: 0
+                    items:
+                      - id: 101
+                        source_id: 2
+                        source_name: "RSS/РИА Новости"
+                        source_type: "rss"
+                        title: "Новость"
+                        link: "https://example.com/1"
+                        description: "Текст"
+                        guid: "guid-1"
+                        published_at: "2025-10-28T10:05:50Z"
+                        fetched_at: "2025-10-28T10:06:00Z"
+                        parent_article_id: null
+                        rubric_title: "Транспорт"
+                        key_words_count: 10
+                        is_trending: true
+                      - id: 102
+                        source_id: 2
+                        source_name: "Telegram/Канал"
+                        source_type: "tg"
+                        title: "https://t.me/channel/42"
+                        link: "https://t.me/channel/42"
+                        description: null
+                        guid: "tg:123456:42:1"
+                        published_at: "2025-10-28T10:05:51Z"
+                        fetched_at: "2025-10-28T10:06:10Z"
+                        parent_article_id: 101
+                        rubric_title: null
+                        key_words_count: 0
+                        is_trending: false
+  /api/articles/export:
+    get:
+      tags:
+        - Articles
+      summary: Экспорт статистики и изображений
+      responses:
+        '200':
+          description: Экспорт сформирован, zip-архив с Excel и папкой изображений
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+  /api/articles/{id}:
+    get:
+      tags:
+      - Articles
+      summary: Получить новость по id
+      parameters:
+      - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/articles/{id}/media:
+    get:
+      tags:
+      - Articles
+      summary: Медиа-данные статьи (локальные изображения)
+      description: |
+        Возвращает список изображений (assets) для статьи.  
+        Локальные файлы отдаются через `/media/...`.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Список медиа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleAssetsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/articles/cleanup:
+    post:
+      tags:
+        - Articles
+      summary: Очистка новостей до даты
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCleanupRequest'
+            examples:
+              sample:
+                value:
+                  date_to: '2025-12-31'
+                  dry_run: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCleanupResponse'
+              examples:
+                sample:
+                  value:
+                    date_to: '2025-12-31T23:59:59Z'
+                    dry_run: true
+                    total: 1247
+                    deleted: 893
+                    remaining: 354
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/articles/{id}/children:
+    get:
+      tags:
+        - Articles
+      summary: Дочерние статьи (фото, видео)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleChildrenResponse'
+              examples:
+                ok:
+                  value:
+                    id: 123
+                    total: 2
+                    limit: 20
+                    offset: 0
+                    items:
+                      - id: 124
+                        source_id: 2
+                        title: https://t.me/channel/42
+                        link: https://t.me/channel/42
+                        description: null
+                        guid: tg:123456:42:1
+                        published_at: '2025-10-10T10:05:51Z'
+                        fetched_at: '2025-10-10T10:06:10Z'
+                        parent_article_id: 123
+                      - id: 125
+                        source_id: 2
+                        title: https://t.me/channel/42
+                        link: https://t.me/channel/42
+                        description: null
+                        guid: tg:123456:42:2
+                        published_at: '2025-10-10T10:05:52Z'
+                        fetched_at: '2025-10-10T10:06:11Z'
+                        parent_article_id: 123
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/articles/{id}/parent:
+    get:
+      tags:
+        - Articles
+      summary: Родительская статья
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleParentResponse'
+              examples:
+                with_parent:
+                  value:
+                    id: 124
+                    parent:
+                      id: 123
+                      source_id: 2
+                      title: "Основной пост с текстом"
+                      link: https://t.me/channel/42
+                      description: "Текст поста"
+                      guid: tg:123456:42
+                      published_at: '2025-10-10T10:05:50Z'
+                      fetched_at: '2025-10-10T10:06:00Z'
+                      parent_article_id: null
+                no_parent:
+                  value:
+                    id: 123
+                    parent: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /media/{path}:
+    get:
+      tags:
+      - Media
+      summary: Выдача локальных медиафайлов
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema: { type: string }
+          description: Относительный путь внутри каталога media (например, `vk/-40316705/54155576/photo_1.jpg`)
+      responses:
+        '200':
+          description: Файл
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '400':
+            $ref: '#/components/responses/BadRequest'
+        '404':
+            $ref: '#/components/responses/NotFound'
+
+  /api/tg/auth/status:
+    get:
+      tags: [ TelegramAuth ]
+      summary: Получить текущий статус авторизации в Telegram
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/qr:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Начать/перегенерировать QR-логин
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                force:
+                  type: boolean
+                  description: "Создать новый QR, даже если старый ещё не истёк"
+                  default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/2fa:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Завершить авторизацию — отправить 2FA-пароль
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ password ]
+              properties:
+                password:
+                  type: string
+                  example: "mysupersecret"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '400':
+          description: Неверный пароль или некорректное тело запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /api/tg/auth/logout:
+    post:
+      tags: [ TelegramAuth ]
+      summary: Выйти из Telegram-аккаунта и сбросить сессию
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TgAuthStatus'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/auth/register:
+    post:
+      operationId: auth_register
+      summary: Регистрация пользователя и первичная отправка кода подтверждения
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterRequest' }
+      responses:
+        "201":
+          description: Код сгенерирован, пользователь создан в статусе inactive
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterPendingResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "409": { description: Email или login заняты, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок на жизнь кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/resend:
+    post:
+      operationId: auth_register_resend
+      summary: Переотправка кода подтверждения e-mail
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterResendRequest' }
+      responses:
+        "200":
+          description: Код переотправлен / уже подтверждён
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterResendResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/confirm:
+    post:
+      operationId: auth_register_confirm
+      summary: Подтверждение e-mail кодом
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthRegisterConfirmRequest' }
+      responses:
+        "200":
+          description: Подтверждён / уже подтверждён
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterConfirmResponse' }
+        "400": { description: Неверный/просроченный код или нет активного кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит попыток ввода кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/register/status:
+    get:
+      operationId: auth_register_status
+      summary: Статус подтверждения регистрации
+      tags: [ Authorization ]
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema: { type: string, format: email }
+      responses:
+        "200":
+          description: Текущий статус регистрации
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthRegisterStatusResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/login:
+    post:
+      operationId: auth_login
+      summary: Вход по login/email и паролю (серверные сессии)
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthLoginRequest' }
+      responses:
+        "200":
+          description: Успешный вход, возвращён bearer-токен
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthLoginResponse' }
+        "400": { description: Ошибка валидации/отсутствуют поля, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "401": { description: Неверные учётные данные, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "403": { description: Email не подтверждён, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/logout:
+    post:
+      operationId: auth_logout
+      summary: Выход (ревокация текущей сессии)
+      tags: [ Authorization ]
+      security: [ { bearerAuth: [ ] } ]
+      responses:
+        "200":
+          description: Сессия отозвана или была отозвана ранее
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LogoutResponse' }
+        "401": { description: Неавторизован/невалидная сессия, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/whoami:
+    get:
+      operationId: auth_whoami
+      summary: Текущий пользователь по bearer-токену
+      tags: [ Authorization ]
+      security: [ { bearerAuth: [ ] } ]
+      responses:
+        "200":
+          description: Профиль авторизованного пользователя
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WhoAmIResponse' }
+        "401": { description: Неавторизован/истёкшая/отозванная сессия, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "409": { description: Конфликт single-session (mismatch), content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/password/send-code:
+    post:
+      operationId: auth_password_send_code
+      summary: Отправка/переотправка кода на сброс пароля
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordSendCodeRequest' }
+      responses:
+        "200":
+          description: Код отправлен
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PasswordSendCodeResponse' }
+        "400": { description: Ошибка валидации, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит переотправок, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/auth/password/reset:
+    post:
+      operationId: auth_password_reset
+      summary: Подтверждение кода и установка нового пароля
+      tags: [ Authorization ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PasswordResetRequest' }
+      responses:
+        "200":
+          description: Пароль изменён (активные сессии отозваны)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PasswordResetResponse' }
+        "400": { description: Неверный/просроченный код или нет активного кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "404": { description: Пользователь не найден, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+        "429": { description: Лимит попыток ввода кода, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
+  /api/settings:
+    get:
+      tags:
+        - Settings
+      summary: Список текущих значений настроек
+      description: |
+        Возвращает значения динамических общих настроек сервиса.
+        Если `codes` не указан — возвращаются все известные коды.
+      parameters:
+        - $ref: '#/components/parameters/SettingsCodes'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsList'
+              examples:
+                ok:
+                  value:
+                    - id: 1
+                      code: poll_interval
+                      value: "5"
+                    - id: 2
+                      code: media_keep
+                      value: "true"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Settings
+      summary: Обновить значение настройки
+      description: |
+        Обновляет значение существующей настройки по `code`.
+        Создание новых настроек через этот роут запрещено.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingUpdate'
+            examples:
+              sample:
+                value:
+                  code: poll_interval
+                  value: 10
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/settings/codes:
+    get:
+      tags:
+        - Settings
+      summary: Список актуальных кодов настроек
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingCodesResponse'
+              examples:
+                ok:
+                  value:
+                    codes:
+                      - poll_interval
+                      - media_keep
+                      - media_max_size_mb
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/settings/options:
+    get:
+      tags:
+        - Settings
+      summary: Варианты выбора для настроек
+      description: |
+        Если передан `code`, возвращает метаданные одной настройки.
+        Если `code` не указан, возвращает список по всем актуальным кодам.
+      parameters:
+        - $ref: '#/components/parameters/SettingCode'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SettingOptions'
+                  - $ref: '#/components/schemas/SettingOptionsList'
+              examples:
+                single:
+                  value:
+                    code: poll_interval
+                    type: int
+                    default: 5
+                    options: [5, 10, 15, 30, 45, 60]
+                    allow_custom: true
+                    min: 1
+                    max: 60
+                list:
+                  value:
+                    items:
+                      - code: media_keep
+                        type: bool
+                        default: true
+                        options: [true, false]
+                      - code: media_max_size_mb
+                        type: int
+                        default: 50
+                        options: [5, 10, 25, 50, 100, 0]
+                        allow_custom: true
+                        min: 1
+                        max: 2048
+                        zero_is_unlimited: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/stop-categories:
+    get:
+      tags: [ StopWords ]
+      summary: Список категорий стоп-слов
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopCategoriesList'
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [ StopWords ]
+      summary: Создать или обновить категорию стоп-слов
+      description: |
+        Если передан `id` — обновляет существующую категорию.
+        Если `id` не передан — создаёт новую категорию.
+        Символьный код `code` генерируется автоматически из `title`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopCategoryUpsertRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopCategory'
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopCategory'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/stop-categories/{id}:
+    delete:
+      tags: [ StopWords ]
+      summary: Удалить категорию стоп-слов
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: deleted }
+                  id: { type: integer, example: 1 }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/rubrics:
+    get:
+      tags: [ KeyWords ]
+      summary: Список рубрик
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RubricsList'
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [ KeyWords ]
+      summary: Создать или обновить рубрику
+      description: |
+        Если передан `id` — обновляет существующую рубрику.
+        Если `id` не передан — создаёт новую рубрику.
+        Символьный код `code` генерируется автоматически из `title`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RubricUpsertRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubric'
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubric'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/rubrics/{id}:
+    delete:
+      tags: [ KeyWords ]
+      summary: Удалить рубрику
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: deleted }
+                  id: { type: integer, example: 1 }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/stop-words:
+    get:
+      tags: [ StopWords ]
+      summary: Список стоп-слов
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopWordsList'
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [ StopWords ]
+      summary: Создать или обновить стоп-слово
+      description: |
+        Если передан `id` — обновляет существующее стоп-слово.
+        Если `id` не передан — создаёт новое.
+        Символьный код `code` генерируется автоматически из `value`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopWordUpsertRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopWord'
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopWord'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }      # если категория не найдена
+        '409': { $ref: '#/components/responses/Conflict' }       # дубликат по code
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/stop-words/{id}:
+    delete:
+      tags: [ StopWords ]
+      summary: Удалить стоп-слово
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: deleted }
+                  id: { type: integer, example: 1 }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/key-words:
+    get:
+      tags: [ KeyWords ]
+      summary: Список ключевых слов
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyWordsList'
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [ KeyWords ]
+      summary: Создать или обновить ключевое слово
+      description: |
+        Если передан `id` — обновляет существующее ключевое слово.
+        Если `id` не передан — создаёт новое.
+        Символьный код `code` генерируется автоматически из `value`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyWordUpsertRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyWord'
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyWord'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }      # если рубрика не найдена
+        '409': { $ref: '#/components/responses/Conflict' }       # дубликат по code
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/key-words/{id}:
+    delete:
+      tags: [ KeyWords ]
+      summary: Удалить ключевое слово
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: deleted }
+                  id: { type: integer, example: 1 }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/articles/{id}/stats:
+    get:
+      tags: [ Articles ]
+      summary: Статистика по стоп- и ключевым словам для статьи
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleStat'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/articles/{id}/social-stats:
+    get:
+      tags: [ Articles ]
+      summary: Социальная статистика для статьи
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleSocialStatsResponse'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/articles/{id}/stop-words:
+    get:
+      tags:
+        - StopWords
+      summary: Стоп-слова, найденные в статье
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleStopWordsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/articles/{id}/key-words:
+    get:
+      tags:
+        - KeyWords
+      summary: Ключевые слова, найденные в статье
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleKeyWordsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque token
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    SourceId:
+      name: source_id
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Фильтр по источнику
+    Q:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 200
+      description: Поиск по заголовку/описанию (ILIKE)
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    DateFrom:
+      name: date_from
+      in: query
+      required: false
+      description: >
+        Фильтр по дате публикации (поле `published_at`) с этой даты/времени включительно.
+        Поддерживаются форматы RFC 3339: `YYYY-MM-DDTHH:MM:SSZ|±HH:MM` и дата без времени `YYYY-MM-DD`.
+        Если передана только дата, интерпретируется как начало суток 00:00:00 в UTC.
+      schema:
+        type: string
+      examples:
+        date:
+          value: "2025-10-28"
+        datetime_z:
+          value: "2025-10-28T14:00:00Z"
+    DateTo:
+      name: date_to
+      in: query
+      required: false
+      description: >
+        Верхняя граница фильтра по `published_at` включительно.
+        При дате без времени `YYYY-MM-DD` берётся конец суток 23:59:59.999999 (UTC).
+      schema:
+        type: string
+      examples:
+        date:
+          value: "2025-10-28"
+        datetime_z:
+          value: "2025-10-28T14:00:00Z"
+    Order:
+      name: order
+      in: query
+      required: false
+      description: >
+        Направление сортировки по `published_at`, затем по `id`.
+        По умолчанию убывание (`desc`).
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+    RubricId:
+      name: rubric_id
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+      description: |
+        Фильтрует статьи по rubric id из статистики статьи (ArticleStat.rubric_id).
+    Trend:
+      name: trend
+      in: query
+      required: false
+      description: Фильтр по трендовости (по ArticleSocialStat.is_trending).
+      schema:
+        type: string
+        enum: [all, only, exclude]
+        default: all
+    Relevance:
+      name: relevance
+      in: query
+      required: false
+      description: Сортировка по релевантности (ArticleStat.key_words_count).
+      schema:
+        type: string
+        enum: [asc, desc]
+    StopWords:
+      name: stop_words
+      in: query
+      required: false
+      description: |
+        Фильтр по наличию стоп-слов.
+        any = без разницы, with = есть стоп-слова, without = нет стоп-слов.
+      schema:
+        type: string
+        enum: [any, with, without]
+        default: any
+    SettingsCodes:
+      name: codes
+      in: query
+      required: false
+      description: >
+        Список кодов настроек через запятую. Если не указан —
+        возвращаются все настройки.
+      schema:
+        type: string
+        example: "poll_interval,media_keep"
+    SettingCode:
+      name: code
+      in: query
+      required: false
+      description: Код настройки для получения вариантов выбора.
+      schema:
+        type: string
+        example: poll_interval
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          - request_id
+          properties:
+            code:
+              type: string
+              description: Машинно-читабельный код ошибки
+              enum:
+              - bad_request
+              - not_found
+              - conflict
+              - too_many_requests
+              - method_not_allowed
+              - not_implemented
+              - internal_error
+              - source_error
+              - parser_error
+              example: bad_request
+            message:
+              type: string
+              description: Человекочитаемое сообщение
+            request_id:
+              type: string
+              description: Простой request id (для логов)
+            details:
+              type: object
+              additionalProperties: true
+    SourceCreate:
+      type: object
+      required:
+      - name
+      - rss_url
+      properties:
+        name:
+          type: string
+          minLength: 1
+        rss_url:
+          type: string
+          format: uri
+          description: HTTP(S) RSS URL
+        enabled:
+          type: boolean
+          default: true
+    Source:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - rss_url
+      - enabled
+      - created_at
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        rss_url:
+          type: string
+          format: uri
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          description: UTC строка в формате "YYYY-MM-DD HH:MM:SS[.ffffff]"
+    SourcesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Source'
+    Article:
+      type: object
+      required:
+      - id
+      - source_id
+      - title
+      - link
+      - guid
+      - fetched_at
+      - parent_article_id
+      properties:
+        id:
+          type: integer
+        source_id:
+          type: integer
+        source_name:
+          type: string
+          description: Название источника новости.
+        title:
+          type: string
+        link:
+          type: string
+          format: uri
+        description:
+          type: string
+          nullable: true
+        guid:
+          type: string
+        published_at:
+          type: string
+          nullable: true
+          description: UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        fetched_at:
+          type: string
+          description: UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        parent_article_id:
+          type: integer
+          nullable: true
+          description: ID родительской статьи (TG)
+        rubric_title:
+          type: string
+          nullable: true
+          description: Название рубрики из статистики статьи.
+        key_words_count:
+          type: integer
+          description: Количество ключевых слов из статистики статьи.
+        is_trending:
+          type: boolean
+          description: Признак трендовости из социальной статистики статьи.
+    ArticlesList:
+      type: object
+      required:
+      - total
+      - limit
+      - offset
+      - items
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticleListItem'
+    ArticleListItem:
+      type: object
+      required:
+      - id
+      - source_id
+      - source_name
+      - source_type
+      - title
+      - link
+      - guid
+      - fetched_at
+      - parent_article_id
+      - key_words_count
+      - is_trending
+      properties:
+        id:
+          type: integer
+        source_id:
+          type: integer
+        source_name:
+          type: string
+          description: Название источника новости.
+        source_type:
+          type: string
+          enum: [rss, tg, vk]
+          description: Тип источника новости.
+        title:
+          type: string
+        link:
+          type: string
+          format: uri
+        description:
+          type: string
+          nullable: true
+        guid:
+          type: string
+        published_at:
+          type: string
+          nullable: true
+          description: UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        fetched_at:
+          type: string
+          description: UTC строка "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        parent_article_id:
+          type: integer
+          nullable: true
+          description: ID родительской статьи (TG)
+        rubric_title:
+          type: string
+          nullable: true
+          description: Название рубрики из статистики статьи.
+        key_words_count:
+          type: integer
+          description: Количество ключевых слов из статистики статьи.
+        is_trending:
+          type: boolean
+          description: Признак трендовости из социальной статистики статьи.
+    ArticleAssetsResponse:
+      type: object
+      required: [id, assets]
+      properties:
+        id: { type: integer, example: 327 }
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetImage'
+    ArticleChildrenResponse:
+      type: object
+      required: [id, total, limit, offset, items]
+      properties:
+        id:
+          type: integer
+          description: ID родительской статьи
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+    ArticleParentResponse:
+      type: object
+      required: [id, parent]
+      properties:
+        id:
+          type: integer
+          description: ID запрошенной статьи
+        parent:
+          allOf:
+            - $ref: '#/components/schemas/Article'
+          nullable: true
+          description: Родительская статья (null, если нет)
+
+    AssetImage:
+      type: object
+      required: [type, file_url, mime, name]
+      properties:
+        type:
+          type: string
+          enum: [image]
+        file_url:
+          type: string
+          description: Локальный URL до файла
+          example: /media/vk/-40316705/54155576/photo_1.jpg
+        mime:
+          type: string
+          example: image/jpeg
+        name:
+          type: string
+          example: photo_1.jpg
+    TgAuthUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123456789
+        first_name:
+          type: string
+          nullable: true
+          example: Ivan
+        last_name:
+          type: string
+          nullable: true
+          example: Petrov
+        username:
+          type: string
+          nullable: true
+          example: ivanpetrov
+        phone:
+          type: string
+          nullable: true
+          example: "+79990000000"
+    TgAuthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ unauthorized, pending, password_required, authorized, expired, error ]
+          example: pending
+        qr_url:
+          type: string
+          nullable: true
+          description: "Ссылка tg://login?token=..., из которой фронт строит QR"
+          example: "tg://login?token=AAEAAABb..."
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: "RFC3339 время истечения QR-токена (UTC)"
+          example: "2025-10-27T12:00:00Z"
+        error:
+          type: string
+          nullable: true
+          example: bad_password
+        user:
+          $ref: '#/components/schemas/TgAuthUser'
+    AuthRegisterRequest:
+      type: object
+      required: [ email, login, password, password_confirm ]
+      properties:
+        email: { type: string, format: email, example: user@example.com }
+        login: { type: string, example: user123 }
+        password: { type: string, format: password, minLength: 8 }
+        password_confirm: { type: string, format: password }
+    AuthRegisterPendingResponse:
+      type: object
+      required: [ status, email, login, code_ttl_sec, send_count ]
+      properties:
+        status: { type: string, enum: [ pending ] }
+        email: { type: string, format: email }
+        login: { type: string }
+        code_ttl_sec: { type: integer, example: 900 }
+        send_count: { type: integer, example: 1 }
+
+    AuthRegisterConfirmRequest:
+      type: object
+      required: [ email, code ]
+      properties:
+        email: { type: string, format: email }
+        code: { type: string, example: "123456" }
+    AuthRegisterConfirmResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ confirmed, already_confirmed ] }
+
+    AuthRegisterResendRequest:
+      type: object
+      required: [ email ]
+      properties:
+        email: { type: string, format: email }
+    AuthRegisterResendResponse:
+      type: object
+      required: [ status, send_count, code_ttl_sec ]
+      properties:
+        status: { type: string, enum: [ resent, already_confirmed ] }
+        send_count: { type: integer }
+        code_ttl_sec: { type: integer }
+
+    AuthRegisterStatusResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status:
+          type: string
+          enum: [ pending, confirmed ]
+        code:
+          nullable: true
+          type: object
+          properties:
+            send_count: { type: integer }
+            input_count: { type: integer }
+            ttl_sec: { type: integer }
+
+    AuthLoginRequest:
+      type: object
+      required: [ password ]
+      properties:
+        login: { type: string, description: "Либо login, либо email" }
+        email: { type: string, format: email, description: "Либо email, либо login" }
+        password: { type: string, format: password }
+        remember: { type: boolean, default: false }
+    AuthLoginResponse:
+      type: object
+      required: [ access_token, token_type, expires_at ]
+      properties:
+        access_token: { type: string, description: "Opaque bearer token" }
+        token_type: { type: string, example: bearer }
+        expires_at: { type: string, format: date-time, example: 2025-10-30T09:00:00Z }
+
+    WhoAmIResponse:
+      type: object
+      required: [ id, email, login, is_active ]
+      properties:
+        id: { type: integer }
+        email: { type: string, format: email }
+        login: { type: string }
+        is_active: { type: boolean }
+        email_confirmed_at: { type: string, format: date-time, nullable: true }
+        last_login_at: { type: string, format: date-time, nullable: true }
+        last_login_ip: { type: string, nullable: true }
+
+    LogoutResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ revoked, already_revoked ] }
+
+    PasswordSendCodeRequest:
+      type: object
+      required: [ email ]
+      properties:
+        email: { type: string, format: email }
+    PasswordSendCodeResponse:
+      type: object
+      required: [ status, code_ttl_sec ]
+      properties:
+        status: { type: string, enum: [ sent ] }
+        code_ttl_sec: { type: integer }
+
+    PasswordResetRequest:
+      type: object
+      required: [ email, code, new_password, new_password_confirm ]
+      properties:
+        email: { type: string, format: email }
+        code: { type: string, example: "123456" }
+        new_password: { type: string, format: password, minLength: 8 }
+        new_password_confirm: { type: string, format: password }
+    PasswordResetResponse:
+      type: object
+      required: [ status ]
+      properties:
+        status: { type: string, enum: [ password_changed ] }
+
+    Setting:
+      type: object
+      required:
+        - id
+        - code
+        - value
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Код настройки (уникальный)
+          example: tg.enabled
+        value:
+          type: string
+          description: Строковое значение настройки
+          example: "1"
+
+    SettingsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Setting'
+
+    SettingUpdate:
+      type: object
+      required:
+        - code
+        - value
+      properties:
+        code:
+          type: string
+          minLength: 1
+          example: tg.enabled
+        value:
+          type: string
+          example: "1"
+
+
+    SettingCodesResponse:
+      type: object
+      required: [ codes ]
+      properties:
+        codes:
+          type: array
+          items:
+            type: string
+
+    SettingOptions:
+      type: object
+      required: [ code, type, default ]
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+          enum: [ int, bool, string ]
+        default:
+          oneOf:
+            - type: integer
+            - type: boolean
+            - type: string
+        options:
+          type: array
+          items:
+            oneOf:
+              - type: integer
+              - type: boolean
+              - type: string
+        allow_custom:
+          type: boolean
+        min:
+          type: integer
+        max:
+          type: integer
+        zero_is_unlimited:
+          type: boolean
+
+    SettingOptionsList:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SettingOptions'
+
+    ArticleStopWordsResponse:
+      type: object
+      required: [id, items]
+      properties:
+        id:
+          type: integer
+          description: ID статьи
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StopWord'
+
+    ArticleKeyWordsResponse:
+      type: object
+      required: [id, items]
+      properties:
+        id:
+          type: integer
+          description: ID статьи
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyWord'
+
+    ArticleCleanupRequest:
+      type: object
+      required: [ date_to ]
+      properties:
+        date_to:
+          type: string
+          description: Дата (RFC3339 или YYYY-MM-DD). Удаляются новости до даты включительно.
+        dry_run:
+          type: boolean
+          default: false
+          description: Если true, удаление не выполняется, возвращается только статистика.
+
+    ArticleCleanupResponse:
+      type: object
+      required: [ date_to, dry_run, total, deleted, remaining ]
+      properties:
+        date_to:
+          type: string
+          format: date-time
+          description: Нормализованная дата отсечения.
+        dry_run:
+          type: boolean
+        total:
+          type: integer
+        deleted:
+          type: integer
+        remaining:
+          type: integer
+
+
+    StopCategory:
+      type: object
+      required: [ id, code, title ]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Символьный код (slug), генерируется автоматически
+        title:
+          type: string
+          description: Название категории
+
+    StopCategoriesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StopCategory'
+
+    StopCategoryUpsertRequest:
+      type: object
+      required: [ title ]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Если передан — будет выполнено обновление записи
+        title:
+          type: string
+          minLength: 1
+          description: Название категории
+
+    Rubric:
+      type: object
+      required: [ id, code, title ]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Символьный код (slug), генерируется автоматически
+        title:
+          type: string
+          description: Название рубрики
+
+    RubricsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Rubric'
+
+    RubricUpsertRequest:
+      type: object
+      required: [ title ]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Если передан — будет выполнено обновление записи
+        title:
+          type: string
+          minLength: 1
+          description: Название рубрики
+
+    StopWord:
+      type: object
+      required: [ id, code, value, category_id ]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Символьный код слова, генерируется из value
+        value:
+          type: string
+          description: Текст стоп-слова
+        category_id:
+          type: integer
+          description: ID категории стоп-слова
+
+    StopWordsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StopWord'
+
+    StopWordUpsertRequest:
+      type: object
+      required: [ value, category_id ]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Если передан — будет выполнено обновление записи
+        value:
+          type: string
+          minLength: 1
+          description: Текст стоп-слова
+        category_id:
+          type: integer
+          minimum: 1
+          description: ID категории, к которой относится стоп-слово
+
+    KeyWord:
+      type: object
+      required: [ id, code, value, rubric_id ]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: Символьный код слова, генерируется из value
+        value:
+          type: string
+          description: Текст ключевого слова
+        rubric_id:
+          type: integer
+          description: ID рубрики, к которой относится ключевое слово
+
+    KeyWordsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/KeyWord'
+
+    KeyWordUpsertRequest:
+      type: object
+      required: [ value, rubric_id ]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Если передан — будет выполнено обновление записи
+        value:
+          type: string
+          minLength: 1
+          description: Текст ключевого слова
+        rubric_id:
+          type: integer
+          minimum: 1
+          description: ID рубрики
+
+    ArticleStat:
+      type: object
+      required: [ entity_id, stop_words_count, key_words_count ]
+      properties:
+        entity_id:
+          type: integer
+          description: ID новости (статьи)
+        stop_words_count:
+          type: integer
+          minimum: 0
+          description: Количество уникальных стоп-слов, найденных в статье
+        key_words_count:
+          type: integer
+          minimum: 0
+          description: Количество уникальных ключевых слов, найденных в статье
+        rubric_id:
+          type: integer
+          nullable: true
+          description: Рубрика с наибольшим количеством ключевых слов
+        stop_category_id:
+          type: integer
+          nullable: true
+          description: Категория с наибольшим количеством стоп-слов
+
+    ArticleSocialStat:
+      type: object
+      required: [ like_count, repost_count, comment_count, view_count, engagement_score, is_trending, collected_at ]
+      properties:
+        like_count:
+          type: integer
+          minimum: 0
+          description: Количество лайков или реакций
+        repost_count:
+          type: integer
+          minimum: 0
+          description: Количество репостов или пересылок
+        comment_count:
+          type: integer
+          minimum: 0
+          description: Количество комментариев
+        view_count:
+          type: integer
+          minimum: 0
+          description: Количество просмотров
+        engagement_score:
+          type: number
+          format: float
+          description: Метрика вовлеченности E
+        previous_engagement:
+          type: number
+          format: float
+          nullable: true
+          description: Предыдущее значение вовлеченности (24 часа назад)
+        engagement_delta:
+          type: number
+          format: float
+          nullable: true
+          description: Относительное изменение вовлеченности
+        is_trending:
+          type: boolean
+          description: Признак трендовой новости
+        collected_at:
+          type: string
+          format: date-time
+          description: Время сбора статистики (UTC)
+
+    ArticleSocialStatsResponse:
+      type: object
+      required: [ id, has_social_stats, source_type ]
+      properties:
+        id:
+          type: integer
+          description: ID новости (статьи)
+        has_social_stats:
+          type: boolean
+          description: Доступна ли социальная статистика
+        source_type:
+          type: string
+          enum: [ rss, tg, vk ]
+          description: Тип источника
+        reason:
+          type: string
+          nullable: true
+          description: Причина отсутствия статистики
+        stats:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ArticleSocialStat'
+
+
+  responses:
+    BadRequest:
+      description: Неверные данные
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: bad_request
+                  message: Invalid fields
+                  request_id: 1730000000-1
+                  details:
+                    field: Required
+    NotFound:
+      description: Не найдено
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: not_found
+                  message: Resource not found
+                  request_id: 1730000000-2
+    Conflict:
+      description: Конфликт (например, дубликат rss_url)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: conflict
+                  message: rss_url already exists
+                  request_id: 1730000000-3
+    TooManyRequests:
+      description: Превышен лимит запросов
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: too_many_requests
+                  message: 'Too many requests: limit 60 per 60s'
+                  request_id: 1730000000-4
+    MethodNotAllowed:
+      description: Метод не поддерживается
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: method_not_allowed
+                  message: Method not allowed
+                  request_id: 1730000000-5
+    InternalError:
+      description: Внутренняя ошибка
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            sample:
+              value:
+                error:
+                  code: internal_error
+                  message: Internal server error
+                  request_id: 1730000000-6

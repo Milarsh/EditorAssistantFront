@@ -9,50 +9,470 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
+import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
+import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
+import { Route as AuthManageIndexRouteImport } from './routes/_auth/manage/index'
+import { Route as AuthSettingsUseMlNewsAnalysisRouteImport } from './routes/_auth/settings/use-ml-news-analysis'
+import { Route as AuthSettingsTgAuthRouteImport } from './routes/_auth/settings/tg-auth'
+import { Route as AuthSettingsSocialStatisticIntervalRouteImport } from './routes/_auth/settings/social-statistic-interval'
+import { Route as AuthSettingsPollIntevalRouteImport } from './routes/_auth/settings/poll-inteval'
+import { Route as AuthSettingsNewsClearRouteImport } from './routes/_auth/settings/news-clear'
+import { Route as AuthSettingsMediafilesRouteImport } from './routes/_auth/settings/mediafiles'
+import { Route as AuthManageSourcesRouteImport } from './routes/_auth/manage/sources'
+import { Route as AuthManageCategoriesRouteImport } from './routes/_auth/manage/categories'
+import { Route as AuthArticleIdRouteImport } from './routes/_auth/article.$id'
+import { Route as AuthManageStopWordsIndexRouteImport } from './routes/_auth/manage/stop-words/index'
+import { Route as AuthManageKeyWordsIndexRouteImport } from './routes/_auth/manage/key-words/index'
+import { Route as AuthManageStopWordsCategoryIdRouteImport } from './routes/_auth/manage/stop-words/$category-id'
+import { Route as AuthManageKeyWordsRubricIdRouteImport } from './routes/_auth/manage/key-words/$rubric-id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSettingsRoute = AuthSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthProfileRoute = AuthProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSettingsIndexRoute = AuthSettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
+const AuthManageIndexRoute = AuthManageIndexRouteImport.update({
+  id: '/manage/',
+  path: '/manage/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSettingsUseMlNewsAnalysisRoute =
+  AuthSettingsUseMlNewsAnalysisRouteImport.update({
+    id: '/use-ml-news-analysis',
+    path: '/use-ml-news-analysis',
+    getParentRoute: () => AuthSettingsRoute,
+  } as any)
+const AuthSettingsTgAuthRoute = AuthSettingsTgAuthRouteImport.update({
+  id: '/tg-auth',
+  path: '/tg-auth',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
+const AuthSettingsSocialStatisticIntervalRoute =
+  AuthSettingsSocialStatisticIntervalRouteImport.update({
+    id: '/social-statistic-interval',
+    path: '/social-statistic-interval',
+    getParentRoute: () => AuthSettingsRoute,
+  } as any)
+const AuthSettingsPollIntevalRoute = AuthSettingsPollIntevalRouteImport.update({
+  id: '/poll-inteval',
+  path: '/poll-inteval',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
+const AuthSettingsNewsClearRoute = AuthSettingsNewsClearRouteImport.update({
+  id: '/news-clear',
+  path: '/news-clear',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
+const AuthSettingsMediafilesRoute = AuthSettingsMediafilesRouteImport.update({
+  id: '/mediafiles',
+  path: '/mediafiles',
+  getParentRoute: () => AuthSettingsRoute,
+} as any)
+const AuthManageSourcesRoute = AuthManageSourcesRouteImport.update({
+  id: '/manage/sources',
+  path: '/manage/sources',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthManageCategoriesRoute = AuthManageCategoriesRouteImport.update({
+  id: '/manage/categories',
+  path: '/manage/categories',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthArticleIdRoute = AuthArticleIdRouteImport.update({
+  id: '/article/$id',
+  path: '/article/$id',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthManageStopWordsIndexRoute =
+  AuthManageStopWordsIndexRouteImport.update({
+    id: '/manage/stop-words/',
+    path: '/manage/stop-words/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthManageKeyWordsIndexRoute = AuthManageKeyWordsIndexRouteImport.update({
+  id: '/manage/key-words/',
+  path: '/manage/key-words/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthManageStopWordsCategoryIdRoute =
+  AuthManageStopWordsCategoryIdRouteImport.update({
+    id: '/manage/stop-words/$category-id',
+    path: '/manage/stop-words/$category-id',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthManageKeyWordsRubricIdRoute =
+  AuthManageKeyWordsRubricIdRouteImport.update({
+    id: '/manage/key-words/$rubric-id',
+    path: '/manage/key-words/$rubric-id',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof AuthProfileRoute
+  '/settings': typeof AuthSettingsRouteWithChildren
+  '/': typeof AuthIndexRoute
+  '/article/$id': typeof AuthArticleIdRoute
+  '/manage/categories': typeof AuthManageCategoriesRoute
+  '/manage/sources': typeof AuthManageSourcesRoute
+  '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
+  '/settings/news-clear': typeof AuthSettingsNewsClearRoute
+  '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
+  '/manage': typeof AuthManageIndexRoute
+  '/settings/': typeof AuthSettingsIndexRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
+  '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
+  '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof AuthProfileRoute
+  '/': typeof AuthIndexRoute
+  '/article/$id': typeof AuthArticleIdRoute
+  '/manage/categories': typeof AuthManageCategoriesRoute
+  '/manage/sources': typeof AuthManageSourcesRoute
+  '/settings/mediafiles': typeof AuthSettingsMediafilesRoute
+  '/settings/news-clear': typeof AuthSettingsNewsClearRoute
+  '/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
+  '/manage': typeof AuthManageIndexRoute
+  '/settings': typeof AuthSettingsIndexRoute
+  '/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
+  '/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/manage/key-words': typeof AuthManageKeyWordsIndexRoute
+  '/manage/stop-words': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_auth/profile': typeof AuthProfileRoute
+  '/_auth/settings': typeof AuthSettingsRouteWithChildren
+  '/_auth/': typeof AuthIndexRoute
+  '/_auth/article/$id': typeof AuthArticleIdRoute
+  '/_auth/manage/categories': typeof AuthManageCategoriesRoute
+  '/_auth/manage/sources': typeof AuthManageSourcesRoute
+  '/_auth/settings/mediafiles': typeof AuthSettingsMediafilesRoute
+  '/_auth/settings/news-clear': typeof AuthSettingsNewsClearRoute
+  '/_auth/settings/poll-inteval': typeof AuthSettingsPollIntevalRoute
+  '/_auth/settings/social-statistic-interval': typeof AuthSettingsSocialStatisticIntervalRoute
+  '/_auth/settings/tg-auth': typeof AuthSettingsTgAuthRoute
+  '/_auth/settings/use-ml-news-analysis': typeof AuthSettingsUseMlNewsAnalysisRoute
+  '/_auth/manage/': typeof AuthManageIndexRoute
+  '/_auth/settings/': typeof AuthSettingsIndexRoute
+  '/_auth/manage/key-words/$rubric-id': typeof AuthManageKeyWordsRubricIdRoute
+  '/_auth/manage/stop-words/$category-id': typeof AuthManageStopWordsCategoryIdRoute
+  '/_auth/manage/key-words/': typeof AuthManageKeyWordsIndexRoute
+  '/_auth/manage/stop-words/': typeof AuthManageStopWordsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/login'
+    | '/profile'
+    | '/settings'
+    | '/'
+    | '/article/$id'
+    | '/manage/categories'
+    | '/manage/sources'
+    | '/settings/mediafiles'
+    | '/settings/news-clear'
+    | '/settings/poll-inteval'
+    | '/settings/social-statistic-interval'
+    | '/settings/tg-auth'
+    | '/settings/use-ml-news-analysis'
+    | '/manage'
+    | '/settings/'
+    | '/manage/key-words/$rubric-id'
+    | '/manage/stop-words/$category-id'
+    | '/manage/key-words'
+    | '/manage/stop-words'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/login'
+    | '/profile'
+    | '/'
+    | '/article/$id'
+    | '/manage/categories'
+    | '/manage/sources'
+    | '/settings/mediafiles'
+    | '/settings/news-clear'
+    | '/settings/poll-inteval'
+    | '/settings/social-statistic-interval'
+    | '/settings/tg-auth'
+    | '/settings/use-ml-news-analysis'
+    | '/manage'
+    | '/settings'
+    | '/manage/key-words/$rubric-id'
+    | '/manage/stop-words/$category-id'
+    | '/manage/key-words'
+    | '/manage/stop-words'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/login'
+    | '/_auth/profile'
+    | '/_auth/settings'
+    | '/_auth/'
+    | '/_auth/article/$id'
+    | '/_auth/manage/categories'
+    | '/_auth/manage/sources'
+    | '/_auth/settings/mediafiles'
+    | '/_auth/settings/news-clear'
+    | '/_auth/settings/poll-inteval'
+    | '/_auth/settings/social-statistic-interval'
+    | '/_auth/settings/tg-auth'
+    | '/_auth/settings/use-ml-news-analysis'
+    | '/_auth/manage/'
+    | '/_auth/settings/'
+    | '/_auth/manage/key-words/$rubric-id'
+    | '/_auth/manage/stop-words/$category-id'
+    | '/_auth/manage/key-words/'
+    | '/_auth/manage/stop-words/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings': {
+      id: '/_auth/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthSettingsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/profile': {
+      id: '/_auth/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthProfileRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings/': {
+      id: '/_auth/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AuthSettingsIndexRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/manage/': {
+      id: '/_auth/manage/'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof AuthManageIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings/use-ml-news-analysis': {
+      id: '/_auth/settings/use-ml-news-analysis'
+      path: '/use-ml-news-analysis'
+      fullPath: '/settings/use-ml-news-analysis'
+      preLoaderRoute: typeof AuthSettingsUseMlNewsAnalysisRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/tg-auth': {
+      id: '/_auth/settings/tg-auth'
+      path: '/tg-auth'
+      fullPath: '/settings/tg-auth'
+      preLoaderRoute: typeof AuthSettingsTgAuthRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/social-statistic-interval': {
+      id: '/_auth/settings/social-statistic-interval'
+      path: '/social-statistic-interval'
+      fullPath: '/settings/social-statistic-interval'
+      preLoaderRoute: typeof AuthSettingsSocialStatisticIntervalRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/poll-inteval': {
+      id: '/_auth/settings/poll-inteval'
+      path: '/poll-inteval'
+      fullPath: '/settings/poll-inteval'
+      preLoaderRoute: typeof AuthSettingsPollIntevalRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/news-clear': {
+      id: '/_auth/settings/news-clear'
+      path: '/news-clear'
+      fullPath: '/settings/news-clear'
+      preLoaderRoute: typeof AuthSettingsNewsClearRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/settings/mediafiles': {
+      id: '/_auth/settings/mediafiles'
+      path: '/mediafiles'
+      fullPath: '/settings/mediafiles'
+      preLoaderRoute: typeof AuthSettingsMediafilesRouteImport
+      parentRoute: typeof AuthSettingsRoute
+    }
+    '/_auth/manage/sources': {
+      id: '/_auth/manage/sources'
+      path: '/manage/sources'
+      fullPath: '/manage/sources'
+      preLoaderRoute: typeof AuthManageSourcesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/categories': {
+      id: '/_auth/manage/categories'
+      path: '/manage/categories'
+      fullPath: '/manage/categories'
+      preLoaderRoute: typeof AuthManageCategoriesRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/article/$id': {
+      id: '/_auth/article/$id'
+      path: '/article/$id'
+      fullPath: '/article/$id'
+      preLoaderRoute: typeof AuthArticleIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/stop-words/': {
+      id: '/_auth/manage/stop-words/'
+      path: '/manage/stop-words'
+      fullPath: '/manage/stop-words'
+      preLoaderRoute: typeof AuthManageStopWordsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/key-words/': {
+      id: '/_auth/manage/key-words/'
+      path: '/manage/key-words'
+      fullPath: '/manage/key-words'
+      preLoaderRoute: typeof AuthManageKeyWordsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/stop-words/$category-id': {
+      id: '/_auth/manage/stop-words/$category-id'
+      path: '/manage/stop-words/$category-id'
+      fullPath: '/manage/stop-words/$category-id'
+      preLoaderRoute: typeof AuthManageStopWordsCategoryIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/manage/key-words/$rubric-id': {
+      id: '/_auth/manage/key-words/$rubric-id'
+      path: '/manage/key-words/$rubric-id'
+      fullPath: '/manage/key-words/$rubric-id'
+      preLoaderRoute: typeof AuthManageKeyWordsRubricIdRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
 }
 
+interface AuthSettingsRouteChildren {
+  AuthSettingsMediafilesRoute: typeof AuthSettingsMediafilesRoute
+  AuthSettingsNewsClearRoute: typeof AuthSettingsNewsClearRoute
+  AuthSettingsPollIntevalRoute: typeof AuthSettingsPollIntevalRoute
+  AuthSettingsSocialStatisticIntervalRoute: typeof AuthSettingsSocialStatisticIntervalRoute
+  AuthSettingsTgAuthRoute: typeof AuthSettingsTgAuthRoute
+  AuthSettingsUseMlNewsAnalysisRoute: typeof AuthSettingsUseMlNewsAnalysisRoute
+  AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
+}
+
+const AuthSettingsRouteChildren: AuthSettingsRouteChildren = {
+  AuthSettingsMediafilesRoute: AuthSettingsMediafilesRoute,
+  AuthSettingsNewsClearRoute: AuthSettingsNewsClearRoute,
+  AuthSettingsPollIntevalRoute: AuthSettingsPollIntevalRoute,
+  AuthSettingsSocialStatisticIntervalRoute:
+    AuthSettingsSocialStatisticIntervalRoute,
+  AuthSettingsTgAuthRoute: AuthSettingsTgAuthRoute,
+  AuthSettingsUseMlNewsAnalysisRoute: AuthSettingsUseMlNewsAnalysisRoute,
+  AuthSettingsIndexRoute: AuthSettingsIndexRoute,
+}
+
+const AuthSettingsRouteWithChildren = AuthSettingsRoute._addFileChildren(
+  AuthSettingsRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthProfileRoute: typeof AuthProfileRoute
+  AuthSettingsRoute: typeof AuthSettingsRouteWithChildren
+  AuthIndexRoute: typeof AuthIndexRoute
+  AuthArticleIdRoute: typeof AuthArticleIdRoute
+  AuthManageCategoriesRoute: typeof AuthManageCategoriesRoute
+  AuthManageSourcesRoute: typeof AuthManageSourcesRoute
+  AuthManageIndexRoute: typeof AuthManageIndexRoute
+  AuthManageKeyWordsRubricIdRoute: typeof AuthManageKeyWordsRubricIdRoute
+  AuthManageStopWordsCategoryIdRoute: typeof AuthManageStopWordsCategoryIdRoute
+  AuthManageKeyWordsIndexRoute: typeof AuthManageKeyWordsIndexRoute
+  AuthManageStopWordsIndexRoute: typeof AuthManageStopWordsIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthProfileRoute: AuthProfileRoute,
+  AuthSettingsRoute: AuthSettingsRouteWithChildren,
+  AuthIndexRoute: AuthIndexRoute,
+  AuthArticleIdRoute: AuthArticleIdRoute,
+  AuthManageCategoriesRoute: AuthManageCategoriesRoute,
+  AuthManageSourcesRoute: AuthManageSourcesRoute,
+  AuthManageIndexRoute: AuthManageIndexRoute,
+  AuthManageKeyWordsRubricIdRoute: AuthManageKeyWordsRubricIdRoute,
+  AuthManageStopWordsCategoryIdRoute: AuthManageStopWordsCategoryIdRoute,
+  AuthManageKeyWordsIndexRoute: AuthManageKeyWordsIndexRoute,
+  AuthManageStopWordsIndexRoute: AuthManageStopWordsIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

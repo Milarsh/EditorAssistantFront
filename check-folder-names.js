@@ -54,6 +54,7 @@ const foldersToIgnore = [
   '.vite',
   'dist',
   '.tanstack',
+  'routes',
 ]
 
 // Start the check from the current working directory (root of your project)

@@ -1,13 +1,24 @@
 import './app/styles/index.css'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import { Toaster } from 'react-hot-toast'
+
+import { router } from '@/app/router'
 
 import { initializeApp } from './app/lib/initialize-app.ts'
-import { router } from './app/router/index.ts'
 
 const rootElement = document.getElementById('app')
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1500,
+    },
+  },
+})
 
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
@@ -15,7 +26,15 @@ if (rootElement && !rootElement.innerHTML) {
   initializeApp().then(() => {
     root.render(
       <StrictMode>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+            }}
+          />
+        </QueryClientProvider>
       </StrictMode>,
     )
   })
